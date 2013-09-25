@@ -1,0 +1,7 @@
+Begin
+	prehook:
+		++__sgInsideBegin;
+
+End
+	posthook:
+		--__sgInsideBegin;

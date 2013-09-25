@@ -1,0 +1,1761 @@
+3
+3.00
+3.1
+dlsym(glAlphaFragmentOp1ATI): /usr/lib64/librrfaker.so: undefined symbol: glAlphaFragmentOp1ATI
+dlsym(glAlphaFragmentOp2ATI): /usr/lib64/librrfaker.so: undefined symbol: glAlphaFragmentOp2ATI
+dlsym(glAlphaFragmentOp3ATI): /usr/lib64/librrfaker.so: undefined symbol: glAlphaFragmentOp3ATI
+dlsym(glApplyTextureEXT): /usr/lib64/librrfaker.so: undefined symbol: glApplyTextureEXT
+dlsym(glArrayObjectATI): /usr/lib64/librrfaker.so: undefined symbol: glArrayObjectATI
+dlsym(glAsyncMarkerSGIX): /usr/lib64/librrfaker.so: undefined symbol: glAsyncMarkerSGIX
+dlsym(glBeginFragmentShaderATI): /usr/lib64/librrfaker.so: undefined symbol: glBeginFragmentShaderATI
+dlsym(glBeginVertexShaderEXT): /usr/lib64/librrfaker.so: undefined symbol: glBeginVertexShaderEXT
+dlsym(glBindFragmentShaderATI): /usr/lib64/librrfaker.so: undefined symbol: glBindFragmentShaderATI
+dlsym(glBindLightParameterEXT): /usr/lib64/librrfaker.so: undefined symbol: glBindLightParameterEXT
+dlsym(glBindMaterialParameterEXT): /usr/lib64/librrfaker.so: undefined symbol: glBindMaterialParameterEXT
+dlsym(glBindParameterEXT): /usr/lib64/librrfaker.so: undefined symbol: glBindParameterEXT
+dlsym(glBindTexGenParameterEXT): /usr/lib64/librrfaker.so: undefined symbol: glBindTexGenParameterEXT
+dlsym(glBindTextureUnitParameterEXT): /usr/lib64/librrfaker.so: undefined symbol: glBindTextureUnitParameterEXT
+dlsym(glBindVertexShaderEXT): /usr/lib64/librrfaker.so: undefined symbol: glBindVertexShaderEXT
+dlsym(glBinormal3bEXT): /usr/lib64/librrfaker.so: undefined symbol: glBinormal3bEXT
+dlsym(glBinormal3bvEXT): /usr/lib64/librrfaker.so: undefined symbol: glBinormal3bvEXT
+dlsym(glBinormal3dEXT): /usr/lib64/librrfaker.so: undefined symbol: glBinormal3dEXT
+dlsym(glBinormal3dvEXT): /usr/lib64/librrfaker.so: undefined symbol: glBinormal3dvEXT
+dlsym(glBinormal3fEXT): /usr/lib64/librrfaker.so: undefined symbol: glBinormal3fEXT
+dlsym(glBinormal3fvEXT): /usr/lib64/librrfaker.so: undefined symbol: glBinormal3fvEXT
+dlsym(glBinormal3iEXT): /usr/lib64/librrfaker.so: undefined symbol: glBinormal3iEXT
+dlsym(glBinormal3ivEXT): /usr/lib64/librrfaker.so: undefined symbol: glBinormal3ivEXT
+dlsym(glBinormal3sEXT): /usr/lib64/librrfaker.so: undefined symbol: glBinormal3sEXT
+dlsym(glBinormal3svEXT): /usr/lib64/librrfaker.so: undefined symbol: glBinormal3svEXT
+dlsym(glBinormalPointerEXT): /usr/lib64/librrfaker.so: undefined symbol: glBinormalPointerEXT
+dlsym(glBlendFuncSeparateINGR): /usr/lib64/librrfaker.so: undefined symbol: glBlendFuncSeparateINGR
+dlsym(glClientActiveVertexStreamATI): /usr/lib64/librrfaker.so: undefined symbol: glClientActiveVertexStreamATI
+dlsym(glColor3fVertex3fSUN): /usr/lib64/librrfaker.so: undefined symbol: glColor3fVertex3fSUN
+dlsym(glColor3fVertex3fvSUN): /usr/lib64/librrfaker.so: undefined symbol: glColor3fVertex3fvSUN
+dlsym(glColor4fNormal3fVertex3fSUN): /usr/lib64/librrfaker.so: undefined symbol: glColor4fNormal3fVertex3fSUN
+dlsym(glColor4fNormal3fVertex3fvSUN): /usr/lib64/librrfaker.so: undefined symbol: glColor4fNormal3fVertex3fvSUN
+dlsym(glColor4ubVertex2fSUN): /usr/lib64/librrfaker.so: undefined symbol: glColor4ubVertex2fSUN
+dlsym(glColor4ubVertex2fvSUN): /usr/lib64/librrfaker.so: undefined symbol: glColor4ubVertex2fvSUN
+dlsym(glColor4ubVertex3fSUN): /usr/lib64/librrfaker.so: undefined symbol: glColor4ubVertex3fSUN
+dlsym(glColor4ubVertex3fvSUN): /usr/lib64/librrfaker.so: undefined symbol: glColor4ubVertex3fvSUN
+dlsym(glColorFragmentOp1ATI): /usr/lib64/librrfaker.so: undefined symbol: glColorFragmentOp1ATI
+dlsym(glColorFragmentOp2ATI): /usr/lib64/librrfaker.so: undefined symbol: glColorFragmentOp2ATI
+dlsym(glColorFragmentOp3ATI): /usr/lib64/librrfaker.so: undefined symbol: glColorFragmentOp3ATI
+dlsym(glColorPointerListIBM): /usr/lib64/librrfaker.so: undefined symbol: glColorPointerListIBM
+dlsym(glColorPointervINTEL): /usr/lib64/librrfaker.so: undefined symbol: glColorPointervINTEL
+dlsym(glColorTableParameterfvSGI): /usr/lib64/librrfaker.so: undefined symbol: glColorTableParameterfvSGI
+dlsym(glColorTableParameterivSGI): /usr/lib64/librrfaker.so: undefined symbol: glColorTableParameterivSGI
+dlsym(glColorTableSGI): /usr/lib64/librrfaker.so: undefined symbol: glColorTableSGI
+dlsym(glConvolutionFilter1DEXT): /usr/lib64/librrfaker.so: undefined symbol: glConvolutionFilter1DEXT
+dlsym(glConvolutionFilter2DEXT): /usr/lib64/librrfaker.so: undefined symbol: glConvolutionFilter2DEXT
+dlsym(glConvolutionParameterfEXT): /usr/lib64/librrfaker.so: undefined symbol: glConvolutionParameterfEXT
+dlsym(glConvolutionParameterfvEXT): /usr/lib64/librrfaker.so: undefined symbol: glConvolutionParameterfvEXT
+dlsym(glConvolutionParameteriEXT): /usr/lib64/librrfaker.so: undefined symbol: glConvolutionParameteriEXT
+dlsym(glConvolutionParameterivEXT): /usr/lib64/librrfaker.so: undefined symbol: glConvolutionParameterivEXT
+dlsym(glCopyColorSubTableEXT): /usr/lib64/librrfaker.so: undefined symbol: glCopyColorSubTableEXT
+dlsym(glCopyColorTableSGI): /usr/lib64/librrfaker.so: undefined symbol: glCopyColorTableSGI
+dlsym(glCopyConvolutionFilter1DEXT): /usr/lib64/librrfaker.so: undefined symbol: glCopyConvolutionFilter1DEXT
+dlsym(glCopyConvolutionFilter2DEXT): /usr/lib64/librrfaker.so: undefined symbol: glCopyConvolutionFilter2DEXT
+dlsym(glCopyTexImage1DEXT): /usr/lib64/librrfaker.so: undefined symbol: glCopyTexImage1DEXT
+dlsym(glCopyTexImage2DEXT): /usr/lib64/librrfaker.so: undefined symbol: glCopyTexImage2DEXT
+dlsym(glCopyTexSubImage1DEXT): /usr/lib64/librrfaker.so: undefined symbol: glCopyTexSubImage1DEXT
+dlsym(glCopyTexSubImage2DEXT): /usr/lib64/librrfaker.so: undefined symbol: glCopyTexSubImage2DEXT
+dlsym(glCullParameterdvEXT): /usr/lib64/librrfaker.so: undefined symbol: glCullParameterdvEXT
+dlsym(glCullParameterfvEXT): /usr/lib64/librrfaker.so: undefined symbol: glCullParameterfvEXT
+dlsym(glCurrentPaletteMatrixARB): /usr/lib64/librrfaker.so: undefined symbol: glCurrentPaletteMatrixARB
+dlsym(glDeformSGIX): /usr/lib64/librrfaker.so: undefined symbol: glDeformSGIX
+dlsym(glDeformationMap3dSGIX): /usr/lib64/librrfaker.so: undefined symbol: glDeformationMap3dSGIX
+dlsym(glDeformationMap3fSGIX): /usr/lib64/librrfaker.so: undefined symbol: glDeformationMap3fSGIX
+dlsym(glDeleteAsyncMarkersSGIX): /usr/lib64/librrfaker.so: undefined symbol: glDeleteAsyncMarkersSGIX
+dlsym(glDeleteFragmentShaderATI): /usr/lib64/librrfaker.so: undefined symbol: glDeleteFragmentShaderATI
+dlsym(glDeleteObjectBufferATI): /usr/lib64/librrfaker.so: undefined symbol: glDeleteObjectBufferATI
+dlsym(glDeleteVertexShaderEXT): /usr/lib64/librrfaker.so: undefined symbol: glDeleteVertexShaderEXT
+dlsym(glDetailTexFuncSGIS): /usr/lib64/librrfaker.so: undefined symbol: glDetailTexFuncSGIS
+dlsym(glDisableVariantClientStateEXT): /usr/lib64/librrfaker.so: undefined symbol: glDisableVariantClientStateEXT
+dlsym(glDrawElementArrayATI): /usr/lib64/librrfaker.so: undefined symbol: glDrawElementArrayATI
+dlsym(glDrawMeshArraysSUN): /usr/lib64/librrfaker.so: undefined symbol: glDrawMeshArraysSUN
+dlsym(glDrawRangeElementArrayATI): /usr/lib64/librrfaker.so: undefined symbol: glDrawRangeElementArrayATI
+dlsym(glEdgeFlagPointerListIBM): /usr/lib64/librrfaker.so: undefined symbol: glEdgeFlagPointerListIBM
+dlsym(glElementPointerATI): /usr/lib64/librrfaker.so: undefined symbol: glElementPointerATI
+dlsym(glEnableVariantClientStateEXT): /usr/lib64/librrfaker.so: undefined symbol: glEnableVariantClientStateEXT
+dlsym(glEndFragmentShaderATI): /usr/lib64/librrfaker.so: undefined symbol: glEndFragmentShaderATI
+dlsym(glEndVertexShaderEXT): /usr/lib64/librrfaker.so: undefined symbol: glEndVertexShaderEXT
+dlsym(glEvalMapsNV): /usr/lib64/librrfaker.so: undefined symbol: glEvalMapsNV
+dlsym(glExtractComponentEXT): /usr/lib64/librrfaker.so: undefined symbol: glExtractComponentEXT
+dlsym(glFinishAsyncSGIX): /usr/lib64/librrfaker.so: undefined symbol: glFinishAsyncSGIX
+dlsym(glFinishTextureSUNX): /usr/lib64/librrfaker.so: undefined symbol: glFinishTextureSUNX
+dlsym(glFlushRasterSGIX): /usr/lib64/librrfaker.so: undefined symbol: glFlushRasterSGIX
+dlsym(glFogCoordPointerListIBM): /usr/lib64/librrfaker.so: undefined symbol: glFogCoordPointerListIBM
+dlsym(glFogFuncSGIS): /usr/lib64/librrfaker.so: undefined symbol: glFogFuncSGIS
+dlsym(glFragmentColorMaterialSGIX): /usr/lib64/librrfaker.so: undefined symbol: glFragmentColorMaterialSGIX
+dlsym(glFragmentLightModelfSGIX): /usr/lib64/librrfaker.so: undefined symbol: glFragmentLightModelfSGIX
+dlsym(glFragmentLightModelfvSGIX): /usr/lib64/librrfaker.so: undefined symbol: glFragmentLightModelfvSGIX
+dlsym(glFragmentLightModeliSGIX): /usr/lib64/librrfaker.so: undefined symbol: glFragmentLightModeliSGIX
+dlsym(glFragmentLightModelivSGIX): /usr/lib64/librrfaker.so: undefined symbol: glFragmentLightModelivSGIX
+dlsym(glFragmentLightfSGIX): /usr/lib64/librrfaker.so: undefined symbol: glFragmentLightfSGIX
+dlsym(glFragmentLightfvSGIX): /usr/lib64/librrfaker.so: undefined symbol: glFragmentLightfvSGIX
+dlsym(glFragmentLightiSGIX): /usr/lib64/librrfaker.so: undefined symbol: glFragmentLightiSGIX
+dlsym(glFragmentLightivSGIX): /usr/lib64/librrfaker.so: undefined symbol: glFragmentLightivSGIX
+dlsym(glFragmentMaterialfSGIX): /usr/lib64/librrfaker.so: undefined symbol: glFragmentMaterialfSGIX
+dlsym(glFragmentMaterialfvSGIX): /usr/lib64/librrfaker.so: undefined symbol: glFragmentMaterialfvSGIX
+dlsym(glFragmentMaterialiSGIX): /usr/lib64/librrfaker.so: undefined symbol: glFragmentMaterialiSGIX
+dlsym(glFragmentMaterialivSGIX): /usr/lib64/librrfaker.so: undefined symbol: glFragmentMaterialivSGIX
+dlsym(glFrameZoomSGIX): /usr/lib64/librrfaker.so: undefined symbol: glFrameZoomSGIX
+dlsym(glGenAsyncMarkersSGIX): /usr/lib64/librrfaker.so: undefined symbol: glGenAsyncMarkersSGIX
+dlsym(glGenFragmentShadersATI): /usr/lib64/librrfaker.so: undefined symbol: glGenFragmentShadersATI
+dlsym(glGenSymbolsEXT): /usr/lib64/librrfaker.so: undefined symbol: glGenSymbolsEXT
+dlsym(glGenVertexShadersEXT): /usr/lib64/librrfaker.so: undefined symbol: glGenVertexShadersEXT
+dlsym(glGetArrayObjectfvATI): /usr/lib64/librrfaker.so: undefined symbol: glGetArrayObjectfvATI
+dlsym(glGetArrayObjectivATI): /usr/lib64/librrfaker.so: undefined symbol: glGetArrayObjectivATI
+dlsym(glGetColorTableParameterfvSGI): /usr/lib64/librrfaker.so: undefined symbol: glGetColorTableParameterfvSGI
+dlsym(glGetColorTableParameterivSGI): /usr/lib64/librrfaker.so: undefined symbol: glGetColorTableParameterivSGI
+dlsym(glGetColorTableSGI): /usr/lib64/librrfaker.so: undefined symbol: glGetColorTableSGI
+dlsym(glGetConvolutionFilterEXT): /usr/lib64/librrfaker.so: undefined symbol: glGetConvolutionFilterEXT
+dlsym(glGetConvolutionParameterfvEXT): /usr/lib64/librrfaker.so: undefined symbol: glGetConvolutionParameterfvEXT
+dlsym(glGetConvolutionParameterivEXT): /usr/lib64/librrfaker.so: undefined symbol: glGetConvolutionParameterivEXT
+dlsym(glGetDetailTexFuncSGIS): /usr/lib64/librrfaker.so: undefined symbol: glGetDetailTexFuncSGIS
+dlsym(glGetFogFuncSGIS): /usr/lib64/librrfaker.so: undefined symbol: glGetFogFuncSGIS
+dlsym(glGetFragmentLightfvSGIX): /usr/lib64/librrfaker.so: undefined symbol: glGetFragmentLightfvSGIX
+dlsym(glGetFragmentLightivSGIX): /usr/lib64/librrfaker.so: undefined symbol: glGetFragmentLightivSGIX
+dlsym(glGetFragmentMaterialfvSGIX): /usr/lib64/librrfaker.so: undefined symbol: glGetFragmentMaterialfvSGIX
+dlsym(glGetFragmentMaterialivSGIX): /usr/lib64/librrfaker.so: undefined symbol: glGetFragmentMaterialivSGIX
+dlsym(glGetHistogramEXT): /usr/lib64/librrfaker.so: undefined symbol: glGetHistogramEXT
+dlsym(glGetHistogramParameterfvEXT): /usr/lib64/librrfaker.so: undefined symbol: glGetHistogramParameterfvEXT
+dlsym(glGetHistogramParameterivEXT): /usr/lib64/librrfaker.so: undefined symbol: glGetHistogramParameterivEXT
+dlsym(glGetImageTransformParameterfvHP): /usr/lib64/librrfaker.so: undefined symbol: glGetImageTransformParameterfvHP
+dlsym(glGetImageTransformParameterivHP): /usr/lib64/librrfaker.so: undefined symbol: glGetImageTransformParameterivHP
+dlsym(glGetInstrumentsSGIX): /usr/lib64/librrfaker.so: undefined symbol: glGetInstrumentsSGIX
+dlsym(glGetInvariantBooleanvEXT): /usr/lib64/librrfaker.so: undefined symbol: glGetInvariantBooleanvEXT
+dlsym(glGetInvariantFloatvEXT): /usr/lib64/librrfaker.so: undefined symbol: glGetInvariantFloatvEXT
+dlsym(glGetInvariantIntegervEXT): /usr/lib64/librrfaker.so: undefined symbol: glGetInvariantIntegervEXT
+dlsym(glGetListParameterfvSGIX): /usr/lib64/librrfaker.so: undefined symbol: glGetListParameterfvSGIX
+dlsym(glGetListParameterivSGIX): /usr/lib64/librrfaker.so: undefined symbol: glGetListParameterivSGIX
+dlsym(glGetLocalConstantBooleanvEXT): /usr/lib64/librrfaker.so: undefined symbol: glGetLocalConstantBooleanvEXT
+dlsym(glGetLocalConstantFloatvEXT): /usr/lib64/librrfaker.so: undefined symbol: glGetLocalConstantFloatvEXT
+dlsym(glGetLocalConstantIntegervEXT): /usr/lib64/librrfaker.so: undefined symbol: glGetLocalConstantIntegervEXT
+dlsym(glGetMapAttribParameterfvNV): /usr/lib64/librrfaker.so: undefined symbol: glGetMapAttribParameterfvNV
+dlsym(glGetMapAttribParameterivNV): /usr/lib64/librrfaker.so: undefined symbol: glGetMapAttribParameterivNV
+dlsym(glGetMapControlPointsNV): /usr/lib64/librrfaker.so: undefined symbol: glGetMapControlPointsNV
+dlsym(glGetMapParameterfvNV): /usr/lib64/librrfaker.so: undefined symbol: glGetMapParameterfvNV
+dlsym(glGetMapParameterivNV): /usr/lib64/librrfaker.so: undefined symbol: glGetMapParameterivNV
+dlsym(glGetMinmaxEXT): /usr/lib64/librrfaker.so: undefined symbol: glGetMinmaxEXT
+dlsym(glGetMinmaxParameterfvEXT): /usr/lib64/librrfaker.so: undefined symbol: glGetMinmaxParameterfvEXT
+dlsym(glGetMinmaxParameterivEXT): /usr/lib64/librrfaker.so: undefined symbol: glGetMinmaxParameterivEXT
+dlsym(glGetObjectBufferfvATI): /usr/lib64/librrfaker.so: undefined symbol: glGetObjectBufferfvATI
+dlsym(glGetObjectBufferivATI): /usr/lib64/librrfaker.so: undefined symbol: glGetObjectBufferivATI
+dlsym(glGetPixelTexGenParameterfvSGIS): /usr/lib64/librrfaker.so: undefined symbol: glGetPixelTexGenParameterfvSGIS
+dlsym(glGetPixelTexGenParameterivSGIS): /usr/lib64/librrfaker.so: undefined symbol: glGetPixelTexGenParameterivSGIS
+dlsym(glGetSeparableFilterEXT): /usr/lib64/librrfaker.so: undefined symbol: glGetSeparableFilterEXT
+dlsym(glGetSharpenTexFuncSGIS): /usr/lib64/librrfaker.so: undefined symbol: glGetSharpenTexFuncSGIS
+dlsym(glGetTexBumpParameterfvATI): /usr/lib64/librrfaker.so: undefined symbol: glGetTexBumpParameterfvATI
+dlsym(glGetTexBumpParameterivATI): /usr/lib64/librrfaker.so: undefined symbol: glGetTexBumpParameterivATI
+dlsym(glGetTexFilterFuncSGIS): /usr/lib64/librrfaker.so: undefined symbol: glGetTexFilterFuncSGIS
+dlsym(glGetVariantArrayObjectfvATI): /usr/lib64/librrfaker.so: undefined symbol: glGetVariantArrayObjectfvATI
+dlsym(glGetVariantArrayObjectivATI): /usr/lib64/librrfaker.so: undefined symbol: glGetVariantArrayObjectivATI
+dlsym(glGetVariantBooleanvEXT): /usr/lib64/librrfaker.so: undefined symbol: glGetVariantBooleanvEXT
+dlsym(glGetVariantFloatvEXT): /usr/lib64/librrfaker.so: undefined symbol: glGetVariantFloatvEXT
+dlsym(glGetVariantIntegervEXT): /usr/lib64/librrfaker.so: undefined symbol: glGetVariantIntegervEXT
+dlsym(glGetVariantPointervEXT): /usr/lib64/librrfaker.so: undefined symbol: glGetVariantPointervEXT
+dlsym(glGlobalAlphaFactorbSUN): /usr/lib64/librrfaker.so: undefined symbol: glGlobalAlphaFactorbSUN
+dlsym(glGlobalAlphaFactordSUN): /usr/lib64/librrfaker.so: undefined symbol: glGlobalAlphaFactordSUN
+dlsym(glGlobalAlphaFactorfSUN): /usr/lib64/librrfaker.so: undefined symbol: glGlobalAlphaFactorfSUN
+dlsym(glGlobalAlphaFactoriSUN): /usr/lib64/librrfaker.so: undefined symbol: glGlobalAlphaFactoriSUN
+dlsym(glGlobalAlphaFactorsSUN): /usr/lib64/librrfaker.so: undefined symbol: glGlobalAlphaFactorsSUN
+dlsym(glGlobalAlphaFactorubSUN): /usr/lib64/librrfaker.so: undefined symbol: glGlobalAlphaFactorubSUN
+dlsym(glGlobalAlphaFactoruiSUN): /usr/lib64/librrfaker.so: undefined symbol: glGlobalAlphaFactoruiSUN
+dlsym(glGlobalAlphaFactorusSUN): /usr/lib64/librrfaker.so: undefined symbol: glGlobalAlphaFactorusSUN
+dlsym(glHintPGI): /usr/lib64/librrfaker.so: undefined symbol: glHintPGI
+dlsym(glHistogramEXT): /usr/lib64/librrfaker.so: undefined symbol: glHistogramEXT
+dlsym(glIglooInterfaceSGIX): /usr/lib64/librrfaker.so: undefined symbol: glIglooInterfaceSGIX
+dlsym(glImageTransformParameterfHP): /usr/lib64/librrfaker.so: undefined symbol: glImageTransformParameterfHP
+dlsym(glImageTransformParameterfvHP): /usr/lib64/librrfaker.so: undefined symbol: glImageTransformParameterfvHP
+dlsym(glImageTransformParameteriHP): /usr/lib64/librrfaker.so: undefined symbol: glImageTransformParameteriHP
+dlsym(glImageTransformParameterivHP): /usr/lib64/librrfaker.so: undefined symbol: glImageTransformParameterivHP
+dlsym(glIndexFuncEXT): /usr/lib64/librrfaker.so: undefined symbol: glIndexFuncEXT
+dlsym(glIndexMaterialEXT): /usr/lib64/librrfaker.so: undefined symbol: glIndexMaterialEXT
+dlsym(glIndexPointerListIBM): /usr/lib64/librrfaker.so: undefined symbol: glIndexPointerListIBM
+dlsym(glInsertComponentEXT): /usr/lib64/librrfaker.so: undefined symbol: glInsertComponentEXT
+dlsym(glInstrumentsBufferSGIX): /usr/lib64/librrfaker.so: undefined symbol: glInstrumentsBufferSGIX
+dlsym(glIsAsyncMarkerSGIX): /usr/lib64/librrfaker.so: undefined symbol: glIsAsyncMarkerSGIX
+dlsym(glIsObjectBufferATI): /usr/lib64/librrfaker.so: undefined symbol: glIsObjectBufferATI
+dlsym(glIsVariantEnabledEXT): /usr/lib64/librrfaker.so: undefined symbol: glIsVariantEnabledEXT
+dlsym(glLightEnviSGIX): /usr/lib64/librrfaker.so: undefined symbol: glLightEnviSGIX
+dlsym(glListParameterfSGIX): /usr/lib64/librrfaker.so: undefined symbol: glListParameterfSGIX
+dlsym(glListParameterfvSGIX): /usr/lib64/librrfaker.so: undefined symbol: glListParameterfvSGIX
+dlsym(glListParameteriSGIX): /usr/lib64/librrfaker.so: undefined symbol: glListParameteriSGIX
+dlsym(glListParameterivSGIX): /usr/lib64/librrfaker.so: undefined symbol: glListParameterivSGIX
+dlsym(glLoadIdentityDeformationMapSGIX): /usr/lib64/librrfaker.so: undefined symbol: glLoadIdentityDeformationMapSGIX
+dlsym(glMapControlPointsNV): /usr/lib64/librrfaker.so: undefined symbol: glMapControlPointsNV
+dlsym(glMapParameterfvNV): /usr/lib64/librrfaker.so: undefined symbol: glMapParameterfvNV
+dlsym(glMapParameterivNV): /usr/lib64/librrfaker.so: undefined symbol: glMapParameterivNV
+dlsym(glMatrixIndexPointerARB): /usr/lib64/librrfaker.so: undefined symbol: glMatrixIndexPointerARB
+dlsym(glMatrixIndexubvARB): /usr/lib64/librrfaker.so: undefined symbol: glMatrixIndexubvARB
+dlsym(glMatrixIndexuivARB): /usr/lib64/librrfaker.so: undefined symbol: glMatrixIndexuivARB
+dlsym(glMatrixIndexusvARB): /usr/lib64/librrfaker.so: undefined symbol: glMatrixIndexusvARB
+dlsym(glMinmaxEXT): /usr/lib64/librrfaker.so: undefined symbol: glMinmaxEXT
+dlsym(glMultiModeDrawArraysIBM): /usr/lib64/librrfaker.so: undefined symbol: glMultiModeDrawArraysIBM
+dlsym(glMultiModeDrawElementsIBM): /usr/lib64/librrfaker.so: undefined symbol: glMultiModeDrawElementsIBM
+dlsym(glNewObjectBufferATI): /usr/lib64/librrfaker.so: undefined symbol: glNewObjectBufferATI
+dlsym(glNormal3fVertex3fSUN): /usr/lib64/librrfaker.so: undefined symbol: glNormal3fVertex3fSUN
+dlsym(glNormal3fVertex3fvSUN): /usr/lib64/librrfaker.so: undefined symbol: glNormal3fVertex3fvSUN
+dlsym(glNormalPointerListIBM): /usr/lib64/librrfaker.so: undefined symbol: glNormalPointerListIBM
+dlsym(glNormalPointervINTEL): /usr/lib64/librrfaker.so: undefined symbol: glNormalPointervINTEL
+dlsym(glNormalStream3bATI): /usr/lib64/librrfaker.so: undefined symbol: glNormalStream3bATI
+dlsym(glNormalStream3bvATI): /usr/lib64/librrfaker.so: undefined symbol: glNormalStream3bvATI
+dlsym(glNormalStream3dATI): /usr/lib64/librrfaker.so: undefined symbol: glNormalStream3dATI
+dlsym(glNormalStream3dvATI): /usr/lib64/librrfaker.so: undefined symbol: glNormalStream3dvATI
+dlsym(glNormalStream3fATI): /usr/lib64/librrfaker.so: undefined symbol: glNormalStream3fATI
+dlsym(glNormalStream3fvATI): /usr/lib64/librrfaker.so: undefined symbol: glNormalStream3fvATI
+dlsym(glNormalStream3iATI): /usr/lib64/librrfaker.so: undefined symbol: glNormalStream3iATI
+dlsym(glNormalStream3ivATI): /usr/lib64/librrfaker.so: undefined symbol: glNormalStream3ivATI
+dlsym(glNormalStream3sATI): /usr/lib64/librrfaker.so: undefined symbol: glNormalStream3sATI
+dlsym(glNormalStream3svATI): /usr/lib64/librrfaker.so: undefined symbol: glNormalStream3svATI
+dlsym(glPNTrianglesfATI): /usr/lib64/librrfaker.so: undefined symbol: glPNTrianglesfATI
+dlsym(glPNTrianglesiATI): /usr/lib64/librrfaker.so: undefined symbol: glPNTrianglesiATI
+dlsym(glPassTexCoordATI): /usr/lib64/librrfaker.so: undefined symbol: glPassTexCoordATI
+dlsym(glPixelTexGenParameterfSGIS): /usr/lib64/librrfaker.so: undefined symbol: glPixelTexGenParameterfSGIS
+dlsym(glPixelTexGenParameterfvSGIS): /usr/lib64/librrfaker.so: undefined symbol: glPixelTexGenParameterfvSGIS
+dlsym(glPixelTexGenParameteriSGIS): /usr/lib64/librrfaker.so: undefined symbol: glPixelTexGenParameteriSGIS
+dlsym(glPixelTexGenParameterivSGIS): /usr/lib64/librrfaker.so: undefined symbol: glPixelTexGenParameterivSGIS
+dlsym(glPixelTexGenSGIX): /usr/lib64/librrfaker.so: undefined symbol: glPixelTexGenSGIX
+dlsym(glPixelTransformParameterfEXT): /usr/lib64/librrfaker.so: undefined symbol: glPixelTransformParameterfEXT
+dlsym(glPixelTransformParameterfvEXT): /usr/lib64/librrfaker.so: undefined symbol: glPixelTransformParameterfvEXT
+dlsym(glPixelTransformParameteriEXT): /usr/lib64/librrfaker.so: undefined symbol: glPixelTransformParameteriEXT
+dlsym(glPixelTransformParameterivEXT): /usr/lib64/librrfaker.so: undefined symbol: glPixelTransformParameterivEXT
+dlsym(glPointParameterfSGIS): /usr/lib64/librrfaker.so: undefined symbol: glPointParameterfSGIS
+dlsym(glPointParameterfvSGIS): /usr/lib64/librrfaker.so: undefined symbol: glPointParameterfvSGIS
+dlsym(glPollAsyncSGIX): /usr/lib64/librrfaker.so: undefined symbol: glPollAsyncSGIX
+dlsym(glPollInstrumentsSGIX): /usr/lib64/librrfaker.so: undefined symbol: glPollInstrumentsSGIX
+dlsym(glPolygonOffsetEXT): /usr/lib64/librrfaker.so: undefined symbol: glPolygonOffsetEXT
+dlsym(glReadInstrumentsSGIX): /usr/lib64/librrfaker.so: undefined symbol: glReadInstrumentsSGIX
+dlsym(glReferencePlaneSGIX): /usr/lib64/librrfaker.so: undefined symbol: glReferencePlaneSGIX
+dlsym(glReplacementCodePointerSUN): /usr/lib64/librrfaker.so: undefined symbol: glReplacementCodePointerSUN
+dlsym(glReplacementCodeubSUN): /usr/lib64/librrfaker.so: undefined symbol: glReplacementCodeubSUN
+dlsym(glReplacementCodeubvSUN): /usr/lib64/librrfaker.so: undefined symbol: glReplacementCodeubvSUN
+dlsym(glReplacementCodeuiColor3fVertex3fSUN): /usr/lib64/librrfaker.so: undefined symbol: glReplacementCodeuiColor3fVertex3fSUN
+dlsym(glReplacementCodeuiColor3fVertex3fvSUN): /usr/lib64/librrfaker.so: undefined symbol: glReplacementCodeuiColor3fVertex3fvSUN
+dlsym(glReplacementCodeuiColor4fNormal3fVertex3fSUN): /usr/lib64/librrfaker.so: undefined symbol: glReplacementCodeuiColor4fNormal3fVertex3fSUN
+dlsym(glReplacementCodeuiColor4fNormal3fVertex3fvSUN): /usr/lib64/librrfaker.so: undefined symbol: glReplacementCodeuiColor4fNormal3fVertex3fvSUN
+dlsym(glReplacementCodeuiColor4ubVertex3fSUN): /usr/lib64/librrfaker.so: undefined symbol: glReplacementCodeuiColor4ubVertex3fSUN
+dlsym(glReplacementCodeuiColor4ubVertex3fvSUN): /usr/lib64/librrfaker.so: undefined symbol: glReplacementCodeuiColor4ubVertex3fvSUN
+dlsym(glReplacementCodeuiNormal3fVertex3fSUN): /usr/lib64/librrfaker.so: undefined symbol: glReplacementCodeuiNormal3fVertex3fSUN
+dlsym(glReplacementCodeuiNormal3fVertex3fvSUN): /usr/lib64/librrfaker.so: undefined symbol: glReplacementCodeuiNormal3fVertex3fvSUN
+dlsym(glReplacementCodeuiSUN): /usr/lib64/librrfaker.so: undefined symbol: glReplacementCodeuiSUN
+dlsym(glReplacementCodeuiTexCoord2fColor4fNormal3fVertex3fSUN): /usr/lib64/librrfaker.so: undefined symbol: glReplacementCodeuiTexCoord2fColor4fNormal3fVertex3fSUN
+dlsym(glReplacementCodeuiTexCoord2fColor4fNormal3fVertex3fvSUN): /usr/lib64/librrfaker.so: undefined symbol: glReplacementCodeuiTexCoord2fColor4fNormal3fVertex3fvSUN
+dlsym(glReplacementCodeuiTexCoord2fNormal3fVertex3fSUN): /usr/lib64/librrfaker.so: undefined symbol: glReplacementCodeuiTexCoord2fNormal3fVertex3fSUN
+dlsym(glReplacementCodeuiTexCoord2fNormal3fVertex3fvSUN): /usr/lib64/librrfaker.so: undefined symbol: glReplacementCodeuiTexCoord2fNormal3fVertex3fvSUN
+dlsym(glReplacementCodeuiTexCoord2fVertex3fSUN): /usr/lib64/librrfaker.so: undefined symbol: glReplacementCodeuiTexCoord2fVertex3fSUN
+dlsym(glReplacementCodeuiTexCoord2fVertex3fvSUN): /usr/lib64/librrfaker.so: undefined symbol: glReplacementCodeuiTexCoord2fVertex3fvSUN
+dlsym(glReplacementCodeuiVertex3fSUN): /usr/lib64/librrfaker.so: undefined symbol: glReplacementCodeuiVertex3fSUN
+dlsym(glReplacementCodeuiVertex3fvSUN): /usr/lib64/librrfaker.so: undefined symbol: glReplacementCodeuiVertex3fvSUN
+dlsym(glReplacementCodeuivSUN): /usr/lib64/librrfaker.so: undefined symbol: glReplacementCodeuivSUN
+dlsym(glReplacementCodeusSUN): /usr/lib64/librrfaker.so: undefined symbol: glReplacementCodeusSUN
+dlsym(glReplacementCodeusvSUN): /usr/lib64/librrfaker.so: undefined symbol: glReplacementCodeusvSUN
+dlsym(glResetHistogramEXT): /usr/lib64/librrfaker.so: undefined symbol: glResetHistogramEXT
+dlsym(glResetMinmaxEXT): /usr/lib64/librrfaker.so: undefined symbol: glResetMinmaxEXT
+dlsym(glResizeBuffersMESA): /usr/lib64/librrfaker.so: undefined symbol: glResizeBuffersMESA
+dlsym(glSampleMapATI): /usr/lib64/librrfaker.so: undefined symbol: glSampleMapATI
+dlsym(glSampleMaskEXT): /usr/lib64/librrfaker.so: undefined symbol: glSampleMaskEXT
+dlsym(glSampleMaskSGIS): /usr/lib64/librrfaker.so: undefined symbol: glSampleMaskSGIS
+dlsym(glSamplePatternEXT): /usr/lib64/librrfaker.so: undefined symbol: glSamplePatternEXT
+dlsym(glSamplePatternSGIS): /usr/lib64/librrfaker.so: undefined symbol: glSamplePatternSGIS
+dlsym(glSecondaryColorPointerListIBM): /usr/lib64/librrfaker.so: undefined symbol: glSecondaryColorPointerListIBM
+dlsym(glSeparableFilter2DEXT): /usr/lib64/librrfaker.so: undefined symbol: glSeparableFilter2DEXT
+dlsym(glSetFragmentShaderConstantATI): /usr/lib64/librrfaker.so: undefined symbol: glSetFragmentShaderConstantATI
+dlsym(glSetInvariantEXT): /usr/lib64/librrfaker.so: undefined symbol: glSetInvariantEXT
+dlsym(glSetLocalConstantEXT): /usr/lib64/librrfaker.so: undefined symbol: glSetLocalConstantEXT
+dlsym(glShaderOp1EXT): /usr/lib64/librrfaker.so: undefined symbol: glShaderOp1EXT
+dlsym(glShaderOp2EXT): /usr/lib64/librrfaker.so: undefined symbol: glShaderOp2EXT
+dlsym(glShaderOp3EXT): /usr/lib64/librrfaker.so: undefined symbol: glShaderOp3EXT
+dlsym(glSharpenTexFuncSGIS): /usr/lib64/librrfaker.so: undefined symbol: glSharpenTexFuncSGIS
+dlsym(glSpriteParameterfSGIX): /usr/lib64/librrfaker.so: undefined symbol: glSpriteParameterfSGIX
+dlsym(glSpriteParameterfvSGIX): /usr/lib64/librrfaker.so: undefined symbol: glSpriteParameterfvSGIX
+dlsym(glSpriteParameteriSGIX): /usr/lib64/librrfaker.so: undefined symbol: glSpriteParameteriSGIX
+dlsym(glSpriteParameterivSGIX): /usr/lib64/librrfaker.so: undefined symbol: glSpriteParameterivSGIX
+dlsym(glStartInstrumentsSGIX): /usr/lib64/librrfaker.so: undefined symbol: glStartInstrumentsSGIX
+dlsym(glStopInstrumentsSGIX): /usr/lib64/librrfaker.so: undefined symbol: glStopInstrumentsSGIX
+dlsym(glSwizzleEXT): /usr/lib64/librrfaker.so: undefined symbol: glSwizzleEXT
+dlsym(glTagSampleBufferSGIX): /usr/lib64/librrfaker.so: undefined symbol: glTagSampleBufferSGIX
+dlsym(glTangent3bEXT): /usr/lib64/librrfaker.so: undefined symbol: glTangent3bEXT
+dlsym(glTangent3bvEXT): /usr/lib64/librrfaker.so: undefined symbol: glTangent3bvEXT
+dlsym(glTangent3dEXT): /usr/lib64/librrfaker.so: undefined symbol: glTangent3dEXT
+dlsym(glTangent3dvEXT): /usr/lib64/librrfaker.so: undefined symbol: glTangent3dvEXT
+dlsym(glTangent3fEXT): /usr/lib64/librrfaker.so: undefined symbol: glTangent3fEXT
+dlsym(glTangent3fvEXT): /usr/lib64/librrfaker.so: undefined symbol: glTangent3fvEXT
+dlsym(glTangent3iEXT): /usr/lib64/librrfaker.so: undefined symbol: glTangent3iEXT
+dlsym(glTangent3ivEXT): /usr/lib64/librrfaker.so: undefined symbol: glTangent3ivEXT
+dlsym(glTangent3sEXT): /usr/lib64/librrfaker.so: undefined symbol: glTangent3sEXT
+dlsym(glTangent3svEXT): /usr/lib64/librrfaker.so: undefined symbol: glTangent3svEXT
+dlsym(glTangentPointerEXT): /usr/lib64/librrfaker.so: undefined symbol: glTangentPointerEXT
+dlsym(glTbufferMask3DFX): /usr/lib64/librrfaker.so: undefined symbol: glTbufferMask3DFX
+dlsym(glTexBumpParameterfvATI): /usr/lib64/librrfaker.so: undefined symbol: glTexBumpParameterfvATI
+dlsym(glTexBumpParameterivATI): /usr/lib64/librrfaker.so: undefined symbol: glTexBumpParameterivATI
+dlsym(glTexCoord2fColor3fVertex3fSUN): /usr/lib64/librrfaker.so: undefined symbol: glTexCoord2fColor3fVertex3fSUN
+dlsym(glTexCoord2fColor3fVertex3fvSUN): /usr/lib64/librrfaker.so: undefined symbol: glTexCoord2fColor3fVertex3fvSUN
+dlsym(glTexCoord2fColor4fNormal3fVertex3fSUN): /usr/lib64/librrfaker.so: undefined symbol: glTexCoord2fColor4fNormal3fVertex3fSUN
+dlsym(glTexCoord2fColor4fNormal3fVertex3fvSUN): /usr/lib64/librrfaker.so: undefined symbol: glTexCoord2fColor4fNormal3fVertex3fvSUN
+dlsym(glTexCoord2fColor4ubVertex3fSUN): /usr/lib64/librrfaker.so: undefined symbol: glTexCoord2fColor4ubVertex3fSUN
+dlsym(glTexCoord2fColor4ubVertex3fvSUN): /usr/lib64/librrfaker.so: undefined symbol: glTexCoord2fColor4ubVertex3fvSUN
+dlsym(glTexCoord2fNormal3fVertex3fSUN): /usr/lib64/librrfaker.so: undefined symbol: glTexCoord2fNormal3fVertex3fSUN
+dlsym(glTexCoord2fNormal3fVertex3fvSUN): /usr/lib64/librrfaker.so: undefined symbol: glTexCoord2fNormal3fVertex3fvSUN
+dlsym(glTexCoord2fVertex3fSUN): /usr/lib64/librrfaker.so: undefined symbol: glTexCoord2fVertex3fSUN
+dlsym(glTexCoord2fVertex3fvSUN): /usr/lib64/librrfaker.so: undefined symbol: glTexCoord2fVertex3fvSUN
+dlsym(glTexCoord4fColor4fNormal3fVertex4fSUN): /usr/lib64/librrfaker.so: undefined symbol: glTexCoord4fColor4fNormal3fVertex4fSUN
+dlsym(glTexCoord4fColor4fNormal3fVertex4fvSUN): /usr/lib64/librrfaker.so: undefined symbol: glTexCoord4fColor4fNormal3fVertex4fvSUN
+dlsym(glTexCoord4fVertex4fSUN): /usr/lib64/librrfaker.so: undefined symbol: glTexCoord4fVertex4fSUN
+dlsym(glTexCoord4fVertex4fvSUN): /usr/lib64/librrfaker.so: undefined symbol: glTexCoord4fVertex4fvSUN
+dlsym(glTexCoordPointerListIBM): /usr/lib64/librrfaker.so: undefined symbol: glTexCoordPointerListIBM
+dlsym(glTexCoordPointervINTEL): /usr/lib64/librrfaker.so: undefined symbol: glTexCoordPointervINTEL
+dlsym(glTexFilterFuncSGIS): /usr/lib64/librrfaker.so: undefined symbol: glTexFilterFuncSGIS
+dlsym(glTexImage4DSGIS): /usr/lib64/librrfaker.so: undefined symbol: glTexImage4DSGIS
+dlsym(glTexSubImage1DEXT): /usr/lib64/librrfaker.so: undefined symbol: glTexSubImage1DEXT
+dlsym(glTexSubImage2DEXT): /usr/lib64/librrfaker.so: undefined symbol: glTexSubImage2DEXT
+dlsym(glTexSubImage4DSGIS): /usr/lib64/librrfaker.so: undefined symbol: glTexSubImage4DSGIS
+dlsym(glTextureColorMaskSGIS): /usr/lib64/librrfaker.so: undefined symbol: glTextureColorMaskSGIS
+dlsym(glTextureLightEXT): /usr/lib64/librrfaker.so: undefined symbol: glTextureLightEXT
+dlsym(glTextureMaterialEXT): /usr/lib64/librrfaker.so: undefined symbol: glTextureMaterialEXT
+dlsym(glTextureNormalEXT): /usr/lib64/librrfaker.so: undefined symbol: glTextureNormalEXT
+dlsym(glUpdateObjectBufferATI): /usr/lib64/librrfaker.so: undefined symbol: glUpdateObjectBufferATI
+dlsym(glVariantArrayObjectATI): /usr/lib64/librrfaker.so: undefined symbol: glVariantArrayObjectATI
+dlsym(glVariantPointerEXT): /usr/lib64/librrfaker.so: undefined symbol: glVariantPointerEXT
+dlsym(glVariantbvEXT): /usr/lib64/librrfaker.so: undefined symbol: glVariantbvEXT
+dlsym(glVariantdvEXT): /usr/lib64/librrfaker.so: undefined symbol: glVariantdvEXT
+dlsym(glVariantfvEXT): /usr/lib64/librrfaker.so: undefined symbol: glVariantfvEXT
+dlsym(glVariantivEXT): /usr/lib64/librrfaker.so: undefined symbol: glVariantivEXT
+dlsym(glVariantsvEXT): /usr/lib64/librrfaker.so: undefined symbol: glVariantsvEXT
+dlsym(glVariantubvEXT): /usr/lib64/librrfaker.so: undefined symbol: glVariantubvEXT
+dlsym(glVariantuivEXT): /usr/lib64/librrfaker.so: undefined symbol: glVariantuivEXT
+dlsym(glVariantusvEXT): /usr/lib64/librrfaker.so: undefined symbol: glVariantusvEXT
+dlsym(glVertexBlendARB): /usr/lib64/librrfaker.so: undefined symbol: glVertexBlendARB
+dlsym(glVertexBlendEnvfATI): /usr/lib64/librrfaker.so: undefined symbol: glVertexBlendEnvfATI
+dlsym(glVertexBlendEnviATI): /usr/lib64/librrfaker.so: undefined symbol: glVertexBlendEnviATI
+dlsym(glVertexPointerListIBM): /usr/lib64/librrfaker.so: undefined symbol: glVertexPointerListIBM
+dlsym(glVertexPointervINTEL): /usr/lib64/librrfaker.so: undefined symbol: glVertexPointervINTEL
+dlsym(glVertexStream1dATI): /usr/lib64/librrfaker.so: undefined symbol: glVertexStream1dATI
+dlsym(glVertexStream1dvATI): /usr/lib64/librrfaker.so: undefined symbol: glVertexStream1dvATI
+dlsym(glVertexStream1fATI): /usr/lib64/librrfaker.so: undefined symbol: glVertexStream1fATI
+dlsym(glVertexStream1fvATI): /usr/lib64/librrfaker.so: undefined symbol: glVertexStream1fvATI
+dlsym(glVertexStream1iATI): /usr/lib64/librrfaker.so: undefined symbol: glVertexStream1iATI
+dlsym(glVertexStream1ivATI): /usr/lib64/librrfaker.so: undefined symbol: glVertexStream1ivATI
+dlsym(glVertexStream1sATI): /usr/lib64/librrfaker.so: undefined symbol: glVertexStream1sATI
+dlsym(glVertexStream1svATI): /usr/lib64/librrfaker.so: undefined symbol: glVertexStream1svATI
+dlsym(glVertexStream2dATI): /usr/lib64/librrfaker.so: undefined symbol: glVertexStream2dATI
+dlsym(glVertexStream2dvATI): /usr/lib64/librrfaker.so: undefined symbol: glVertexStream2dvATI
+dlsym(glVertexStream2fATI): /usr/lib64/librrfaker.so: undefined symbol: glVertexStream2fATI
+dlsym(glVertexStream2fvATI): /usr/lib64/librrfaker.so: undefined symbol: glVertexStream2fvATI
+dlsym(glVertexStream2iATI): /usr/lib64/librrfaker.so: undefined symbol: glVertexStream2iATI
+dlsym(glVertexStream2ivATI): /usr/lib64/librrfaker.so: undefined symbol: glVertexStream2ivATI
+dlsym(glVertexStream2sATI): /usr/lib64/librrfaker.so: undefined symbol: glVertexStream2sATI
+dlsym(glVertexStream2svATI): /usr/lib64/librrfaker.so: undefined symbol: glVertexStream2svATI
+dlsym(glVertexStream3dATI): /usr/lib64/librrfaker.so: undefined symbol: glVertexStream3dATI
+dlsym(glVertexStream3dvATI): /usr/lib64/librrfaker.so: undefined symbol: glVertexStream3dvATI
+dlsym(glVertexStream3fATI): /usr/lib64/librrfaker.so: undefined symbol: glVertexStream3fATI
+dlsym(glVertexStream3fvATI): /usr/lib64/librrfaker.so: undefined symbol: glVertexStream3fvATI
+dlsym(glVertexStream3iATI): /usr/lib64/librrfaker.so: undefined symbol: glVertexStream3iATI
+dlsym(glVertexStream3ivATI): /usr/lib64/librrfaker.so: undefined symbol: glVertexStream3ivATI
+dlsym(glVertexStream3sATI): /usr/lib64/librrfaker.so: undefined symbol: glVertexStream3sATI
+dlsym(glVertexStream3svATI): /usr/lib64/librrfaker.so: undefined symbol: glVertexStream3svATI
+dlsym(glVertexStream4dATI): /usr/lib64/librrfaker.so: undefined symbol: glVertexStream4dATI
+dlsym(glVertexStream4dvATI): /usr/lib64/librrfaker.so: undefined symbol: glVertexStream4dvATI
+dlsym(glVertexStream4fATI): /usr/lib64/librrfaker.so: undefined symbol: glVertexStream4fATI
+dlsym(glVertexStream4fvATI): /usr/lib64/librrfaker.so: undefined symbol: glVertexStream4fvATI
+dlsym(glVertexStream4iATI): /usr/lib64/librrfaker.so: undefined symbol: glVertexStream4iATI
+dlsym(glVertexStream4ivATI): /usr/lib64/librrfaker.so: undefined symbol: glVertexStream4ivATI
+dlsym(glVertexStream4sATI): /usr/lib64/librrfaker.so: undefined symbol: glVertexStream4sATI
+dlsym(glVertexStream4svATI): /usr/lib64/librrfaker.so: undefined symbol: glVertexStream4svATI
+dlsym(glVertexWeightPointerEXT): /usr/lib64/librrfaker.so: undefined symbol: glVertexWeightPointerEXT
+dlsym(glVertexWeightfEXT): /usr/lib64/librrfaker.so: undefined symbol: glVertexWeightfEXT
+dlsym(glVertexWeightfvEXT): /usr/lib64/librrfaker.so: undefined symbol: glVertexWeightfvEXT
+dlsym(glWeightPointerARB): /usr/lib64/librrfaker.so: undefined symbol: glWeightPointerARB
+dlsym(glWeightbvARB): /usr/lib64/librrfaker.so: undefined symbol: glWeightbvARB
+dlsym(glWeightdvARB): /usr/lib64/librrfaker.so: undefined symbol: glWeightdvARB
+dlsym(glWeightfvARB): /usr/lib64/librrfaker.so: undefined symbol: glWeightfvARB
+dlsym(glWeightivARB): /usr/lib64/librrfaker.so: undefined symbol: glWeightivARB
+dlsym(glWeightsvARB): /usr/lib64/librrfaker.so: undefined symbol: glWeightsvARB
+dlsym(glWeightubvARB): /usr/lib64/librrfaker.so: undefined symbol: glWeightubvARB
+dlsym(glWeightuivARB): /usr/lib64/librrfaker.so: undefined symbol: glWeightuivARB
+dlsym(glWeightusvARB): /usr/lib64/librrfaker.so: undefined symbol: glWeightusvARB
+dlsym(glWindowPos2dMESA): /usr/lib64/librrfaker.so: undefined symbol: glWindowPos2dMESA
+dlsym(glWindowPos2dvMESA): /usr/lib64/librrfaker.so: undefined symbol: glWindowPos2dvMESA
+dlsym(glWindowPos2fMESA): /usr/lib64/librrfaker.so: undefined symbol: glWindowPos2fMESA
+dlsym(glWindowPos2fvMESA): /usr/lib64/librrfaker.so: undefined symbol: glWindowPos2fvMESA
+dlsym(glWindowPos2iMESA): /usr/lib64/librrfaker.so: undefined symbol: glWindowPos2iMESA
+dlsym(glWindowPos2ivMESA): /usr/lib64/librrfaker.so: undefined symbol: glWindowPos2ivMESA
+dlsym(glWindowPos2sMESA): /usr/lib64/librrfaker.so: undefined symbol: glWindowPos2sMESA
+dlsym(glWindowPos2svMESA): /usr/lib64/librrfaker.so: undefined symbol: glWindowPos2svMESA
+dlsym(glWindowPos3dMESA): /usr/lib64/librrfaker.so: undefined symbol: glWindowPos3dMESA
+dlsym(glWindowPos3dvMESA): /usr/lib64/librrfaker.so: undefined symbol: glWindowPos3dvMESA
+dlsym(glWindowPos3fMESA): /usr/lib64/librrfaker.so: undefined symbol: glWindowPos3fMESA
+dlsym(glWindowPos3fvMESA): /usr/lib64/librrfaker.so: undefined symbol: glWindowPos3fvMESA
+dlsym(glWindowPos3iMESA): /usr/lib64/librrfaker.so: undefined symbol: glWindowPos3iMESA
+dlsym(glWindowPos3ivMESA): /usr/lib64/librrfaker.so: undefined symbol: glWindowPos3ivMESA
+dlsym(glWindowPos3sMESA): /usr/lib64/librrfaker.so: undefined symbol: glWindowPos3sMESA
+dlsym(glWindowPos3svMESA): /usr/lib64/librrfaker.so: undefined symbol: glWindowPos3svMESA
+dlsym(glWindowPos4dMESA): /usr/lib64/librrfaker.so: undefined symbol: glWindowPos4dMESA
+dlsym(glWindowPos4dvMESA): /usr/lib64/librrfaker.so: undefined symbol: glWindowPos4dvMESA
+dlsym(glWindowPos4fMESA): /usr/lib64/librrfaker.so: undefined symbol: glWindowPos4fMESA
+dlsym(glWindowPos4fvMESA): /usr/lib64/librrfaker.so: undefined symbol: glWindowPos4fvMESA
+dlsym(glWindowPos4iMESA): /usr/lib64/librrfaker.so: undefined symbol: glWindowPos4iMESA
+dlsym(glWindowPos4ivMESA): /usr/lib64/librrfaker.so: undefined symbol: glWindowPos4ivMESA
+dlsym(glWindowPos4sMESA): /usr/lib64/librrfaker.so: undefined symbol: glWindowPos4sMESA
+dlsym(glWindowPos4svMESA): /usr/lib64/librrfaker.so: undefined symbol: glWindowPos4svMESA
+dlsym(glWriteMaskEXT): /usr/lib64/librrfaker.so: undefined symbol: glWriteMaskEXT
+dlsym(glXBindSwapBarrierSGIX): /usr/lib64/librrfaker.so: undefined symbol: glXBindSwapBarrierSGIX
+dlsym(glXChangeDrawableAttributes): /usr/lib64/librrfaker.so: undefined symbol: glXChangeDrawableAttributes
+dlsym(glXChangeDrawableAttributesSGIX): /usr/lib64/librrfaker.so: undefined symbol: glXChangeDrawableAttributesSGIX
+dlsym(glXClientInfo): /usr/lib64/librrfaker.so: undefined symbol: glXClientInfo
+dlsym(glXCreateGLXVideoSourceSGIX): /usr/lib64/librrfaker.so: undefined symbol: glXCreateGLXVideoSourceSGIX
+dlsym(glXDestroyGLXVideoSourceSGIX): /usr/lib64/librrfaker.so: undefined symbol: glXDestroyGLXVideoSourceSGIX
+dlsym(glXDestroyHyperpipeConfigSGIX): /usr/lib64/librrfaker.so: undefined symbol: glXDestroyHyperpipeConfigSGIX
+dlsym(glXGetDrawableAttributes): /usr/lib64/librrfaker.so: undefined symbol: glXGetDrawableAttributes
+dlsym(glXGetDrawableAttributesSGIX): /usr/lib64/librrfaker.so: undefined symbol: glXGetDrawableAttributesSGIX
+dlsym(glXGetVisualConfigs): /usr/lib64/librrfaker.so: undefined symbol: glXGetVisualConfigs
+dlsym(glXHyperpipeConfigSGIX): /usr/lib64/librrfaker.so: undefined symbol: glXHyperpipeConfigSGIX
+dlsym(glXJoinSwapGroupSGIX): /usr/lib64/librrfaker.so: undefined symbol: glXJoinSwapGroupSGIX
+dlsym(glXQueryHyperpipeConfigSGIX): /usr/lib64/librrfaker.so: undefined symbol: glXQueryHyperpipeConfigSGIX
+dlsym(glXQueryHyperpipeNetworkSGIX): /usr/lib64/librrfaker.so: undefined symbol: glXQueryHyperpipeNetworkSGIX
+dlsym(glXQueryMaxSwapBarriersSGIX): /usr/lib64/librrfaker.so: undefined symbol: glXQueryMaxSwapBarriersSGIX
+dlsym(glXRender): /usr/lib64/librrfaker.so: undefined symbol: glXRender
+dlsym(glXRenderLarge): /usr/lib64/librrfaker.so: undefined symbol: glXRenderLarge
+dlsym(glXVendorPrivate): /usr/lib64/librrfaker.so: undefined symbol: glXVendorPrivate
+dlsym(glXVendorPrivateWithReply): /usr/lib64/librrfaker.so: undefined symbol: glXVendorPrivateWithReply
+carson: opengl call made: glXChooseVisual(0xd786930, 0, attriblist);
+carson: opengl call made: glXIsDirect(0xd781c00, 0xd7c6508);
+carson: opengl call made: glXCreateContext(0xd781c00, 0xd7c6508);
+carson: opengl call made: glXCreatePbuffer(0xd781c00, 0xc5, attrib_list);
+initializing
+found string: "/home/01336/carson/gluray_scripts/shiny.cfg"
+foudn value: /home/01336/carson/gluray_scripts/shiny.cfg
+found config file: -apply -spp 8 -threads 8 -skyDome 2 100 0.1 -reflectivity 0.03 -env /scratch/01336/carson/data/lightProbes/campus_probe.hdr -ao 32 0.2 0.7 -phong -fov 45 -shadows 
+
+setting parameters to : -apply -spp 8 -threads 8 -skyDome 2 100 0.1 -reflectivity 0.03 -env /scratch/01336/carson/data/lightProbes/campus_probe.hdr -ao 32 0.2 0.7 -phong -fov 45 -shadows 
+
+WARNING: "GLURAY_NUM_THREADS" ENV not found
+unable to find GLURAY_NUM_THREADS
+initializing GLuRay
+Warning, number of samples to use for Ambient Occlusion is not a perfect square and multiple of 4!
+Using 16 samples instead
+updateCamera
+Trying to load /scratch/01336/carson/data/lightProbes/campus_probe.hdr
+Read by readRGBE
+creating manta
+creating factory
+client listening on port 3490
+
+carson: opengl call made: glClearColor(0, 0, 0, 0);
+carson: opengl call made: glClear(0, 0, 0, 0);
+carson: opengl call made: glClearColor(0, 0, 0, 0);
+carson: opengl call made: glXMakeCurrent(0, 0, 0, 0);
+initialization done
+done initializing
+
+DynBVH::preprocess START (2 objects)
+
+DynBVH build time: Total (0.000249)
+object_ids initialization (0.00022)
+build (2.9e-05)
+num_nodes = 1
+BBox = (-0.0001 -0.0001 -0.0001, 0.0001 0.0001 0.0001)
+
+BVH tree cost: 7 computed in 0.006ms
+getaddrinfo: Servname not supported for ai_socktype
+carson: opengl call made: glXQueryVersion(0xd786930, major, minor);
+carson: opengl call made: glViewport(0, 0, 512, 512);
+carson: opengl call made: glMatrixMode(GL_PROJECTION);
+carson: opengl call made: glLoadIdentity();
+carson: opengl call made: glMultMatrixd(m);
+carson: opengl call made: glMatrixMode(GL_MODELVIEW);
+carson: opengl call made: glLoadIdentity();
+carson: opengl call made: glClearColor(1, 1, 0, 1);
+carson: opengl call made: glGenLists(1);
+carson: opengl call made: glNewList(1, GL_COMPILE);
+carson: opengl call made: glBegin(GL_TRIANGLES);
+carson: opengl call made: glColor3f(1, 0, 0);
+carson: opengl call made: glColor3f(0, 1, 0);
+carson: opengl call made: glColor3f(0, 0, 1);
+carson: opengl call made: glColor3f(1, 0, 0);
+carson: opengl call made: glColor3f(0, 0, 1);
+carson: opengl call made: glColor3f(0, 1, 0);
+carson: opengl call made: glColor3f(1, 0, 0);
+carson: opengl call made: glColor3f(0, 1, 0);
+carson: opengl call made: glColor3f(0, 0, 1);
+carson: opengl call made: glColor3f(1, 0, 0);
+carson: opengl call made: glColor3f(0, 0, 1);
+carson: opengl call made: glColor3f(0, 1, 0);
+glew initialized
+num prims added: 12
+num prims in current renderable: 4
+carson: opengl call made: glEnd();
+carson: opengl call made: glGetFloatv(GL_PROJECTION_MATRIX, params);
+updateCamera
+fov: 80
+adding to scene: 4
+carson: opengl call made: glEndList();
+carson: opengl call made: glClear();
+time since last render: 1.31961e+09
+carson: opengl call made: glDisable(GL_TEXTURE_2D);
+carson: opengl call made: glDisable(GL_BLEND);
+carson: opengl call made: glPixelStorei(GL_UNPACK_ROW_LENGTH, 512);
+carson: opengl call made: glDisable(GL_TEXTURE_2D);
+carson: opengl call made: glDisable(GL_LIGHTING);
+carson: opengl call made: glDisable(GL_DITHER);
+carson: opengl call made: glDisable(GL_DEPTH_TEST);
+carson: opengl call made: glGetIntegerv(GL_VIEWPORT, params);
+carson: opengl call made: glDrawPixels(512, 512, GL_RGB, GL_UNSIGNED_BYTE, pixels);
+carson: opengl call made: glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+MantaManager::render
+wait on frame ready
+wait on frame ready done
+copying image
+copy image done
+draw pixels
+draw pixels done 
+
+DynBVH::preprocess START (1 objects)
+
+DynBVH build time: Total (1.4e-05)
+object_ids initialization (1.2e-05)
+build (2e-06)
+num_nodes = 1
+BBox = (-1 -1 -1, 1 1 1)
+
+BVH tree cost: 4 computed in 0.001ms
+carson: opengl call made: glLoadIdentity();
+carson: opengl call made: glTranslatef(-1.5, 0, -16);
+carson: opengl call made: glRotatef(0.5, 0, 1, 0);
+carson: opengl call made: glGetFloatv(GL_PROJECTION_MATRIX, params);
+done rendering
+updateCamera
+fov: 80
+adding to scene: 4
+carson: opengl call made: glCallList(1);
+time since last render: 0.00784
+MantaManager::render
+wait on frame ready
+
+DynBVH::preprocess START (1 objects)
+
+DynBVH build time: Total (5e-06)
+object_ids initialization (5e-06)
+build (0)
+num_nodes = 1
+BBox = (-1 -1 -1, 1 1 1)
+
+BVH tree cost: 4 computed in 0.001ms
+carson: opengl call made: glDisable(GL_TEXTURE_2D);
+carson: opengl call made: glDisable(GL_BLEND);
+carson: opengl call made: glPixelStorei(GL_UNPACK_ROW_LENGTH, 512);
+carson: opengl call made: glDisable(GL_TEXTURE_2D);
+carson: opengl call made: glDisable(GL_LIGHTING);
+carson: opengl call made: glDisable(GL_DITHER);
+carson: opengl call made: glDisable(GL_DEPTH_TEST);
+carson: opengl call made: glGetIntegerv(GL_VIEWPORT, params);
+carson: opengl call made: glDrawPixels(512, 512, GL_RGB, GL_UNSIGNED_BYTE, pixels);
+carson: opengl call made: glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+wait on frame ready done
+copying image
+copy image done
+draw pixels
+draw pixels done 
+done rendering
+
+DynBVH::preprocess START (1 objects)
+
+DynBVH build time: Total (8e-06)
+object_ids initialization (7e-06)
+build (1e-06)
+num_nodes = 1
+BBox = (-2.50868 -1 -17.0087, -0.491316 1 -14.9913)
+
+BVH tree cost: 4 computed in 0.001ms
+carson: opengl call made: glReadBuffer(GL_FRONT);
+carson: opengl call made: glPushClientAttrib(GL_CURRENT_BIT);
+carson: opengl call made: glPixelStorei(GL_PACK_ALIGNMENT, 8);
+carson: opengl call made: glReadPixels(0, 0, 512, 512, GL_BGRA, GL_UNSIGNED_BYTE, pixels);
+carson: opengl call made: glPopClientAttrib();
+carson: opengl call made: glReadBuffer(GL_FRONT);
+carson: opengl call made: glFinish(GL_FRONT);
+carson: swap buffers called, rendering: glXSwapBuffers(GL_FRONT);
+Error: GL_INVALID_OPERATION
+carson: opengl call made: glReadBuffer(GL_BACK);
+carson: opengl call made: glPushClientAttrib(GL_CURRENT_BIT);
+carson: opengl call made: glPixelStorei(GL_PACK_ALIGNMENT, 8);
+carson: opengl call made: glReadPixels(0, 0, 512, 512, GL_BGRA, GL_UNSIGNED_BYTE, pixels);
+carson: opengl call made: glPopClientAttrib();
+carson: opengl call made: glReadBuffer(GL_FRONT);
+carson: opengl call made: glClear(GL_FRONT);
+carson: opengl call made: glLoadIdentity();
+carson: opengl call made: glTranslatef(-1.5, 0, -16);
+carson: opengl call made: glRotatef(0.5, 0, 1, 0);
+carson: opengl call made: glGetFloatv(GL_PROJECTION_MATRIX, params);
+updateCamera
+fov: 80
+adding to scene: 4
+carson: opengl call made: glCallList(1);
+time since last render: 0.293924
+carson: opengl call made: glDisable(GL_TEXTURE_2D);
+carson: opengl call made: glDisable(GL_BLEND);
+carson: opengl call made: glPixelStorei(GL_UNPACK_ROW_LENGTH, 512);
+carson: opengl call made: glDisable(GL_TEXTURE_2D);
+carson: opengl call made: glDisable(GL_LIGHTING);
+carson: opengl call made: glDisable(GL_DITHER);
+carson: opengl call made: glDisable(GL_DEPTH_TEST);
+carson: opengl call made: glGetIntegerv(GL_VIEWPORT, params);
+carson: opengl call made: glDrawPixels(512, 512, GL_RGB, GL_UNSIGNED_BYTE, pixels);
+carson: opengl call made: glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+carson: opengl call made: glReadBuffer(GL_FRONT);
+carson: opengl call made: glPushClientAttrib(GL_CURRENT_BIT);
+carson: opengl call made: glPixelStorei(GL_PACK_ALIGNMENT, 8);
+MantaManager::render
+wait on frame ready
+wait on frame ready done
+copying image
+copy image done
+draw pixels
+draw pixels done 
+done rendering
+
+DynBVH::preprocess START (1 objects)
+
+DynBVH build time: Total (7e-06)
+object_ids initialization (6e-06)
+build (1e-06)
+num_nodes = 1
+BBox = (-2.50868 -1 -17.0087, -0.491316 1 -14.9913)
+
+BVH tree cost: 4 computed in 0ms
+carson: opengl call made: glReadPixels(0, 0, 512, 512, GL_BGRA, GL_UNSIGNED_BYTE, pixels);
+carson: opengl call made: glPopClientAttrib();
+carson: opengl call made: glReadBuffer(GL_FRONT);
+carson: opengl call made: glFinish(GL_FRONT);
+carson: swap buffers called, rendering: glXSwapBuffers(GL_FRONT);
+Error: GL_INVALID_OPERATION
+carson: opengl call made: glReadBuffer(GL_BACK);
+carson: opengl call made: glPushClientAttrib(GL_CURRENT_BIT);
+carson: opengl call made: glPixelStorei(GL_PACK_ALIGNMENT, 8);
+carson: opengl call made: glReadPixels(0, 0, 512, 512, GL_BGRA, GL_UNSIGNED_BYTE, pixels);
+carson: opengl call made: glPopClientAttrib();
+carson: opengl call made: glReadBuffer(GL_FRONT);
+carson: opengl call made: glClear(GL_FRONT);
+carson: opengl call made: glLoadIdentity();
+carson: opengl call made: glTranslatef(-1.5, 0, -16);
+carson: opengl call made: glRotatef(0.5, 0, 1, 0);
+carson: opengl call made: glGetFloatv(GL_PROJECTION_MATRIX, params);
+updateCamera
+fov: 80
+adding to scene: 4
+carson: opengl call made: glCallList(1);
+time since last render: 0.266958
+carson: opengl call made: glDisable(GL_TEXTURE_2D);
+carson: opengl call made: glDisable(GL_BLEND);
+carson: opengl call made: glPixelStorei(GL_UNPACK_ROW_LENGTH, 512);
+carson: opengl call made: glDisable(GL_TEXTURE_2D);
+carson: opengl call made: glDisable(GL_LIGHTING);
+carson: opengl call made: glDisable(GL_DITHER);
+carson: opengl call made: glDisable(GL_DEPTH_TEST);
+carson: opengl call made: glGetIntegerv(GL_VIEWPORT, params);
+carson: opengl call made: glDrawPixels(512, 512, GL_RGB, GL_UNSIGNED_BYTE, pixels);
+carson: opengl call made: glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+carson: opengl call made: glReadBuffer(GL_FRONT);
+carson: opengl call made: glPushClientAttrib(GL_CURRENT_BIT);
+carson: opengl call made: glPixelStorei(GL_PACK_ALIGNMENT, 8);
+MantaManager::render
+wait on frame ready
+wait on frame ready done
+copying image
+copy image done
+draw pixels
+draw pixels done 
+done rendering
+
+DynBVH::preprocess START (1 objects)
+
+DynBVH build time: Total (7e-06)
+object_ids initialization (5e-06)
+build (2e-06)
+num_nodes = 1
+BBox = (-2.50868 -1 -17.0087, -0.491316 1 -14.9913)
+
+BVH tree cost: 4 computed in 0ms
+carson: opengl call made: glReadPixels(0, 0, 512, 512, GL_BGRA, GL_UNSIGNED_BYTE, pixels);
+carson: opengl call made: glPopClientAttrib();
+carson: opengl call made: glReadBuffer(GL_FRONT);
+carson: opengl call made: glFinish(GL_FRONT);
+carson: swap buffers called, rendering: glXSwapBuffers(GL_FRONT);
+Error: GL_INVALID_OPERATION
+carson: opengl call made: glReadBuffer(GL_BACK);
+carson: opengl call made: glPushClientAttrib(GL_CURRENT_BIT);
+carson: opengl call made: glPixelStorei(GL_PACK_ALIGNMENT, 8);
+carson: opengl call made: glReadPixels(0, 0, 512, 512, GL_BGRA, GL_UNSIGNED_BYTE, pixels);
+carson: opengl call made: glPopClientAttrib();
+carson: opengl call made: glReadBuffer(GL_FRONT);
+carson: opengl call made: glClear(GL_FRONT);
+carson: opengl call made: glLoadIdentity();
+carson: opengl call made: glTranslatef(-1.5, 0, -16);
+carson: opengl call made: glRotatef(0.5, 0, 1, 0);
+carson: opengl call made: glGetFloatv(GL_PROJECTION_MATRIX, params);
+updateCamera
+fov: 80
+adding to scene: 4
+carson: opengl call made: glCallList(1);
+time since last render: 0.2777
+carson: opengl call made: glDisable(GL_TEXTURE_2D);
+carson: opengl call made: glDisable(GL_BLEND);
+carson: opengl call made: glPixelStorei(GL_UNPACK_ROW_LENGTH, 512);
+carson: opengl call made: glDisable(GL_TEXTURE_2D);
+carson: opengl call made: glDisable(GL_LIGHTING);
+carson: opengl call made: glDisable(GL_DITHER);
+carson: opengl call made: glDisable(GL_DEPTH_TEST);
+carson: opengl call made: glGetIntegerv(GL_VIEWPORT, params);
+carson: opengl call made: glDrawPixels(512, 512, GL_RGB, GL_UNSIGNED_BYTE, pixels);
+carson: opengl call made: glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+carson: opengl call made: glReadBuffer(GL_FRONT);
+carson: opengl call made: glPushClientAttrib(GL_CURRENT_BIT);
+carson: opengl call made: glPixelStorei(GL_PACK_ALIGNMENT, 8);
+MantaManager::render
+wait on frame ready
+wait on frame ready done
+copying image
+copy image done
+draw pixels
+draw pixels done 
+done rendering
+
+DynBVH::preprocess START (1 objects)
+
+DynBVH build time: Total (8e-06)
+object_ids initialization (7e-06)
+build (1e-06)
+num_nodes = 1
+BBox = (-2.50868 -1 -17.0087, -0.491316 1 -14.9913)
+
+BVH tree cost: 4 computed in 0.001ms
+carson: opengl call made: glReadPixels(0, 0, 512, 512, GL_BGRA, GL_UNSIGNED_BYTE, pixels);
+carson: opengl call made: glPopClientAttrib();
+carson: opengl call made: glReadBuffer(GL_FRONT);
+carson: opengl call made: glFinish(GL_FRONT);
+carson: swap buffers called, rendering: glXSwapBuffers(GL_FRONT);
+Error: GL_INVALID_OPERATION
+carson: opengl call made: glReadBuffer(GL_BACK);
+carson: opengl call made: glPushClientAttrib(GL_CURRENT_BIT);
+carson: opengl call made: glPixelStorei(GL_PACK_ALIGNMENT, 8);
+carson: opengl call made: glReadPixels(0, 0, 512, 512, GL_BGRA, GL_UNSIGNED_BYTE, pixels);
+carson: opengl call made: glPopClientAttrib();
+carson: opengl call made: glReadBuffer(GL_FRONT);
+carson: opengl call made: glClear(GL_FRONT);
+carson: opengl call made: glLoadIdentity();
+carson: opengl call made: glTranslatef(-1.5, 0, -16);
+carson: opengl call made: glRotatef(0.5, 0, 1, 0);
+carson: opengl call made: glGetFloatv(GL_PROJECTION_MATRIX, params);
+updateCamera
+fov: 80
+adding to scene: 4
+carson: opengl call made: glCallList(1);
+time since last render: 0.279334
+carson: opengl call made: glDisable(GL_TEXTURE_2D);
+carson: opengl call made: glDisable(GL_BLEND);
+carson: opengl call made: glPixelStorei(GL_UNPACK_ROW_LENGTH, 512);
+carson: opengl call made: glDisable(GL_TEXTURE_2D);
+carson: opengl call made: glDisable(GL_LIGHTING);
+carson: opengl call made: glDisable(GL_DITHER);
+carson: opengl call made: glDisable(GL_DEPTH_TEST);
+carson: opengl call made: glGetIntegerv(GL_VIEWPORT, params);
+carson: opengl call made: glDrawPixels(512, 512, GL_RGB, GL_UNSIGNED_BYTE, pixels);
+carson: opengl call made: glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+carson: opengl call made: glReadBuffer(GL_FRONT);
+carson: opengl call made: glPushClientAttrib(GL_CURRENT_BIT);
+carson: opengl call made: glPixelStorei(GL_PACK_ALIGNMENT, 8);
+MantaManager::render
+wait on frame ready
+wait on frame ready done
+copying image
+copy image done
+draw pixels
+draw pixels done 
+done rendering
+
+DynBVH::preprocess START (1 objects)
+
+DynBVH build time: Total (9e-06)
+object_ids initialization (7e-06)
+build (2e-06)
+num_nodes = 1
+BBox = (-2.50868 -1 -17.0087, -0.491316 1 -14.9913)
+
+BVH tree cost: 4 computed in 0.001ms
+carson: opengl call made: glReadPixels(0, 0, 512, 512, GL_BGRA, GL_UNSIGNED_BYTE, pixels);
+carson: opengl call made: glPopClientAttrib();
+carson: opengl call made: glReadBuffer(GL_FRONT);
+carson: opengl call made: glFinish(GL_FRONT);
+carson: swap buffers called, rendering: glXSwapBuffers(GL_FRONT);
+Error: GL_INVALID_OPERATION
+carson: opengl call made: glReadBuffer(GL_BACK);
+carson: opengl call made: glPushClientAttrib(GL_CURRENT_BIT);
+carson: opengl call made: glPixelStorei(GL_PACK_ALIGNMENT, 8);
+carson: opengl call made: glReadPixels(0, 0, 512, 512, GL_BGRA, GL_UNSIGNED_BYTE, pixels);
+carson: opengl call made: glPopClientAttrib();
+carson: opengl call made: glReadBuffer(GL_FRONT);
+carson: opengl call made: glClear(GL_FRONT);
+carson: opengl call made: glLoadIdentity();
+carson: opengl call made: glTranslatef(-1.5, 0, -16);
+carson: opengl call made: glRotatef(0.5, 0, 1, 0);
+carson: opengl call made: glGetFloatv(GL_PROJECTION_MATRIX, params);
+updateCamera
+fov: 80
+adding to scene: 4
+carson: opengl call made: glCallList(1);
+time since last render: 0.275358
+carson: opengl call made: glDisable(GL_TEXTURE_2D);
+carson: opengl call made: glDisable(GL_BLEND);
+carson: opengl call made: glPixelStorei(GL_UNPACK_ROW_LENGTH, 512);
+carson: opengl call made: glDisable(GL_TEXTURE_2D);
+carson: opengl call made: glDisable(GL_LIGHTING);
+carson: opengl call made: glDisable(GL_DITHER);
+carson: opengl call made: glDisable(GL_DEPTH_TEST);
+carson: opengl call made: glGetIntegerv(GL_VIEWPORT, params);
+carson: opengl call made: glDrawPixels(512, 512, GL_RGB, GL_UNSIGNED_BYTE, pixels);
+carson: opengl call made: glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+carson: opengl call made: glReadBuffer(GL_FRONT);
+carson: opengl call made: glPushClientAttrib(GL_CURRENT_BIT);
+carson: opengl call made: glPixelStorei(GL_PACK_ALIGNMENT, 8);
+MantaManager::render
+wait on frame ready
+wait on frame ready done
+copying image
+copy image done
+draw pixels
+draw pixels done 
+done rendering
+
+DynBVH::preprocess START (1 objects)
+
+DynBVH build time: Total (7e-06)
+object_ids initialization (5e-06)
+build (2e-06)
+num_nodes = 1
+BBox = (-2.50868 -1 -17.0087, -0.491316 1 -14.9913)
+
+BVH tree cost: 4 computed in 0ms
+carson: opengl call made: glReadPixels(0, 0, 512, 512, GL_BGRA, GL_UNSIGNED_BYTE, pixels);
+carson: opengl call made: glPopClientAttrib();
+carson: opengl call made: glReadBuffer(GL_FRONT);
+carson: opengl call made: glFinish(GL_FRONT);
+carson: swap buffers called, rendering: glXSwapBuffers(GL_FRONT);
+Error: GL_INVALID_OPERATION
+carson: opengl call made: glReadBuffer(GL_BACK);
+carson: opengl call made: glPushClientAttrib(GL_CURRENT_BIT);
+carson: opengl call made: glPixelStorei(GL_PACK_ALIGNMENT, 8);
+carson: opengl call made: glReadPixels(0, 0, 512, 512, GL_BGRA, GL_UNSIGNED_BYTE, pixels);
+carson: opengl call made: glPopClientAttrib();
+carson: opengl call made: glReadBuffer(GL_FRONT);
+carson: opengl call made: glClear(GL_FRONT);
+carson: opengl call made: glLoadIdentity();
+carson: opengl call made: glTranslatef(-1.5, 0, -16);
+carson: opengl call made: glRotatef(0.5, 0, 1, 0);
+carson: opengl call made: glGetFloatv(GL_PROJECTION_MATRIX, params);
+updateCamera
+fov: 80
+adding to scene: 4
+carson: opengl call made: glCallList(1);
+time since last render: 0.277321
+carson: opengl call made: glDisable(GL_TEXTURE_2D);
+carson: opengl call made: glDisable(GL_BLEND);
+carson: opengl call made: glPixelStorei(GL_UNPACK_ROW_LENGTH, 512);
+carson: opengl call made: glDisable(GL_TEXTURE_2D);
+carson: opengl call made: glDisable(GL_LIGHTING);
+carson: opengl call made: glDisable(GL_DITHER);
+carson: opengl call made: glDisable(GL_DEPTH_TEST);
+carson: opengl call made: glGetIntegerv(GL_VIEWPORT, params);
+carson: opengl call made: glDrawPixels(512, 512, GL_RGB, GL_UNSIGNED_BYTE, pixels);
+carson: opengl call made: glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+carson: opengl call made: glReadBuffer(GL_FRONT);
+carson: opengl call made: glPushClientAttrib(GL_CURRENT_BIT);
+carson: opengl call made: glPixelStorei(GL_PACK_ALIGNMENT, 8);
+carson: opengl call made: glReadPixels(0, 0, 512, 512, GL_BGRA, GL_UNSIGNED_BYTE, pixels);
+carson: opengl call made: glPopClientAttrib();
+carson: opengl call made: glReadBuffer(GL_FRONT);
+carson: opengl call made: glFinish(GL_FRONT);
+carson: swap buffers called, rendering: glXSwapBuffers(GL_FRONT);
+Error: GL_INVALID_OPERATION
+carson: opengl call made: glReadBuffer(GL_BACK);
+carson: opengl call made: glPushClientAttrib(GL_CURRENT_BIT);
+carson: opengl call made: glPixelStorei(GL_PACK_ALIGNMENT, 8);
+MantaManager::render
+wait on frame ready
+wait on frame ready done
+copying image
+copy image done
+draw pixels
+draw pixels done 
+done rendering
+
+DynBVH::preprocess START (1 objects)
+
+DynBVH build time: Total (7e-06)
+object_ids initialization (5e-06)
+build (2e-06)
+num_nodes = 1
+BBox = (-2.50868 -1 -17.0087, -0.491316 1 -14.9913)
+
+BVH tree cost: 4 computed in 0ms
+carson: opengl call made: glReadPixels(0, 0, 512, 512, GL_BGRA, GL_UNSIGNED_BYTE, pixels);
+carson: opengl call made: glPopClientAttrib();
+carson: opengl call made: glReadBuffer(GL_FRONT);
+carson: opengl call made: glClear(GL_FRONT);
+carson: opengl call made: glLoadIdentity();
+carson: opengl call made: glTranslatef(-1.5, 0, -16);
+carson: opengl call made: glRotatef(0.5, 0, 1, 0);
+carson: opengl call made: glGetFloatv(GL_PROJECTION_MATRIX, params);
+updateCamera
+fov: 80
+adding to scene: 4
+carson: opengl call made: glCallList(1);
+time since last render: 0.278766
+carson: opengl call made: glDisable(GL_TEXTURE_2D);
+carson: opengl call made: glDisable(GL_BLEND);
+carson: opengl call made: glPixelStorei(GL_UNPACK_ROW_LENGTH, 512);
+carson: opengl call made: glDisable(GL_TEXTURE_2D);
+carson: opengl call made: glDisable(GL_LIGHTING);
+carson: opengl call made: glDisable(GL_DITHER);
+carson: opengl call made: glDisable(GL_DEPTH_TEST);
+carson: opengl call made: glGetIntegerv(GL_VIEWPORT, params);
+carson: opengl call made: glDrawPixels(512, 512, GL_RGB, GL_UNSIGNED_BYTE, pixels);
+carson: opengl call made: glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+carson: opengl call made: glReadBuffer(GL_FRONT);
+carson: opengl call made: glPushClientAttrib(GL_CURRENT_BIT);
+carson: opengl call made: glPixelStorei(GL_PACK_ALIGNMENT, 8);
+MantaManager::render
+wait on frame ready
+wait on frame ready done
+copying image
+copy image done
+draw pixels
+draw pixels done 
+done rendering
+
+DynBVH::preprocess START (1 objects)
+
+DynBVH build time: Total (9e-06)
+object_ids initialization (7e-06)
+build (2e-06)
+num_nodes = 1
+BBox = (-2.50868 carson: opengl call made: glReadPixels(0, 0, 512, 512, GL_BGRA, GL_UNSIGNED_BYTE, pixels);
+carson: opengl call made: glPopClientAttrib();
+carson: opengl call made: glReadBuffer(GL_FRONT);
+carson: opengl call made: glFinish(GL_FRONT);
+carson: swap buffers called, rendering: glXSwapBuffers(GL_FRONT);
+-1 -17.0087, Error: GL_INVALID_OPERATION
+carson: opengl call made: glReadBuffer(GL_BACK);
+carson: opengl call made: glPushClientAttrib(GL_CURRENT_BIT);
+carson: opengl call made: glPixelStorei(GL_PACK_ALIGNMENT, 8);
+-0.491316 1 -14.9913)
+
+BVH tree cost: 4 computed in 0.001ms
+carson: opengl call made: glReadPixels(0, 0, 512, 512, GL_BGRA, GL_UNSIGNED_BYTE, pixels);
+carson: opengl call made: glPopClientAttrib();
+carson: opengl call made: glReadBuffer(GL_FRONT);
+carson: opengl call made: glClear(GL_FRONT);
+carson: opengl call made: glLoadIdentity();
+carson: opengl call made: glTranslatef(-1.5, 0, -16);
+carson: opengl call made: glRotatef(0.5, 0, 1, 0);
+carson: opengl call made: glGetFloatv(GL_PROJECTION_MATRIX, params);
+updateCamera
+fov: 80
+adding to scene: 4
+carson: opengl call made: glCallList(1);
+time since last render: 0.27621
+carson: opengl call made: glDisable(GL_TEXTURE_2D);
+carson: opengl call made: glDisable(GL_BLEND);
+carson: opengl call made: glPixelStorei(GL_UNPACK_ROW_LENGTH, 512);
+carson: opengl call made: glDisable(GL_TEXTURE_2D);
+carson: opengl call made: glDisable(GL_LIGHTING);
+carson: opengl call made: glDisable(GL_DITHER);
+carson: opengl call made: glDisable(GL_DEPTH_TEST);
+carson: opengl call made: glGetIntegerv(GL_VIEWPORT, params);
+carson: opengl call made: glDrawPixels(512, 512, GL_RGB, GL_UNSIGNED_BYTE, pixels);
+carson: opengl call made: glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+carson: opengl call made: glReadBuffer(GL_FRONT);
+carson: opengl call made: glPushClientAttrib(GL_CURRENT_BIT);
+carson: opengl call made: glPixelStorei(GL_PACK_ALIGNMENT, 8);
+MantaManager::render
+wait on frame ready
+wait on frame ready done
+copying image
+copy image done
+draw pixels
+draw pixels done 
+done rendering
+
+DynBVH::preprocess START (1 objects)
+
+DynBVH build time: Total (7e-06)
+object_ids initialization (6e-06)
+build (1e-06)
+num_nodes = 1
+BBox = (-2.50868 -1 -17.0087, -0.491316 1 -14.9913)
+
+BVH tree cost: 4 computed in 0.001ms
+carson: opengl call made: glReadPixels(0, 0, 512, 512, GL_BGRA, GL_UNSIGNED_BYTE, pixels);
+carson: opengl call made: glPopClientAttrib();
+carson: opengl call made: glReadBuffer(GL_FRONT);
+carson: opengl call made: glFinish(GL_FRONT);
+carson: swap buffers called, rendering: glXSwapBuffers(GL_FRONT);
+Error: GL_INVALID_OPERATION
+carson: opengl call made: glReadBuffer(GL_BACK);
+carson: opengl call made: glPushClientAttrib(GL_CURRENT_BIT);
+carson: opengl call made: glPixelStorei(GL_PACK_ALIGNMENT, 8);
+carson: opengl call made: glReadPixels(0, 0, 512, 512, GL_BGRA, GL_UNSIGNED_BYTE, pixels);
+carson: opengl call made: glPopClientAttrib();
+carson: opengl call made: glReadBuffer(GL_FRONT);
+carson: opengl call made: glClear(GL_FRONT);
+carson: opengl call made: glLoadIdentity();
+carson: opengl call made: glTranslatef(-1.5, 0, -16);
+carson: opengl call made: glRotatef(0.5, 0, 1, 0);
+carson: opengl call made: glGetFloatv(GL_PROJECTION_MATRIX, params);
+updateCamera
+fov: 80
+adding to scene: 4
+carson: opengl call made: glCallList(1);
+time since last render: 0.375752
+carson: opengl call made: glDisable(GL_TEXTURE_2D);
+carson: opengl call made: glDisable(GL_BLEND);
+carson: opengl call made: glPixelStorei(GL_UNPACK_ROW_LENGTH, 512);
+carson: opengl call made: glDisable(GL_TEXTURE_2D);
+carson: opengl call made: glDisable(GL_LIGHTING);
+carson: opengl call made: glDisable(GL_DITHER);
+carson: opengl call made: glDisable(GL_DEPTH_TEST);
+carson: opengl call made: glGetIntegerv(GL_VIEWPORT, params);
+carson: opengl call made: glDrawPixels(512, 512, GL_RGB, GL_UNSIGNED_BYTE, pixels);
+carson: opengl call made: glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+carson: opengl call made: glReadBuffer(GL_FRONT);
+carson: opengl call made: glPushClientAttrib(GL_CURRENT_BIT);
+carson: opengl call made: glPixelStorei(GL_PACK_ALIGNMENT, 8);
+carson: opengl call made: glReadPixels(0, 0, 512, 512, GL_BGRA, GL_UNSIGNED_BYTE, pixels);
+carson: opengl call made: glPopClientAttrib();
+carson: opengl call made: glReadBuffer(GL_FRONT);
+carson: opengl call made: glFinish(GL_FRONT);
+carson: swap buffers called, rendering: glXSwapBuffers(GL_FRONT);
+MantaManager::render
+wait on frame ready
+wait on frame ready done
+copying image
+copy image done
+draw pixels
+draw pixels done 
+done rendering
+
+DynBVH::preprocess START (1 objects)
+
+DynBVH build time: Total (8e-06)
+object_ids initialization (6e-06)
+build (2e-06)
+num_nodes = 1
+BBox = (-2.50868 -1 -17.0087, -0.491316 1 -14.9913)
+
+BVH tree cost: 4 computed in 0ms
+Error: GL_INVALID_OPERATION
+carson: opengl call made: glReadBuffer(GL_BACK);
+carson: opengl call made: glPushClientAttrib(GL_CURRENT_BIT);
+carson: opengl call made: glPixelStorei(GL_PACK_ALIGNMENT, 8);
+carson: opengl call made: glReadPixels(0, 0, 512, 512, GL_BGRA, GL_UNSIGNED_BYTE, pixels);
+carson: opengl call made: glPopClientAttrib();
+carson: opengl call made: glReadBuffer(GL_FRONT);
+carson: opengl call made: glClear(GL_FRONT);
+carson: opengl call made: glLoadIdentity();
+carson: opengl call made: glTranslatef(-1.5, 0, -16);
+carson: opengl call made: glRotatef(0.5, 0, 1, 0);
+carson: opengl call made: glGetFloatv(GL_PROJECTION_MATRIX, params);
+updateCamera
+fov: 80
+adding to scene: 4
+carson: opengl call made: glCallList(1);
+time since last render: 0.40201
+carson: opengl call made: glDisable(GL_TEXTURE_2D);
+carson: opengl call made: glDisable(GL_BLEND);
+carson: opengl call made: glPixelStorei(GL_UNPACK_ROW_LENGTH, 512);
+carson: opengl call made: glDisable(GL_TEXTURE_2D);
+carson: opengl call made: glDisable(GL_LIGHTING);
+carson: opengl call made: glDisable(GL_DITHER);
+carson: opengl call made: glDisable(GL_DEPTH_TEST);
+carson: opengl call made: glGetIntegerv(GL_VIEWPORT, params);
+carson: opengl call made: glDrawPixels(512, 512, GL_RGB, GL_UNSIGNED_BYTE, pixels);
+carson: opengl call made: glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+carson: opengl call made: glReadBuffer(GL_FRONT);
+carson: opengl call made: glPushClientAttrib(GL_CURRENT_BIT);
+carson: opengl call made: glPixelStorei(GL_PACK_ALIGNMENT, 8);
+carson: opengl call made: glReadPixels(0, 0, 512, 512, GL_BGRA, GL_UNSIGNED_BYTE, pixels);
+carson: opengl call made: glPopClientAttrib();
+carson: opengl call made: glReadBuffer(GL_FRONT);
+carson: opengl call made: glFinish(GL_FRONT);
+carson: swap buffers called, rendering: glXSwapBuffers(GL_FRONT);
+MantaManager::render
+wait on frame ready
+wait on frame ready done
+copying image
+copy image done
+draw pixels
+draw pixels done 
+done rendering
+
+DynBVH::preprocess START (1 objects)
+
+DynBVH build time: Total (7e-06)
+object_ids initialization (6e-06)
+build (1e-06)
+num_nodes = 1
+BBox = (-2.50868 -1 -17.0087, -0.491316 1 -14.9913)
+
+BVH tree cost: 4 computed in 0ms
+Error: GL_INVALID_OPERATION
+carson: opengl call made: glReadBuffer(GL_BACK);
+carson: opengl call made: glPushClientAttrib(GL_CURRENT_BIT);
+carson: opengl call made: glPixelStorei(GL_PACK_ALIGNMENT, 8);
+carson: opengl call made: glReadPixels(0, 0, 512, 512, GL_BGRA, GL_UNSIGNED_BYTE, pixels);
+carson: opengl call made: glPopClientAttrib();
+carson: opengl call made: glReadBuffer(GL_FRONT);
+carson: opengl call made: glClear(GL_FRONT);
+carson: opengl call made: glLoadIdentity();
+carson: opengl call made: glTranslatef(-1.5, 0, -16);
+carson: opengl call made: glRotatef(0.5, 0, 1, 0);
+carson: opengl call made: glGetFloatv(GL_PROJECTION_MATRIX, params);
+updateCamera
+fov: 80
+adding to scene: 4
+carson: opengl call made: glCallList(1);
+time since last render: 0.051303
+carson: opengl call made: glDisable(GL_TEXTURE_2D);
+carson: opengl call made: glDisable(GL_BLEND);
+carson: opengl call made: glPixelStorei(GL_UNPACK_ROW_LENGTH, 512);
+carson: opengl call made: glDisable(GL_TEXTURE_2D);
+carson: opengl call made: glDisable(GL_LIGHTING);
+carson: opengl call made: glDisable(GL_DITHER);
+carson: opengl call made: glDisable(GL_DEPTH_TEST);
+carson: opengl call made: glGetIntegerv(GL_VIEWPORT, params);
+carson: opengl call made: glDrawPixels(512, 512, GL_RGB, GL_UNSIGNED_BYTE, pixels);
+carson: opengl call made: glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+carson: opengl call made: glReadBuffer(GL_FRONT);
+carson: opengl call made: glPushClientAttrib(GL_CURRENT_BIT);
+carson: opengl call made: glPixelStorei(GL_PACK_ALIGNMENT, 8);
+carson: opengl call made: glReadPixels(0, 0, 512, 512, GL_BGRA, GL_UNSIGNED_BYTE, pixels);
+carson: opengl call made: glPopClientAttrib();
+carson: opengl call made: glReadBuffer(GL_FRONT);
+carson: opengl call made: glFinish(GL_FRONT);
+carson: swap buffers called, rendering: glXSwapBuffers(GL_FRONT);
+Error: GL_INVALID_OPERATION
+carson: opengl call made: glReadBuffer(GL_BACK);
+carson: opengl call made: glPushClientAttrib(GL_CURRENT_BIT);
+carson: opengl call made: glPixelStorei(GL_PACK_ALIGNMENT, 8);
+carson: opengl call made: glReadPixels(0, 0, 512, 512, GL_BGRA, GL_UNSIGNED_BYTE, pixels);
+carson: opengl call made: glPopClientAttrib();
+carson: opengl call made: glReadBuffer(GL_FRONT);
+carson: opengl call made: glClear(GL_FRONT);
+carson: opengl call made: glLoadIdentity();
+carson: opengl call made: glTranslatef(-1.5, 0, -16);
+carson: opengl call made: glRotatef(0.5, 0, 1, 0);
+carson: opengl call made: glGetFloatv(GL_PROJECTION_MATRIX, params);
+MantaManager::render
+wait on frame ready
+wait on frame ready done
+copying image
+copy image done
+draw pixels
+draw pixels done 
+done rendering
+updateCamera
+fov: 80
+adding to scene: 4
+carson: opengl call made: glCallList(1);
+time since last render: 0.27741
+MantaManager::render
+wait on frame ready
+
+DynBVH::preprocess START (1 objects)
+
+DynBVH build time: Total (9e-06)
+object_ids initialization (6e-06)
+build (3e-06)
+num_nodes = 1
+BBox = (-2.50868 -1 -17.0087, -0.491316 1 -14.9913)
+
+BVH tree cost: 4 computed in 0.001ms
+carson: opengl call made: glDisable(GL_TEXTURE_2D);
+carson: opengl call made: glDisable(GL_BLEND);
+carson: opengl call made: glPixelStorei(GL_UNPACK_ROW_LENGTH, 512);
+carson: opengl call made: glDisable(GL_TEXTURE_2D);
+carson: opengl call made: glDisable(GL_LIGHTING);
+carson: opengl call made: glDisable(GL_DITHER);
+carson: opengl call made: glDisable(GL_DEPTH_TEST);
+carson: opengl call made: glGetIntegerv(GL_VIEWPORT, params);
+carson: opengl call made: glDrawPixels(512, 512, GL_RGB, GL_UNSIGNED_BYTE, pixels);
+carson: opengl call made: glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+carson: opengl call made: glReadBuffer(GL_FRONT);
+carson: opengl call made: glPushClientAttrib(GL_CURRENT_BIT);
+carson: opengl call made: glPixelStorei(GL_PACK_ALIGNMENT, 8);
+carson: opengl call made: glReadPixels(0, 0, 512, 512, GL_BGRA, GL_UNSIGNED_BYTE, pixels);
+carson: opengl call made: glPopClientAttrib();
+carson: opengl call made: glReadBuffer(GL_FRONT);
+carson: opengl call made: glFinish(GL_FRONT);
+carson: swap buffers called, rendering: glXSwapBuffers(GL_FRONT);
+wait on frame ready done
+copying image
+copy image done
+draw pixels
+draw pixels done 
+done rendering
+
+DynBVH::preprocess START (1 objects)
+
+DynBVH build time: Total (Error: GL_INVALID_OPERATION
+carson: opengl call made: 6e-06)
+object_ids initialization (glReadBuffer(GL_BACK);
+carson: opengl call made: glPushClientAttrib(GL_CURRENT_BIT);
+carson: opengl call made: 5e-06)
+build (glPixelStorei(GL_PACK_ALIGNMENT, 8);
+1e-06)
+num_nodes = 1
+BBox = (-2.50868 -1 -17.0087, -0.491316 1 -14.9913)
+
+BVH tree cost: 4 computed in 0ms
+carson: opengl call made: glReadPixels(0, 0, 512, 512, GL_BGRA, GL_UNSIGNED_BYTE, pixels);
+carson: opengl call made: glPopClientAttrib();
+carson: opengl call made: glReadBuffer(GL_FRONT);
+carson: opengl call made: glClear(GL_FRONT);
+carson: opengl call made: glLoadIdentity();
+carson: opengl call made: glTranslatef(-1.5, 0, -16);
+carson: opengl call made: glRotatef(0.5, 0, 1, 0);
+carson: opengl call made: glGetFloatv(GL_PROJECTION_MATRIX, params);
+updateCamera
+fov: 80
+adding to scene: 4
+carson: opengl call made: glCallList(1);
+time since last render: 0.364294
+carson: opengl call made: glDisable(GL_TEXTURE_2D);
+carson: opengl call made: glDisable(GL_BLEND);
+carson: opengl call made: glPixelStorei(GL_UNPACK_ROW_LENGTH, 512);
+carson: opengl call made: glDisable(GL_TEXTURE_2D);
+carson: opengl call made: glDisable(GL_LIGHTING);
+carson: opengl call made: glDisable(GL_DITHER);
+carson: opengl call made: glDisable(GL_DEPTH_TEST);
+carson: opengl call made: glGetIntegerv(GL_VIEWPORT, params);
+carson: opengl call made: glDrawPixels(512, 512, GL_RGB, GL_UNSIGNED_BYTE, pixels);
+carson: opengl call made: glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+carson: opengl call made: glReadBuffer(GL_FRONT);
+carson: opengl call made: glPushClientAttrib(GL_CURRENT_BIT);
+carson: opengl call made: glPixelStorei(GL_PACK_ALIGNMENT, 8);
+MantaManager::render
+wait on frame ready
+wait on frame ready done
+copying image
+copy image done
+draw pixels
+draw pixels done 
+done rendering
+
+DynBVH::preprocess START (1 objects)
+
+DynBVH build time: Total (7e-06)
+object_ids initialization (6e-06)
+build (1e-06)
+num_nodes = 1
+BBox = (-2.50868 -1 -17.0087, -0.491316 1 -14.9913)
+
+BVH tree cost: 4 computed in 0ms
+carson: opengl call made: glReadPixels(0, 0, 512, 512, GL_BGRA, GL_UNSIGNED_BYTE, pixels);
+carson: opengl call made: glPopClientAttrib();
+carson: opengl call made: glReadBuffer(GL_FRONT);
+carson: opengl call made: glFinish(GL_FRONT);
+carson: swap buffers called, rendering: glXSwapBuffers(GL_FRONT);
+Error: GL_INVALID_OPERATION
+carson: opengl call made: glReadBuffer(GL_BACK);
+carson: opengl call made: glPushClientAttrib(GL_CURRENT_BIT);
+carson: opengl call made: glPixelStorei(GL_PACK_ALIGNMENT, 8);
+carson: opengl call made: glReadPixels(0, 0, 512, 512, GL_BGRA, GL_UNSIGNED_BYTE, pixels);
+carson: opengl call made: glPopClientAttrib();
+carson: opengl call made: glReadBuffer(GL_FRONT);
+carson: opengl call made: glClear(GL_FRONT);
+carson: opengl call made: glLoadIdentity();
+carson: opengl call made: glTranslatef(-1.5, 0, -16);
+carson: opengl call made: glRotatef(0.5, 0, 1, 0);
+carson: opengl call made: glGetFloatv(GL_PROJECTION_MATRIX, params);
+updateCamera
+fov: 80
+adding to scene: 4
+carson: opengl call made: glCallList(1);
+time since last render: 0.194819
+carson: opengl call made: glDisable(GL_TEXTURE_2D);
+carson: opengl call made: glDisable(GL_BLEND);
+carson: opengl call made: glPixelStorei(GL_UNPACK_ROW_LENGTH, 512);
+carson: opengl call made: glDisable(GL_TEXTURE_2D);
+carson: opengl call made: glDisable(GL_LIGHTING);
+carson: opengl call made: glDisable(GL_DITHER);
+carson: opengl call made: glDisable(GL_DEPTH_TEST);
+carson: opengl call made: glGetIntegerv(GL_VIEWPORT, params);
+carson: opengl call made: glDrawPixels(512, 512, GL_RGB, GL_UNSIGNED_BYTE, pixels);
+carson: opengl call made: glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+carson: opengl call made: glReadBuffer(GL_FRONT);
+carson: opengl call made: glPushClientAttrib(GL_CURRENT_BIT);
+carson: opengl call made: glPixelStorei(GL_PACK_ALIGNMENT, 8);
+MantaManager::render
+wait on frame ready
+wait on frame ready done
+copying image
+copy image done
+draw pixels
+draw pixels done 
+done rendering
+
+DynBVH::preprocess START (1 objects)
+
+DynBVH build time: Total (7e-06)
+object_ids initialization (5e-06)
+build (2e-06)
+num_nodes = 1
+BBox = (-2.50868 -1 -17.0087, -0.491316 1 -14.9913)
+
+BVH tree cost: 4 computed in 0.001ms
+carson: opengl call made: glReadPixels(0, 0, 512, 512, GL_BGRA, GL_UNSIGNED_BYTE, pixels);
+carson: opengl call made: glPopClientAttrib();
+carson: opengl call made: glReadBuffer(GL_FRONT);
+carson: opengl call made: glFinish(GL_FRONT);
+carson: swap buffers called, rendering: glXSwapBuffers(GL_FRONT);
+Error: GL_INVALID_OPERATION
+carson: opengl call made: glReadBuffer(GL_BACK);
+carson: opengl call made: glPushClientAttrib(GL_CURRENT_BIT);
+carson: opengl call made: glPixelStorei(GL_PACK_ALIGNMENT, 8);
+carson: opengl call made: glReadPixels(0, 0, 512, 512, GL_BGRA, GL_UNSIGNED_BYTE, pixels);
+carson: opengl call made: glPopClientAttrib();
+carson: opengl call made: glReadBuffer(GL_FRONT);
+carson: opengl call made: glClear(GL_FRONT);
+carson: opengl call made: glLoadIdentity();
+carson: opengl call made: glTranslatef(-1.5, 0, -16);
+carson: opengl call made: glRotatef(0.5, 0, 1, 0);
+carson: opengl call made: glGetFloatv(GL_PROJECTION_MATRIX, params);
+updateCamera
+fov: 80
+adding to scene: 4
+carson: opengl call made: glCallList(1);
+time since last render: 0.279863
+carson: opengl call made: glDisable(GL_TEXTURE_2D);
+carson: opengl call made: glDisable(GL_BLEND);
+carson: opengl call made: glPixelStorei(GL_UNPACK_ROW_LENGTH, 512);
+carson: opengl call made: glDisable(GL_TEXTURE_2D);
+carson: opengl call made: glDisable(GL_LIGHTING);
+carson: opengl call made: glDisable(GL_DITHER);
+carson: opengl call made: glDisable(GL_DEPTH_TEST);
+carson: opengl call made: glGetIntegerv(GL_VIEWPORT, params);
+carson: opengl call made: glDrawPixels(512, 512, GL_RGB, GL_UNSIGNED_BYTE, pixels);
+carson: opengl call made: glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+carson: opengl call made: glReadBuffer(GL_FRONT);
+carson: opengl call made: glPushClientAttrib(GL_CURRENT_BIT);
+carson: opengl call made: glPixelStorei(GL_PACK_ALIGNMENT, 8);
+MantaManager::render
+wait on frame ready
+wait on frame ready done
+copying image
+copy image done
+draw pixels
+draw pixels done 
+done rendering
+
+DynBVH::preprocess START (1 objects)
+
+DynBVH build time: Total (7e-06)
+object_ids initialization (6e-06)
+build (1e-06)
+num_nodes = 1
+BBox = (-2.50868 -1 -17.0087, -0.491316 1 -14.9913)
+
+BVH tree cost: 4 computed in 0.001ms
+carson: opengl call made: glReadPixels(0, 0, 512, 512, GL_BGRA, GL_UNSIGNED_BYTE, pixels);
+carson: opengl call made: glPopClientAttrib();
+carson: opengl call made: glReadBuffer(GL_FRONT);
+carson: opengl call made: glFinish(GL_FRONT);
+carson: swap buffers called, rendering: glXSwapBuffers(GL_FRONT);
+Error: GL_INVALID_OPERATION
+carson: opengl call made: glReadBuffer(GL_BACK);
+carson: opengl call made: glPushClientAttrib(GL_CURRENT_BIT);
+carson: opengl call made: glPixelStorei(GL_PACK_ALIGNMENT, 8);
+carson: opengl call made: glReadPixels(0, 0, 512, 512, GL_BGRA, GL_UNSIGNED_BYTE, pixels);
+carson: opengl call made: glPopClientAttrib();
+carson: opengl call made: glReadBuffer(GL_FRONT);
+carson: opengl call made: glClear(GL_FRONT);
+carson: opengl call made: glLoadIdentity();
+carson: opengl call made: glTranslatef(-1.5, 0, -16);
+carson: opengl call made: glRotatef(0.5, 0, 1, 0);
+carson: opengl call made: glGetFloatv(GL_PROJECTION_MATRIX, params);
+updateCamera
+fov: 80
+adding to scene: 4
+carson: opengl call made: glCallList(1);
+time since last render: 0.294951
+carson: opengl call made: glDisable(GL_TEXTURE_2D);
+carson: opengl call made: glDisable(GL_BLEND);
+carson: opengl call made: glPixelStorei(GL_UNPACK_ROW_LENGTH, 512);
+carson: opengl call made: glDisable(GL_TEXTURE_2D);
+carson: opengl call made: glDisable(GL_LIGHTING);
+carson: opengl call made: glDisable(GL_DITHER);
+carson: opengl call made: glDisable(GL_DEPTH_TEST);
+carson: opengl call made: glGetIntegerv(GL_VIEWPORT, params);
+carson: opengl call made: glDrawPixels(512, 512, GL_RGB, GL_UNSIGNED_BYTE, pixels);
+carson: opengl call made: glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+carson: opengl call made: glReadBuffer(GL_FRONT);
+carson: opengl call made: glPushClientAttrib(GL_CURRENT_BIT);
+carson: opengl call made: glPixelStorei(GL_PACK_ALIGNMENT, 8);
+MantaManager::render
+wait on frame ready
+wait on frame ready done
+copying image
+copy image done
+draw pixels
+draw pixels done 
+done rendering
+
+DynBVH::preprocess START (1 objects)
+
+DynBVH build time: Total (8e-06)
+object_ids initialization (6e-06)
+build (2e-06)
+num_nodes = 1
+BBox = (-2.50868 -1 -17.0087, -0.491316 1 -14.9913)
+
+BVH tree cost: 4 computed in 0.001ms
+carson: opengl call made: glReadPixels(0, 0, 512, 512, GL_BGRA, GL_UNSIGNED_BYTE, pixels);
+carson: opengl call made: glPopClientAttrib();
+carson: opengl call made: glReadBuffer(GL_FRONT);
+carson: opengl call made: glFinish(GL_FRONT);
+carson: swap buffers called, rendering: glXSwapBuffers(GL_FRONT);
+Error: GL_INVALID_OPERATION
+carson: opengl call made: glReadBuffer(GL_BACK);
+carson: opengl call made: glPushClientAttrib(GL_CURRENT_BIT);
+carson: opengl call made: glPixelStorei(GL_PACK_ALIGNMENT, 8);
+carson: opengl call made: glReadPixels(0, 0, 512, 512, GL_BGRA, GL_UNSIGNED_BYTE, pixels);
+carson: opengl call made: glPopClientAttrib();
+carson: opengl call made: glReadBuffer(GL_FRONT);
+carson: opengl call made: glClear(GL_FRONT);
+carson: opengl call made: glLoadIdentity();
+carson: opengl call made: glTranslatef(-1.5, 0, -16);
+carson: opengl call made: glRotatef(0.5, 0, 1, 0);
+carson: opengl call made: glGetFloatv(GL_PROJECTION_MATRIX, params);
+updateCamera
+fov: 80
+adding to scene: 4
+carson: opengl call made: glCallList(1);
+time since last render: 0.261896
+carson: opengl call made: glDisable(GL_TEXTURE_2D);
+carson: opengl call made: glDisable(GL_BLEND);
+carson: opengl call made: glPixelStorei(GL_UNPACK_ROW_LENGTH, 512);
+carson: opengl call made: glDisable(GL_TEXTURE_2D);
+carson: opengl call made: glDisable(GL_LIGHTING);
+carson: opengl call made: glDisable(GL_DITHER);
+carson: opengl call made: glDisable(GL_DEPTH_TEST);
+carson: opengl call made: glGetIntegerv(GL_VIEWPORT, params);
+carson: opengl call made: glDrawPixels(512, 512, GL_RGB, GL_UNSIGNED_BYTE, pixels);
+carson: opengl call made: glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+MantaManager::render
+wait on frame ready
+wait on frame ready done
+copying image
+copy image done
+draw pixels
+draw pixels done 
+done rendering
+
+DynBVH::preprocess START (1 objects)
+
+DynBVH build time: Total (1.3e-05)
+object_ids initialization (1.1e-05)
+build (2e-06)
+num_nodes = 1
+BBox = (-2.50868 -1 carson: opengl call made: glReadBuffer(GL_FRONT);
+-17.0087, carson: opengl call made: glPushClientAttrib(GL_CURRENT_BIT);
+-0.491316 carson: opengl call made: glPixelStorei(GL_PACK_ALIGNMENT, 8);
+1 -14.9913)
+
+BVH tree cost: 4 computed in 0.001ms
+carson: opengl call made: glReadPixels(0, 0, 512, 512, GL_BGRA, GL_UNSIGNED_BYTE, pixels);
+carson: opengl call made: glPopClientAttrib();
+carson: opengl call made: glReadBuffer(GL_FRONT);
+carson: opengl call made: glFinish(GL_FRONT);
+carson: swap buffers called, rendering: glXSwapBuffers(GL_FRONT);
+Error: GL_INVALID_OPERATION
+carson: opengl call made: glReadBuffer(GL_BACK);
+carson: opengl call made: glPushClientAttrib(GL_CURRENT_BIT);
+carson: opengl call made: glPixelStorei(GL_PACK_ALIGNMENT, 8);
+carson: opengl call made: glReadPixels(0, 0, 512, 512, GL_BGRA, GL_UNSIGNED_BYTE, pixels);
+carson: opengl call made: glPopClientAttrib();
+carson: opengl call made: glReadBuffer(GL_FRONT);
+carson: opengl call made: glClear(GL_FRONT);
+carson: opengl call made: glLoadIdentity();
+carson: opengl call made: glTranslatef(-1.5, 0, -16);
+carson: opengl call made: glRotatef(0.5, 0, 1, 0);
+carson: opengl call made: glGetFloatv(GL_PROJECTION_MATRIX, params);
+updateCamera
+fov: 80
+adding to scene: 4
+carson: opengl call made: glCallList(1);
+time since last render: 0.277897
+carson: opengl call made: glDisable(GL_TEXTURE_2D);
+carson: opengl call made: glDisable(GL_BLEND);
+carson: opengl call made: glPixelStorei(GL_UNPACK_ROW_LENGTH, 512);
+carson: opengl call made: glDisable(GL_TEXTURE_2D);
+carson: opengl call made: glDisable(GL_LIGHTING);
+carson: opengl call made: glDisable(GL_DITHER);
+carson: opengl call made: glDisable(GL_DEPTH_TEST);
+carson: opengl call made: glGetIntegerv(GL_VIEWPORT, params);
+carson: opengl call made: glDrawPixels(512, 512, GL_RGB, GL_UNSIGNED_BYTE, pixels);
+carson: opengl call made: glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+MantaManager::render
+wait on frame ready
+wait on frame ready done
+copying image
+copy image done
+draw pixels
+draw pixels done 
+done rendering
+
+DynBVH::preprocess START (1 objects)
+carson: opengl call made: glReadBuffer(GL_FRONT);
+carson: opengl call made: glPushClientAttrib(GL_CURRENT_BIT);
+carson: opengl call made: glPixelStorei(GL_PACK_ALIGNMENT, 8);
+
+DynBVH build time: Total (2.9e-05)
+object_ids initialization (2.8e-05)
+build (1e-06)
+num_nodes = 1
+BBox = (-2.50868 -1 -17.0087, -0.491316 1 -14.9913)
+
+BVH tree cost: 4 computed in 0ms
+carson: opengl call made: glReadPixels(0, 0, 512, 512, GL_BGRA, GL_UNSIGNED_BYTE, pixels);
+carson: opengl call made: glPopClientAttrib();
+carson: opengl call made: glReadBuffer(GL_FRONT);
+carson: opengl call made: glFinish(GL_FRONT);
+carson: swap buffers called, rendering: glXSwapBuffers(GL_FRONT);
+Error: GL_INVALID_OPERATION
+carson: opengl call made: glReadBuffer(GL_BACK);
+carson: opengl call made: glPushClientAttrib(GL_CURRENT_BIT);
+carson: opengl call made: glPixelStorei(GL_PACK_ALIGNMENT, 8);
+carson: opengl call made: glReadPixels(0, 0, 512, 512, GL_BGRA, GL_UNSIGNED_BYTE, pixels);
+carson: opengl call made: glPopClientAttrib();
+carson: opengl call made: glReadBuffer(GL_FRONT);
+carson: opengl call made: glClear(GL_FRONT);
+carson: opengl call made: glLoadIdentity();
+carson: opengl call made: glTranslatef(-1.5, 0, -16);
+carson: opengl call made: glRotatef(0.5, 0, 1, 0);
+carson: opengl call made: glGetFloatv(GL_PROJECTION_MATRIX, params);
+updateCamera
+fov: 80
+adding to scene: 4
+carson: opengl call made: glCallList(1);
+time since last render: 0.278179
+carson: opengl call made: glDisable(GL_TEXTURE_2D);
+carson: opengl call made: glDisable(GL_BLEND);
+carson: opengl call made: glPixelStorei(GL_UNPACK_ROW_LENGTH, 512);
+carson: opengl call made: glDisable(GL_TEXTURE_2D);
+carson: opengl call made: glDisable(GL_LIGHTING);
+carson: opengl call made: glDisable(GL_DITHER);
+carson: opengl call made: glDisable(GL_DEPTH_TEST);
+carson: opengl call made: glGetIntegerv(GL_VIEWPORT, params);
+carson: opengl call made: glDrawPixels(512, 512, GL_RGB, GL_UNSIGNED_BYTE, pixels);
+carson: opengl call made: glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+carson: opengl call made: glReadBuffer(GL_FRONT);
+carson: opengl call made: glPushClientAttrib(GL_CURRENT_BIT);
+carson: opengl call made: glPixelStorei(GL_PACK_ALIGNMENT, 8);
+carson: opengl call made: glReadPixels(0, 0, 512, 512, GL_BGRA, GL_UNSIGNED_BYTE, pixels);
+carson: opengl call made: glPopClientAttrib();
+carson: opengl call made: glReadBuffer(GL_FRONT);
+carson: opengl call made: glFinish(GL_FRONT);
+carson: swap buffers called, rendering: glXSwapBuffers(GL_FRONT);
+MantaManager::render
+wait on frame ready
+wait on frame ready done
+copying image
+copy image done
+draw pixels
+draw pixels done 
+done rendering
+
+DynBVH::preprocess START (1 objects)
+
+DynBVH build time: Total (8e-06)
+object_ids initialization (7e-06)
+build (1e-06)
+num_nodes = 1
+BBox = (Error: GL_INVALID_OPERATION
+carson: opengl call made: glReadBuffer(GL_BACK);
+carson: opengl call made: glPushClientAttrib(GL_CURRENT_BIT);
+carson: opengl call made: glPixelStorei(GL_PACK_ALIGNMENT, 8);
+-2.50868 -1 -17.0087, -0.491316 1 -14.9913)
+
+BVH tree cost: 4 computed in 0.001ms
+carson: opengl call made: glReadPixels(0, 0, 512, 512, GL_BGRA, GL_UNSIGNED_BYTE, pixels);
+carson: opengl call made: glPopClientAttrib();
+carson: opengl call made: glReadBuffer(GL_FRONT);
+carson: opengl call made: glClear(GL_FRONT);
+carson: opengl call made: glLoadIdentity();
+carson: opengl call made: glTranslatef(-1.5, 0, -16);
+carson: opengl call made: glRotatef(0.5, 0, 1, 0);
+carson: opengl call made: glGetFloatv(GL_PROJECTION_MATRIX, params);
+updateCamera
+fov: 80
+adding to scene: 4
+carson: opengl call made: glCallList(1);
+time since last render: 0.509875
+carson: opengl call made: glDisable(GL_TEXTURE_2D);
+carson: opengl call made: glDisable(GL_BLEND);
+carson: opengl call made: glPixelStorei(GL_UNPACK_ROW_LENGTH, 512);
+carson: opengl call made: glDisable(GL_TEXTURE_2D);
+carson: opengl call made: glDisable(GL_LIGHTING);
+carson: opengl call made: glDisable(GL_DITHER);
+carson: opengl call made: glDisable(GL_DEPTH_TEST);
+carson: opengl call made: glGetIntegerv(GL_VIEWPORT, params);
+carson: opengl call made: glDrawPixels(512, 512, GL_RGB, GL_UNSIGNED_BYTE, pixels);
+carson: opengl call made: glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+MantaManager::render
+wait on frame ready
+wait on frame ready done
+copying image
+copy image done
+draw pixels
+draw pixels done 
+done rendering
+
+DynBVH::preprocess START (carson: opengl call made: glReadBuffer(GL_FRONT);
+carson: opengl call made: glPushClientAttrib(GL_CURRENT_BIT);
+carson: opengl call made: glPixelStorei(GL_PACK_ALIGNMENT, 8);
+1 objects)
+
+DynBVH build time: Total (8e-06)
+object_ids initialization (7e-06)
+build (1e-06)
+num_nodes = 1
+BBox = (-2.50868 -1 -17.0087, -0.491316 1 -14.9913)
+
+BVH tree cost: 4 computed in 0.001ms
+carson: opengl call made: glReadPixels(0, 0, 512, 512, GL_BGRA, GL_UNSIGNED_BYTE, pixels);
+carson: opengl call made: glPopClientAttrib();
+carson: opengl call made: glReadBuffer(GL_FRONT);
+carson: opengl call made: glFinish(GL_FRONT);
+carson: swap buffers called, rendering: glXSwapBuffers(GL_FRONT);
+Error: GL_INVALID_OPERATION
+carson: opengl call made: glReadBuffer(GL_BACK);
+carson: opengl call made: glPushClientAttrib(GL_CURRENT_BIT);
+carson: opengl call made: glPixelStorei(GL_PACK_ALIGNMENT, 8);
+carson: opengl call made: glReadPixels(0, 0, 512, 512, GL_BGRA, GL_UNSIGNED_BYTE, pixels);
+carson: opengl call made: glPopClientAttrib();
+carson: opengl call made: glReadBuffer(GL_FRONT);
+carson: opengl call made: glClear(GL_FRONT);
+carson: opengl call made: glLoadIdentity();
+carson: opengl call made: glTranslatef(-1.5, 0, -16);
+carson: opengl call made: glRotatef(0.5, 0, 1, 0);
+carson: opengl call made: glGetFloatv(GL_PROJECTION_MATRIX, params);
+updateCamera
+fov: 80
+adding to scene: 4
+carson: opengl call made: glCallList(1);
+time since last render: 0.043998
+carson: opengl call made: glDisable(GL_TEXTURE_2D);
+carson: opengl call made: glDisable(GL_BLEND);
+carson: opengl call made: glPixelStorei(GL_UNPACK_ROW_LENGTH, 512);
+carson: opengl call made: glDisable(GL_TEXTURE_2D);
+carson: opengl call made: glDisable(GL_LIGHTING);
+carson: opengl call made: glDisable(GL_DITHER);
+carson: opengl call made: glDisable(GL_DEPTH_TEST);
+carson: opengl call made: glGetIntegerv(GL_VIEWPORT, params);
+carson: opengl call made: glDrawPixels(512, 512, GL_RGB, GL_UNSIGNED_BYTE, pixels);
+carson: opengl call made: glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+carson: opengl call made: glReadBuffer(GL_FRONT);
+carson: opengl call made: glPushClientAttrib(GL_CURRENT_BIT);
+carson: opengl call made: glPixelStorei(GL_PACK_ALIGNMENT, 8);
+carson: opengl call made: glReadPixels(0, 0, 512, 512, GL_BGRA, GL_UNSIGNED_BYTE, pixels);
+carson: opengl call made: glPopClientAttrib();
+carson: opengl call made: glReadBuffer(GL_FRONT);
+carson: opengl call made: glFinish(GL_FRONT);
+carson: swap buffers called, rendering: glXSwapBuffers(GL_FRONT);
+Error: GL_INVALID_OPERATION
+carson: opengl call made: glReadBuffer(GL_BACK);
+carson: opengl call made: glPushClientAttrib(GL_CURRENT_BIT);
+carson: opengl call made: glPixelStorei(GL_PACK_ALIGNMENT, 8);
+carson: opengl call made: glReadPixels(0, 0, 512, 512, GL_BGRA, GL_UNSIGNED_BYTE, pixels);
+carson: opengl call made: glPopClientAttrib();
+carson: opengl call made: glReadBuffer(GL_FRONT);
+carson: opengl call made: glClear(GL_FRONT);
+carson: opengl call made: glLoadIdentity();
+carson: opengl call made: glTranslatef(-1.5, 0, -16);
+carson: opengl call made: glRotatef(0.5, 0, 1, 0);
+carson: opengl call made: glGetFloatv(GL_PROJECTION_MATRIX, params);
+MantaManager::render
+wait on frame ready
+wait on frame ready done
+copying image
+copy image done
+draw pixels
+draw pixels done 
+done rendering
+updateCamera
+fov: 80
+adding to scene: 4
+carson: opengl call made: glCallList(1);
+time since last render: 0.275755
+MantaManager::render
+wait on frame ready
+
+DynBVH::preprocess START (1 objects)
+
+DynBVH build time: Total (8e-06)
+object_ids initialization (6e-06)
+build (2e-06)
+num_nodes = 1
+BBox = (-2.50868 -1 -17.0087, -0.491316 1 -14.9913)
+
+BVH tree cost: 4 computed in 0.001ms
+carson: opengl call made: glDisable(GL_TEXTURE_2D);
+carson: opengl call made: glDisable(GL_BLEND);
+carson: opengl call made: glPixelStorei(GL_UNPACK_ROW_LENGTH, 512);
+carson: opengl call made: glDisable(GL_TEXTURE_2D);
+carson: opengl call made: glDisable(GL_LIGHTING);
+carson: opengl call made: glDisable(GL_DITHER);
+carson: opengl call made: glDisable(GL_DEPTH_TEST);
+carson: opengl call made: glGetIntegerv(GL_VIEWPORT, params);
+carson: opengl call made: glDrawPixels(512, 512, GL_RGB, GL_UNSIGNED_BYTE, pixels);
+carson: opengl call made: glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+carson: opengl call made: glReadBuffer(GL_FRONT);
+carson: opengl call made: glPushClientAttrib(GL_CURRENT_BIT);
+carson: opengl call made: glPixelStorei(GL_PACK_ALIGNMENT, 8);
+wait on frame ready done
+copying image
+copy image done
+draw pixels
+draw pixels done 
+done rendering
+
+DynBVH::preprocess START (1 objects)
+
+DynBVH build time: Total (9e-06)
+object_ids initialization (6e-06)
+build (3e-06)
+num_nodes = 1
+BBox = (-2.50868 -1 -17.0087, -0.491316 1 -14.9913)
+
+BVH tree cost: 4 computed in 0ms
+carson: opengl call made: glReadPixels(0, 0, 512, 512, GL_BGRA, GL_UNSIGNED_BYTE, pixels);
+carson: opengl call made: glPopClientAttrib();
+carson: opengl call made: glReadBuffer(GL_FRONT);
+carson: opengl call made: glFinish(GL_FRONT);
+carson: swap buffers called, rendering: glXSwapBuffers(GL_FRONT);
+Error: GL_INVALID_OPERATION
+carson: opengl call made: glReadBuffer(GL_BACK);
+carson: opengl call made: glPushClientAttrib(GL_CURRENT_BIT);
+carson: opengl call made: glPixelStorei(GL_PACK_ALIGNMENT, 8);
+carson: opengl call made: glReadPixels(0, 0, 512, 512, GL_BGRA, GL_UNSIGNED_BYTE, pixels);
+carson: opengl call made: glPopClientAttrib();
+carson: opengl call made: glReadBuffer(GL_FRONT);
+carson: opengl call made: glClear(GL_FRONT);
+carson: opengl call made: glLoadIdentity();
+carson: opengl call made: glTranslatef(-1.5, 0, -16);
+carson: opengl call made: glRotatef(0.5, 0, 1, 0);
+carson: opengl call made: glGetFloatv(GL_PROJECTION_MATRIX, params);
+updateCamera
+fov: 80
+adding to scene: 4
+carson: opengl call made: glCallList(1);
+time since last render: 0.279317

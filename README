@@ -1,0 +1,36 @@
+GLuRay is an OpenGL interception library which ray traces scene descriptions through the OpenGL API.  This software was based upon SpyglassGL by Marcelo E. Magallon, some of whose code is included in this distribution.
+
+/*
+ *prerequisites:
+ */
+1.  the latest build of Manta.  Enable DYNBV_APPROX and DYNBVH_LAZY_BUILD options in Manta for significantly faster acceleration structure build times.
+2.  cmake [ccmake recommended]
+
+/*
+ *building:
+ */
+
+mkdir build
+cd build
+ccmake ..
+
+in CMAKE options you will need to set the location of MANTA_SRC and MANTA_BUILD_PREFIX.
+
+chmod +x gluray
+
+/*
+ *running:
+ */
+./gluray glxgears
+
+
+/*
+ *environment variables:
+ */
+GLURAY_RENDER_MODE [GLREADPIXELS, GLXSWAPBUFFERS, GLFINISH, GLFLUSH]
+GLURAY_CONFIG <path to config file> 
+
+/*
+ *configuration files:
+ */
+config files are in the form: -apply [-spp <number of samples per pixel] [ -threads <int> ] [-skydome <int number>  <float size of dome> <float 0-1 intensity>] [-reflectivity <float 0-1>] [-env <string path to .hdr file>] [-ao <int number> <float cutoff distance> <float intensity>] [-phong] [-shadows] [-no_gl_lights] [-rotate <float speed> <float offset>] [-plane] [-thinLens <float focaldistance> <float aperture>] [-pinhole] [-lambertian] [-thinDielectric] [-metal] [-transparent] [-orenNayar] [-write_to_file <string file or may say generated to generate file names for each frame>]

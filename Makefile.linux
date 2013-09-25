@@ -1,0 +1,147 @@
+# Generated automatically from Makefile.in by configure.
+# Copyright (C) 2000 Marcelo E. Magallon <marcelo.magallon@bigfoot.com>
+#
+# This Makefile is free software; the author gives unlimited permission
+# to copy and/or distribute it, with or without modifications, as long
+# as this notice is preserved.
+#
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
+# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+# PURPOSE.
+
+#############################################################
+# These bits come from configure
+#############################################################
+
+SHELL = /bin/sh
+
+srcdir = .
+top_srcdir = ../..
+prefix = /usr/local
+exec_prefix = ${prefix}
+
+bindir = ${exec_prefix}/bin
+sbindir = ${exec_prefix}/sbin
+libexecdir = ${exec_prefix}/libexec
+datadir = ${prefix}/share
+sysconfdir = ${prefix}/etc
+sharedstatedir = ${prefix}/com
+localstatedir = ${prefix}/var
+libdir = ${exec_prefix}/lib
+infodir = ${prefix}/info
+mandir = ${prefix}/man
+includedir = ${prefix}/include
+oldincludedir = /usr/include
+
+DESTDIR =
+
+pkgdatadir = $(datadir)/spyglass
+pkglibdir = $(libdir)/spyglass
+pkgincludedir = $(includedir)/spyglass
+
+top_builddir = ../..
+
+INSTALL = /usr/bin/install -c
+INSTALL_PROGRAM = ${INSTALL}
+INSTALL_DATA = ${INSTALL} -m 644
+INSTALL_SCRIPT = ${INSTALL_PROGRAM}
+
+mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
+
+
+
+#############################################################
+# These bits are hand-written down-to-earth makefile stuff
+#############################################################
+
+MAJOR     := 0
+MINOR     := 1
+VERSION   := $(MAJOR).$(MINOR)
+LIBNAME   := libfakeGL.so
+FAKELIB   := $(LIBNAME).$(VERSION)
+SONAME    := $(LIBNAME).$(MAJOR)
+HELPER    := spyglass-helper
+HELPERBIN := $(HELPER).real
+
+SOFLAGS   := -fPIC
+
+COMPILE   := $(CC) -c
+GL2MANTA_DIR := /Users/scerenon/svn/gl2manta
+MANTA_BUILDDIR := /Users/scerenon/Manta/build
+MANTA_SRCDIR := /Users/scerenon/Manta/src
+INCLUDES := -I$(GL2MANTA_DIR)/gl2manta/include -I$(MANTA_BUILDDIR)/include -I$(MANTA_SRCDIR) -I/System/Library/Frameworks/OpenGL.framework/Headers -I/usr/X11/include
+
+# _GNU_SOURCE is needed for strncat; if I ever port this to a non-GNU platform
+# I'll end up writing strndup myself and removing this.
+
+CPPFLAGS  := -D_GNU_SOURCE
+CFLAGS    := -O2 -Wall
+
+# Use this if you want to have libfakeGL dlopen the system's OpenGL lib
+# CPPFLAGS += -DDLOPEN_GL_LIB
+
+# Use and change this if your system's OpenGL lib is somewhere else
+# CPPFLAGS += -DOPENGLLIB=\"/usr/lib/libGL.so.1\"
+
+LDLIBS    :=   -L$(GL2MANTA_DIR)/gl2manta/lib -L$(MANTA_BUILDDIR)/lib -lManta_Core -lManta_Engine -lManta_Factory -lManta_Interface -lManta_Model -lManta_Image -lManta_UserInterface -lManta_Core_XUtils -lAbout -lgl2manta -L/usr/X11/lib
+
+FAKELIBSRC     := libfakeGL.c
+FAKELIBOBJS    := $(FAKELIBSRC:.c=.o)
+FAKELIBAUTOSRC := gl_function_table.c
+
+GENTABLE  := $(PWD)/gentable.pl
+LN        := ln -sf
+
+GARBAGE   := $(FAKELIBOBJS) \
+             $(LIBNAME) \
+             $(FAKELIB) \
+             $(SONAME) \
+             $(HELPERBIN)
+
+TARGETS   := $(SONAME) $(HELPER)
+
+all: $(TARGETS)
+
+$(FAKELIB): $(FAKELIBOBJS)
+	$(CC) -shared -o $@ -Wl,-soname,$(SONAME) $(INCLUDES) $(LDFLAGS) $^ $(LOADLIBES) $(LDLIBS)
+
+$(HELPER): $(HELPERBIN)
+	touch $@
+
+$(HELPERBIN): spyglass-helper.c $(LIBNAME)
+	$(CC) -o $@ $^ $(LDLIBS) $(INCLUDES)
+
+$(SONAME): $(FAKELIB)
+	$(LN) $^ $@ 
+
+$(LIBNAME): $(SONAME)
+	$(LN) $^ $@ 
+
+$(FAKELIBOBJS): %.o: %.c
+	$(COMPILE) -o $@ $(INCLUDES) $(CPPFLAGS) $(CFLAGS) $(SOFLAGS) $(LDLIBS) $<
+
+libfakeGL.o: $(FAKELIBAUTOSRC)
+
+libfakeGL.c: $(FAKELIBAUTOSRC) 
+
+$(FAKELIBAUTOSRC): $(GENTABLE)
+	$^ specs/gl.spec gl > $@
+
+clean:
+	$(RM) $(GARBAGE)
+	$(RM) *~
+
+distclean mrproper: clean
+	$(RM) Makefile
+
+install: all
+	$(mkinstalldirs) $(DESTDIR)$(pkglibdir)
+	$(INSTALL_DATA) $(FAKELIB) $(DESTDIR)$(pkglibdir)
+	ln -sf $(FAKELIB) $(DESTDIR)$(pkglibdir)/$(LIBNAME)
+	ln -sf $(FAKELIB) $(DESTDIR)$(pkglibdir)/$(SONAME)
+	$(INSTALL_SCRIPT) $(HELPER) $(DESTDIR)$(pkglibdir)
+	$(INSTALL_PROGRAM) $(HELPERBIN) $(DESTDIR)$(pkglibdir)
+
+.PHONY: clean distclean mrproper
+.NOEXPORT:

@@ -1,0 +1,144 @@
+# Copyright (C) 2000 Marcelo E. Magallon <marcelo.magallon@bigfoot.com>
+#
+# This Makefile is free software; the author gives unlimited permission
+# to copy and/or distribute it, with or without modifications, as long
+# as this notice is preserved.
+#
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
+# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+# PURPOSE.
+
+#############################################################
+# These bits come from configure
+#############################################################
+
+SHELL = @SHELL@
+
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+VPATH = @srcdir@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+
+bindir = @bindir@
+sbindir = @sbindir@
+libexecdir = @libexecdir@
+datadir = @datadir@
+sysconfdir = @sysconfdir@
+sharedstatedir = @sharedstatedir@
+localstatedir = @localstatedir@
+libdir = @libdir@
+infodir = @infodir@
+mandir = @mandir@
+includedir = @includedir@
+oldincludedir = /usr/include
+
+DESTDIR =
+
+pkgdatadir = $(datadir)/@PACKAGE@
+pkglibdir = $(libdir)/@PACKAGE@
+pkgincludedir = $(includedir)/@PACKAGE@
+
+top_builddir = ../..
+
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_DATA = @INSTALL_DATA@
+INSTALL_SCRIPT = @INSTALL_SCRIPT@
+
+mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
+
+@SET_MAKE@
+
+#############################################################
+# These bits are hand-written down-to-earth makefile stuff
+#############################################################
+
+MAJOR     := 0
+MINOR     := 1
+VERSION   := $(MAJOR).$(MINOR)
+LIBNAME   := libfakeGL.so
+FAKELIB   := $(LIBNAME).$(VERSION)
+SONAME    := $(LIBNAME).$(MAJOR)
+HELPER    := spyglass-helper
+HELPERBIN := $(HELPER).real
+
+SOFLAGS   := -fPIC
+
+COMPILE   := $(CC) -c
+
+# _GNU_SOURCE is needed for strncat; if I ever port this to a non-GNU platform
+# I'll end up writing strndup myself and removing this.
+
+CPPFLAGS  := -D_GNU_SOURCE
+CFLAGS    := -O2 -Wall
+
+# Use this if you want to have libfakeGL dlopen the system's OpenGL lib
+# CPPFLAGS += -DDLOPEN_GL_LIB
+
+# Use and change this if your system's OpenGL lib is somewhere else
+# CPPFLAGS += -DOPENGLLIB=\"/usr/lib/libGL.so.1\"
+
+LDLIBS    := -ldl
+
+FAKELIBSRC     := libfakeGL.c
+FAKELIBOBJS    := $(FAKELIBSRC:.c=.o)
+FAKELIBAUTOSRC := gl_function_table.c
+
+GENTABLE  := $(PWD)/gentable.pl
+LN        := ln -sf
+
+GARBAGE   := $(FAKELIBOBJS) \
+             $(FAKELIBAUTOSRC) \
+             $(LIBNAME) \
+             $(FAKELIB) \
+             $(SONAME) \
+             $(HELPERBIN)
+
+TARGETS   := $(SONAME) $(HELPER)
+
+all: $(TARGETS)
+
+$(FAKELIB): $(FAKELIBOBJS)
+	$(CC) -shared -o $@ -Wl,-soname,$(SONAME) $(LDFLAGS) $^ $(LOADLIBES) $(LDLIBS)
+
+$(HELPER): $(HELPERBIN)
+	touch $@
+
+$(HELPERBIN): spyglass-helper.c $(LIBNAME)
+	$(CC) -o $@ $^
+
+$(SONAME): $(FAKELIB)
+	$(LN) $^ $@
+
+$(LIBNAME): $(SONAME)
+	$(LN) $^ $@
+
+$(FAKELIBOBJS): %.o: %.c
+	$(COMPILE) -o $@ $(CPPFLAGS) $(CFLAGS) $(SOFLAGS) $<
+
+libfakeGL.o: $(FAKELIBAUTOSRC)
+
+libfakeGL.c: $(FAKELIBAUTOSRC)
+
+$(FAKELIBAUTOSRC): $(GENTABLE)
+	$^ specs/gl.spec gl > $@
+
+clean:
+	$(RM) $(GARBAGE)
+	$(RM) *~
+
+distclean mrproper: clean
+	$(RM) Makefile
+
+install: all
+	$(mkinstalldirs) $(DESTDIR)$(pkglibdir)
+	$(INSTALL_DATA) $(FAKELIB) $(DESTDIR)$(pkglibdir)
+	ln -sf $(FAKELIB) $(DESTDIR)$(pkglibdir)/$(LIBNAME)
+	ln -sf $(FAKELIB) $(DESTDIR)$(pkglibdir)/$(SONAME)
+	$(INSTALL_SCRIPT) $(HELPER) $(DESTDIR)$(pkglibdir)
+	$(INSTALL_PROGRAM) $(HELPERBIN) $(DESTDIR)$(pkglibdir)
+
+.PHONY: clean distclean mrproper
+.NOEXPORT:
