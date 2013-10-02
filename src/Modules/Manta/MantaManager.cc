@@ -1095,7 +1095,7 @@ void MantaManager::render()
       // rtrt->addTransaction( "setScene",
       //		Callback::create(this, &MantaManager::updateScene));
 
-      printf("rank: %d starting rendering\n", _rank);
+      //printf("rank: %d starting rendering\n", _rank);
       if (frame_lag)
         rtrt->beginRendering(false);
       else
@@ -1103,13 +1103,13 @@ void MantaManager::render()
         rtrt->beginRendering(false);
       }
       //MPI_Barrier(MPI_COMM_WORLD);
-      printf("rank: %d rendering started\n", _rank);
+      //printf("rank: %d rendering started\n", _rank);
       if (!frame_lag)
         sync_display->waitOnFrameReady();
 #if USE_MPI
       MPI_Barrier(MPI_COMM_WORLD);
 #endif
-      printf("rank: %d wait on frameready\n", _rank);
+      //printf("rank: %d wait on frameready\n", _rank);
     }
   }
 
@@ -1317,7 +1317,7 @@ void MantaManager::render()
    */
   current_scene->as->groupDirty();
   AccelWork* work = new AccelWork(current_scene->as, "global build\n");
-  addWork(work);
+  //addWork(work);
   work->run();
   next_scene->instances.resize(0);
   //  PreprocessContext context2(rtrt, 0, 1, lights);
@@ -2125,7 +2125,9 @@ void MantaManager::addRenderable(Renderable* ren)
   MRenderable* mr = dynamic_cast<MRenderable*>(ren);
   if (!mr)
     return;
+#if DEBUG_MSGS
   printf("rank: %d %s: size: %d\n", _rank, __FUNCTION__, mr->getNumPrims());
+#endif
   static int counter = 0;
 #if 0 //USE_MPI
 
@@ -2173,7 +2175,7 @@ void MantaManager::addRenderable(Renderable* ren)
   //mr->setBuilt(false);
   next_scene->renderables.push_back(mr);
   _newRenderables.push_back(mr);
-  printf("rank: %d %s: size: %d done\n", _rank, __FUNCTION__, mr->getNumPrims());
+  //printf("rank: %d %s: size: %d done\n", _rank, __FUNCTION__, mr->getNumPrims());
 }
 
 void MantaManager::deleteRenderable(Renderable* ren)

@@ -240,7 +240,7 @@ void EmbreeManager::updateLights()
         addedLight = true;
         if (l.w == 0)
         {
-          //cout << "adding gl directional light " << i << ":\n" << l << "\n";
+          cout << "adding gl directional light " << i << ":\n" << l << "\n";
           //lights->add(new DirectionalLight(l.pos, l.diffuse));
           //AffineSpace3f space(LinearSpace3f(1,0,0,0,1,0,0,0,1), Vector3f(0,0,0));
           /*
@@ -252,12 +252,21 @@ void EmbreeManager::updateLights()
           Handle<Device::RTLight> directionalLight = g_device->rtNewLight("directionallight");
           g_device->rtSetFloat3(directionalLight, "D", l.pos[0], l.pos[1], l.pos[2]);
           g_device->rtSetFloat3(directionalLight, "E", l.diffuse[0], l.diffuse[1], l.diffuse[2]);
-          g_device->rtCommit(directionalLight);
-          //return;
-          _lights.push_back(g_device->rtNewLightPrimitive(directionalLight, NULL, copyToArray(transform)));
+          /*g_device->rtCommit(directionalLight);*/
+          /*//return;*/
+          /*_lights.push_back(g_device->rtNewLightPrimitive(directionalLight, NULL, copyToArray(transform)));*/
           /*
            *end directional light
            */
+    /*AffineSpace3f space = load<AffineSpace3f>(xml->child("AffineSpace"));*/
+      AffineSpace3f space(LinearSpace3f(1,0,0,0,0,1,0,0,0), Vector3f(-1,0,0));
+
+    Handle<Device::RTLight> light = g_device->rtNewLight("directionallight");
+    g_device->rtSetFloat3(light, "D", space.l.vz.x, space.l.vz.y, space.l.vz.z);
+    g_device->rtSetFloat3(light, "E", 1, 0, 0);
+    /*g_device->rtCommit(light);*/
+    /*_lights.push_back(g_device->rtNewLightPrimitive(light, NULL, copyToArray(transform)));*/
+
 
 
         }
@@ -299,10 +308,10 @@ void EmbreeManager::updateLights()
   //
           Handle<Device::RTLight> directionalLight = g_device->rtNewLight("directionallight");
           g_device->rtSetFloat3(directionalLight, "D", 1000,-500,-300);
-          g_device->rtSetFloat3(directionalLight, "E", 1.0, 0.8, 0.6);
+          /*g_device->rtSetFloat3(directionalLight, "E", 1.0, 0.8, 0.6);*/
           g_device->rtCommit(directionalLight);
           //return;
-          _lights.push_back(g_device->rtNewLightPrimitive(directionalLight, NULL, copyToArray(transform)));
+          /*_lights.push_back(g_device->rtNewLightPrimitive(directionalLight, NULL, copyToArray(transform)));*/
   embreeMutex.unlock();
   //cerr << "setuplights done\n";
 }
@@ -750,7 +759,7 @@ void EmbreeManager::internalRender()
   embreeMutex.lock();
   bool accum = (!_resetAccumulation && params.accumulate);
   _resetAccumulation = false;
-  printf("render frame\n");
+  //printf("render frame\n");
   g_device->rtRenderFrame(_renderer,_camera,_render_scene,_tonemapper,_frameBuffer,accum);
   embreeMutex.unlock();
 }
@@ -876,7 +885,7 @@ void EmbreeManager::displayFrame()
   glDrawBuffer(GL_BACK);
 
 
-  printf("gldrawpixels %d %d \n", _width, _height);
+  //printf("gldrawpixels %d %d \n", _width, _height);
   void* data = g_device->rtMapFrameBuffer(_frameBuffer);
 
   //for (size_t i = 0; i < _width*_height/8; i++)
