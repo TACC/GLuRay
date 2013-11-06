@@ -158,6 +158,7 @@ MantaManager::~MantaManager()
 
 void MantaManager::updateLights()
 {
+  return;
   if(!lights)
     return;
   //cerr << "setuplights\n";

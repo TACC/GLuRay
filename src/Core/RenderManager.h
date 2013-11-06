@@ -84,7 +84,7 @@ public:
   virtual void addInstance(Renderable* ren) = 0;
   Renderable* getCurrentRenderable() { return current_renderable; }
   void setCurrentRenderable(Renderable* r) { current_renderable = r; }
-  AffineTransform& getCurrentTransform() { return current_transform; };
+  AffineTransform& getCurrentTransform() { return current_transform; }
 
   /*inline*/ void lock(const int mutex)
   {

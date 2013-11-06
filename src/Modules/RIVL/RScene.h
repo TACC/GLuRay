@@ -2,6 +2,7 @@
 #define RSCENE_H
 
 #include <Core/GLTypes.h>
+#include <Core/GRTypes.h>
 
 #include <Model/Groups/DynBVH.h>
 

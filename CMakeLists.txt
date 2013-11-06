@@ -5,6 +5,7 @@ PROJECT(GLuRay)
 SET(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMake)
 FIND_PACKAGE(Manta)
 FIND_PACKAGE(OpenGL)
+#FIND_PACKAGE(Boost)
 
 SET(GLURAY_SRC
   src/Core/gluray.cc
@@ -15,6 +16,7 @@ SET(GLURAY_SRC
   src/Core/Work.cc
   src/Modules/Manta/AccelWork.cc
   src/Core/RenderManager.cc
+  src/Core/OBJScene.cc
   )
 
 
@@ -31,6 +33,7 @@ SET(GLURAY_HDR
   src/Modules/Manta/MScene.h
   src/Modules/Manta/DirtyInstance.h
   src/Core/CDTimer.h
+  src/Core/OBJScene.h
   )
 
 ###############################################################################

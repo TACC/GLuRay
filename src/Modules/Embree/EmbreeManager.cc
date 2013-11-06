@@ -19,6 +19,7 @@
 #include "ERenderable.h"
 #include "common.h"
 #include <Modules/Manta/AccelWork.h>
+#include <OBJScene.h>
 
 #include <Core/Util/Logger.h>
 
@@ -155,6 +156,8 @@ EmbreeManager* EmbreeManager::singleton()
   _gLines = new EGeometryGeneratorLines();
   _gLineStrip= new EGeometryGeneratorLineStrip();
 
+  _objScene = new OBJScene();
+
   _xDisplay = NULL;
   _xWin = new Window;
 }
@@ -252,9 +255,9 @@ void EmbreeManager::updateLights()
           Handle<Device::RTLight> directionalLight = g_device->rtNewLight("directionallight");
           g_device->rtSetFloat3(directionalLight, "D", l.pos[0], l.pos[1], l.pos[2]);
           g_device->rtSetFloat3(directionalLight, "E", l.diffuse[0], l.diffuse[1], l.diffuse[2]);
-          /*g_device->rtCommit(directionalLight);*/
+          g_device->rtCommit(directionalLight);
           /*//return;*/
-          /*_lights.push_back(g_device->rtNewLightPrimitive(directionalLight, NULL, copyToArray(transform)));*/
+          _lights.push_back(g_device->rtNewLightPrimitive(directionalLight, NULL, copyToArray(transform)));
           /*
            *end directional light
            */
@@ -264,8 +267,8 @@ void EmbreeManager::updateLights()
     Handle<Device::RTLight> light = g_device->rtNewLight("directionallight");
     g_device->rtSetFloat3(light, "D", space.l.vz.x, space.l.vz.y, space.l.vz.z);
     g_device->rtSetFloat3(light, "E", 1, 0, 0);
-    /*g_device->rtCommit(light);*/
-    /*_lights.push_back(g_device->rtNewLightPrimitive(light, NULL, copyToArray(transform)));*/
+    g_device->rtCommit(light);
+    _lights.push_back(g_device->rtNewLightPrimitive(light, NULL, copyToArray(transform)));
 
 
 
@@ -770,8 +773,10 @@ void EmbreeManager::render()
   if (!initialized)
     return;
 
+  printf("attempted rebder\n");
   if (next_scene->instances.size() == 0)
     return;
+  printf("rendering\n");
   //if (rendered && params.accumulate)
   //displayFrame();
   rendered = true;
@@ -783,7 +788,11 @@ void EmbreeManager::render()
   for(std::vector<embree::Handle<embree::Device::RTPrimitive> >::iterator itr = _lights.begin(); itr != _lights.end(); itr++)
     prims.push_back(*itr);
 
+  static int frameNumber = 0;
+  if (++frameNumber == params.export_obj)
+    exportOBJ(next_scene);
 
+  embreeMutex.lock();
   //printf("adding %d instances to scene\n", next_scene->instances.size());
   for(vector<GRInstance>::iterator itr = next_scene->instances.begin(); itr != next_scene->instances.end(); itr++)
   {
@@ -795,8 +804,8 @@ void EmbreeManager::render()
     prims.push_back(g_device->rtNewShapePrimitive(er->_data->d_mesh, er->_data->d_material, copyToArray(et)));
   }
   next_scene->instances.resize(0);
+  embreeMutex.unlock();
 
-  embreeMutex.lock();
   Handle<Device::RTScene> scene = g_device->rtNewScene(_scene.c_str());
   g_device->rtSetString(scene,"accel",_accel.c_str());
   g_device->rtSetString(scene,"builder",_builder.c_str());
@@ -861,7 +870,6 @@ void EmbreeManager::displayFrame()
     return;
   if (_rank > 0)
     return;
-  embreeMutex.lock();
   lock(0);
   LOGSTARTC("EmbreeManager::displayFrame", 0.1,0.5,0.0);
 
@@ -1173,10 +1181,11 @@ void EmbreeManager::addRenderable(Renderable* ren)
   ERenderable* er = dynamic_cast<ERenderable*>(ren);
   if (!er)
     return;
+  ren->glMaterial = gl_material;
   Manta::Mesh* mesh = er->_data->mesh;
   printf("addrenderable called mesh size: %d\n", mesh->vertex_indices.size()/3);
-  if (mesh->vertex_indices.size()/3 < 100)  //TODO: HACK: this is a hack for the DNS videos
-    return;
+  /*if (mesh->vertex_indices.size()/3 < 100)  //TODO: HACK: this is a hack for the DNS videos*/
+    /*return;*/
 
   embreeMutex.lock();
   float positionsV[] = {-1000, 0, -1000, 1000, 0, -1000, 1000, 0, 1000, -1000, 0, 1000};
@@ -1211,7 +1220,7 @@ void EmbreeManager::addRenderable(Renderable* ren)
    *TODO: CARSON:  need to specify local transforms for each mesh instance?
    */
   g_device->rtCommit(d_mesh);
-  g_device->rtClear(d_mesh);
+  /*g_device->rtClear(d_mesh);*/
 
   er->_data->d_mesh = d_mesh;
   er->_data->d_material = g_current_material;
@@ -1220,6 +1229,31 @@ void EmbreeManager::addRenderable(Renderable* ren)
   next_scene->renderables.push_back(er);
   _newRenderables.push_back(er);
   embreeMutex.unlock();
+
+    /*for(size_t vi = 0; vi < mesh->vertices.size(); vi++)*/
+    /*{*/
+      /*OBJVertex v;*/
+      /*Vector& mv = mesh->vertices[vi];*/
+      /*v.x = mv[0];*/
+      /*v.y = mv[1];*/
+      /*v.z = mv[2];*/
+      /*_objScene->vertices.push_back(v);*/
+    /*}*/
+    /*OBJGroup group;*/
+    /*for(size_t vi = 0; vi < mesh->vertex_indices.size(); vi++)*/
+    /*{*/
+      /*if ( (vi + 2) >= mesh->vertex_indices.size())*/
+        /*break;*/
+      /*OBJFace f;*/
+      /*size_t mvi0 = mesh->vertex_indices[vi];*/
+      /*size_t mvi1 = mesh->vertex_indices[vi+1];*/
+      /*size_t mvi2 = mesh->vertex_indices[vi+2];*/
+      /*f.vertexIndices.push_back(mvi0);*/
+      /*f.vertexIndices.push_back(mvi1);*/
+      /*f.vertexIndices.push_back(mvi2);*/
+      /*group.faces.push_back(f);*/
+    /*}*/
+    /*_objScene->groups.push_back(group);*/
 
 #if 0
   MRenderable* mr = dynamic_cast<MRenderable*>(ren);
@@ -1269,6 +1303,132 @@ Handle<Device::RTImage> createRandomImage(Device *device, size_t width, size_t h
     delete[] data;
     return(image);
   }
+}
+
+
+void EmbreeManager::exportOBJ(EScene* scene)
+{
+  ofstream out("output.obj");
+  /*if (out)*/
+  /*{*/
+    /*out << *_objScene;*/
+    /*out.close();*/
+  /*}*/
+  /*return;*/
+
+  OBJScene objScene;
+  size_t indexCounter = 0;
+  size_t normalIndexCounter = 0;
+  size_t textureIndexCounter = 0;
+
+  for(vector<GRInstance>::iterator itr = scene->instances.begin(); itr != scene->instances.end(); itr++)
+  {
+    Manta::AffineTransform mt = itr->transform;
+    Renderable* ren = itr->renderable;
+    ERenderable* er = dynamic_cast<ERenderable*>(ren);
+    if (!er)
+    {
+      printf("exportOBJ ERROR - wrong instance type\n");
+      continue;
+    }
+  Manta::Mesh* mesh = er->_data->mesh;
+  printf("objexport called mesh size: %d\n", mesh->vertex_indices.size()/3);
+  printf("objexport called mesh texcoords: %d\n", mesh->texCoords.size());
+  fflush(stdout);
+  if (mesh->vertex_indices.size()/3 < 100)  //TODO: HACK: this is a hack for the DNS videos
+    continue;
+    /*AffineSpace3f et(LinearSpace3f(mt(0,0), mt(0,1), mt(0,2), mt(1,0), mt(1,1), mt(1,2), mt(2,0),mt(2,1),mt(2,2)), Vector3f(mt(0,3),mt(1,3),mt(2,3)));*/
+    //AffineSpace3f et(LinearSpace3f(mt(0,0), mt(1,0), mt(2,0), mt(0,1), mt(1,1), mt(2,1), mt(0,2),mt(1,2),mt(2,2)), Vector3f(mt(3,0),mt(3,1),mt(3,2)));
+    /*prims.push_back(g_device->rtNewShapePrimitive(er->_data->d_mesh, er->_data->d_material, copyToArray(et)));*/
+    for(size_t vi = 0; vi < mesh->vertices.size(); vi++)
+    {
+      OBJVertex v;
+      Vector mv = mesh->vertices[vi];
+      /*printf("premult %f %f %f\n", mv[0], mv[1], mv[2]);*/
+      mv = mt.multiply_vector(mv);
+      /*printf("postmult %f %f %f\n", mv[0], mv[1], mv[2]);*/
+      v.x = mv[0]+mt(0,3);
+      v.y = mv[1]+mt(1,3);
+      v.z = mv[2]+mt(2,3);
+      objScene.vertices.push_back(v);
+    }
+    for(size_t ni = 0; ni < mesh->vertexNormals.size(); ni++)
+    {
+      OBJNormal v;
+      Vector mv = mesh->vertexNormals[ni];
+      /*printf("premult %f %f %f\n", mv[0], mv[1], mv[2]);*/
+      /*mv = mt.multiply_vector(mv);*/
+      /*printf("postmult %f %f %f\n", mv[0], mv[1], mv[2]);*/
+      v.x = mv[0];
+      v.y = mv[1];
+      v.z = mv[2];
+      objScene.normals.push_back(v);
+    }
+    for(size_t ni = 0; ni < mesh->texCoords.size(); ni++)
+    {
+      OBJTexCoord v;
+      Vector mv = mesh->texCoords[ni];
+      /*printf("premult %f %f %f\n", mv[0], mv[1], mv[2]);*/
+      /*mv = mt.multiply_vector(mv);*/
+      /*printf("postmult %f %f %f\n", mv[0], mv[1], mv[2]);*/
+      v.u = mv[0];
+      v.v = mv[1];
+      v.w = mv[2];
+      objScene.texCoords.push_back(v);
+    }
+    std::stringstream name;
+    name << "Group" << itr - scene->instances.begin()+1;
+    OBJGroup group(name.str());
+    OBJMaterial mat(name.str()+"Mat");
+    group.material = mat.name;
+    GLMaterial glMat = er->glMaterial;
+    mat.Kd = Vector(glMat.diffuse[0], glMat.diffuse[1], glMat.diffuse[2]);
+    mat.Ka = Vector(glMat.ambient[0], glMat.ambient[1], glMat.ambient[2]);
+    mat.Ks = Vector(glMat.specular[0], glMat.specular[1], glMat.specular[2]);
+    mat.Ns = glMat.shiny;
+    objScene.materials.push_back(mat);
+    for(size_t vi = 0; vi < mesh->vertex_indices.size(); vi++)
+    {
+      if ( (vi + 2) >= mesh->vertex_indices.size())
+        break;
+      OBJFace f;
+      size_t mvi0 = mesh->vertex_indices[vi++];
+      size_t mvi1 = mesh->vertex_indices[vi++];
+      size_t mvi2 = mesh->vertex_indices[vi];
+      /*printf("adding vertex indices: %d\n", mesh->vertex_indices[vi]);*/
+      f.vertexIndices.push_back(mvi0+indexCounter+1);
+      f.vertexIndices.push_back(mvi1+indexCounter+1);
+      f.vertexIndices.push_back(mvi2+indexCounter+1);
+      if (mesh->texCoords.size() > 0)
+      {
+        f.textureIndices.push_back(mvi0+textureIndexCounter+1);
+        f.textureIndices.push_back(mvi1+textureIndexCounter+1);
+        f.textureIndices.push_back(mvi2+textureIndexCounter+1);
+      }
+      if (mesh->vertexNormals.size() > 0)
+      {
+        f.normalIndices.push_back(mvi0+normalIndexCounter+1);
+        f.normalIndices.push_back(mvi1+normalIndexCounter+1);
+        f.normalIndices.push_back(mvi2+normalIndexCounter+1);
+      }
+      group.faces.push_back(f);
+    }
+    objScene.groups.push_back(group);
+    indexCounter += mesh->vertices.size();
+    textureIndexCounter += mesh->texCoords.size();
+    normalIndexCounter += mesh->vertexNormals.size();
+  }
+
+  /*ofstream out("output.obj");*/
+  printf("outputting scene\n");
+  fflush(stdout);
+  if (out)
+  {
+    out << objScene;
+    out.close();
+  }
+  printf("done outputting scene\n");
+  fflush(stdout);
 }
 
 void EmbreeManager::addTexture(int handle, int target, int level, int internalFormat, int width, int height, int border, int format, int type, void* data)

@@ -46,6 +46,8 @@ using namespace Manta;
 class EScene;
 class ERenderable;
 class EGeometryGenerator;
+class OBJScene;
+class Scene;
 //class Display;
 //class Window;
 /*namespace rivl
@@ -105,6 +107,7 @@ class EmbreeManager : public RenderManager
     static void* renderLoop(void* t);
     void internalRender();
 
+    void exportOBJ(EScene* scene);
 
     //
     //  Variables
@@ -159,6 +162,8 @@ class EmbreeManager : public RenderManager
 
     Display* _xDisplay;
     Window* _xWin;
+
+    OBJScene* _objScene;
 
 
     static EmbreeManager* singleton();

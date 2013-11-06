@@ -68,6 +68,7 @@
 
 #include <vector>
 #include <Core/GLTypes.h>
+#include <Core/GRTypes.h>
 
 
 class MRenderable;

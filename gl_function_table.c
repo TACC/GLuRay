@@ -18051,6 +18051,7 @@ GLUNLOCK();
 
 void glTexCoord2fv(const GLfloat * v) {
   sprintf(args, "(v);\n");
+  gl2manta_texCoord(v[0], v[1], 0.0);
   GLLOCK();
 next_glTexCoord2fv(v);
   __sgPrintError();
@@ -18537,7 +18538,7 @@ next_glTexImage2D(target, level, internalformat, width, height, border, format, 
   __sgPrintError();
   dt->read_flag_write_msg("carson: opengl call made: ");    dt->read_flag_write_msg(dt->format_function_call(834, args));
 GLUNLOCK();
-  gr_glTexImage2D(target, level, internalformat, width, height, border, format, type, pixels);
+  gr_texImage2D(target, level, internalformat, width, height, border, format, type, pixels);
 }
 
 void glTexImage3D(GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLenum format, GLenum type, const GLvoid * pixels) {

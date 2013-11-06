@@ -3,6 +3,7 @@
 
 #include "GeometryGenerator.h"
 #include "defines.h"
+#include "GLTypes.h"
 
 class Renderable
 {
@@ -19,6 +20,7 @@ public:
   size_t getNID() { return _nid;}
   bool isBuilt() {return _built; }
   void setBuilt(bool st) { _built = st; }
+  GLMaterial glMaterial;
 protected:
   bool _built;
   GeometryGenerator* _generator;

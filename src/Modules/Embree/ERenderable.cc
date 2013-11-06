@@ -121,7 +121,7 @@ void EGeometryGeneratorTriangles::addNormal(Manta::Real x, Manta::Real y, Manta:
 
 void EGeometryGeneratorTriangles::addTextureCoord(Manta::Real u, Manta::Real v, Manta::Real w, Manta::Real z)
 {
-#if 0
+#if 1
   Mesh* _mesh = _data->mesh;
   _mesh->texCoords.push_back(Manta::Vector(u,v,w));
 #endif

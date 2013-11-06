@@ -5,7 +5,7 @@
 #include "Work.h"
 #include "GLuRayRenderParameters.h"
 #include "GeometryGenerator.h"
-#include "Renderable.h"
+//#include "Renderable.h"
 
 #include <Interface/MantaInterface.h>
 #include <Interface/Object.h>
@@ -17,19 +17,6 @@
 using namespace Manta;
 
 
-struct GRInstance
-{
-  GRInstance()
-  {
-    renderable = NULL;
-  }
-  GRInstance(Renderable* ren, const Manta::AffineTransform& tran)
-  {
-    renderable = ren; transform = tran;
-  }
-  Renderable* renderable;
-  Manta::AffineTransform transform;
-};
 
 struct GLLight
 {
@@ -51,5 +38,6 @@ public:
   float shiny;
 };
 ostream& operator<<(ostream& out, GLMaterial& m);
+
 
 #endif
