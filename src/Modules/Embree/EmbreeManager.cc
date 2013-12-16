@@ -12,7 +12,6 @@
 //#include <X11/Xlib.h>
 //#include <X11/Xutil.h>
 
-
 //#include "../gl_functions.h"
 #include "CDTimer.h"
 #include "EScene.h"
@@ -128,7 +127,7 @@ EmbreeManager* EmbreeManager::singleton()
 
   EmbreeManager::EmbreeManager()
 :RenderManager(), current_scene(NULL), next_scene(NULL),
-  _nid_counter(0), _depth(false), _width(512), _height(512)
+  _nid_counter(0), _depth(false), _width(512), _height(512), _frameNumber(0), _realFrameNumber(0)
 {
   rendered = false;
   _camera = NULL;
@@ -182,7 +181,7 @@ void EmbreeManager::updateLights()
   AffineSpace3f transform(one);
   if (params.env_map != "")
   {
-    embree::Color LColor(1, 1, 1);
+    embree::Color LColor(.8, .8, .8);
     Handle<Device::RTLight> hdrLight = g_device->rtNewLight("hdrilight");
     //g_device->rtSetTransform(light, "local2world", copyToArray(space));
     g_device->rtSetFloat3(hdrLight, "L", LColor.r, LColor.g, LColor.b);
@@ -262,13 +261,15 @@ void EmbreeManager::updateLights()
            *end directional light
            */
     /*AffineSpace3f space = load<AffineSpace3f>(xml->child("AffineSpace"));*/
-      AffineSpace3f space(LinearSpace3f(1,0,0,0,0,1,0,0,0), Vector3f(-1,0,0));
+      /*AffineSpace3f space(LinearSpace3f(1,0,0,0,0,1,0,0,0), Vector3f(-1,0,0));*/
 
-    Handle<Device::RTLight> light = g_device->rtNewLight("directionallight");
-    g_device->rtSetFloat3(light, "D", space.l.vz.x, space.l.vz.y, space.l.vz.z);
-    g_device->rtSetFloat3(light, "E", 1, 0, 0);
-    g_device->rtCommit(light);
-    _lights.push_back(g_device->rtNewLightPrimitive(light, NULL, copyToArray(transform)));
+    /*Handle<Device::RTLight> light = g_device->rtNewLight("directionallight");*/
+    /*[>g_device->rtSetFloat3(light, "D", space.l.vz.x, space.l.vz.y, space.l.vz.z);<]*/
+    /*[>g_device->rtSetFloat3(light, "E", 1, 0, 0);<]*/
+          /*g_device->rtSetFloat3(light, "D", 1000,-500,-300);*/
+          /*g_device->rtSetFloat3(light, "E", 1.0, 0.8, 0.6);*/
+    /*g_device->rtCommit(light);*/
+    /*_lights.push_back(g_device->rtNewLightPrimitive(light, NULL, copyToArray(transform)));*/
 
 
 
@@ -310,11 +311,17 @@ void EmbreeManager::updateLights()
   //TODO: tkae out, hardcoded from SC video
   //
           Handle<Device::RTLight> directionalLight = g_device->rtNewLight("directionallight");
-          g_device->rtSetFloat3(directionalLight, "D", 1000,-500,-300);
-          /*g_device->rtSetFloat3(directionalLight, "E", 1.0, 0.8, 0.6);*/
+          g_device->rtSetFloat3(directionalLight, "D", -100,10,-30);
+          /*g_device->rtSetFloat3(directionalLight, "E", 3.8, .7, .5);*/
+          g_device->rtSetFloat3(directionalLight, "E", 0.8, .7, .5);
           g_device->rtCommit(directionalLight);
-          //return;
-          /*_lights.push_back(g_device->rtNewLightPrimitive(directionalLight, NULL, copyToArray(transform)));*/
+          _lights.push_back(g_device->rtNewLightPrimitive(directionalLight, NULL, copyToArray(transform)));
+
+          /*Handle<Device::RTLight> directionalLight2 = g_device->rtNewLight("directionallight");*/
+          /*g_device->rtSetFloat3(directionalLight2, "D", -80,20,-40);*/
+          /*g_device->rtSetFloat3(directionalLight2, "E", 0.2, 0.3, 0.5);*/
+          /*g_device->rtCommit(directionalLight2);*/
+          /*_lights.push_back(g_device->rtNewLightPrimitive(directionalLight2, NULL, copyToArray(transform)));*/
   embreeMutex.unlock();
   //cerr << "setuplights done\n";
 }
@@ -393,9 +400,21 @@ void  EmbreeManager::updateMaterial()
     /*g_device->rtSetFloat3(g_current_material, "glitterColor",0.5,.44,.42);*/
     g_device->rtSetFloat3(g_current_material, "shadeColor",m.diffuse[0],m.diffuse[1],m.diffuse[2]);
     g_device->rtCommit(g_current_material);
+
+    //TODO: This is a SC HACK!
+    if (m.diffuse[0] == 1.0 && m.diffuse[1] == 1.0 && m.diffuse[2] == 1.0)
+    {
+    g_current_material = g_device->rtNewMaterial("Matte");
+    /*g_device->rtSetFloat1(g_current_material, "glitterSpread", 0.1);*/
+    /*g_device->rtSetFloat3(g_current_material, "glitterColor",0.5,.44,.42);*/
+    g_device->rtSetFloat3(g_current_material, "reflectance",m.diffuse[0],m.diffuse[1],m.diffuse[2]);
+    g_device->rtSetFloat3(g_current_material, "reflectance",m.diffuse[0],m.diffuse[0],m.diffuse[2]);
+    g_device->rtCommit(g_current_material);
+    }
   }
 
   bool textured = glIsEnabled(GL_TEXTURE_2D);
+  /*textured = false;*/
   if (textured)
   {
     printf("using texture\n");
@@ -411,6 +430,7 @@ void  EmbreeManager::updateMaterial()
         g_device->rtSetTexture(g_current_material, "Kd", *texHandle);
         g_device->rtSetFloat2(g_current_material, "s0", 0.8f, 0.8f);
         g_device->rtSetFloat2(g_current_material, "ds", 3.0f, 3.0f);
+        /*g_device->rtSetFloat3(g_current_material, "shadeColor",m.diffuse[0],m.diffuse[1],m.diffuse[2]);*/
         g_device->rtCommit(g_current_material);
       }
     }
@@ -517,8 +537,8 @@ void EmbreeManager::setSize(int w, int h)
 
 struct networkSetupInfo
 {
-std::string hostname;
-unsigned int port;
+  std::string hostname;
+  unsigned int port;
 };
 
 void EmbreeManager::init()
@@ -684,12 +704,12 @@ void EmbreeManager::init()
 
   //if (params.accumulate)
   //{
-    //pthread_t thread;
-    //int err = pthread_create(&thread, 0, renderloop, this);
-    //if (err){
-      //printf("error creating embree render loop. return code from pthread_create() is %d\n", err);
-      //exit(-1);
-    //}
+  //pthread_t thread;
+  //int err = pthread_create(&thread, 0, renderloop, this);
+  //if (err){
+  //printf("error creating embree render loop. return code from pthread_create() is %d\n", err);
+  //exit(-1);
+  //}
   //}
   cout << "initialization done\n";
   initialized = true;
@@ -773,7 +793,7 @@ void EmbreeManager::render()
   if (!initialized)
     return;
 
-  printf("attempted rebder\n");
+  printf("attempted render\n");
   if (next_scene->instances.size() == 0)
     return;
   printf("rendering\n");
@@ -788,9 +808,44 @@ void EmbreeManager::render()
   for(std::vector<embree::Handle<embree::Device::RTPrimitive> >::iterator itr = _lights.begin(); itr != _lights.end(); itr++)
     prims.push_back(*itr);
 
-  static int frameNumber = 0;
-  if (++frameNumber == params.export_obj)
-    exportOBJ(next_scene);
+  /*if (_frameNumber+1 == params.export_obj)*/
+    /*exportOBJ(next_scene);*/
+
+  //TODO: HACK for SC Vid
+  if (params.write_to_file != "")
+  {
+    /*static int _frameNumber1 = 0;*/
+    //TODO: SC VIDEO HACK!
+    //!!!!!!!!!!!!!!!!!!!!!
+    if (_frameNumber > 2)
+    {
+      //TODO: SC VIDEO HACK!
+      static int numberOfFrames = 0;
+      static bool once = false;
+      if (!once)
+      {
+        once = true;
+        GetVar<int>("GR_FrameNumber", _realFrameNumber);
+        _realFrameNumber--;
+        GetVar<int>("GR_NumberOfFrames", numberOfFrames);
+        /*_frameNumber = max(_realFrameNumber,3);*/
+      }
+      printf("setting values framenumber: %d numframes: %d\n", _realFrameNumber, numberOfFrames);
+      float aperture = 0.0f;
+      float focalDistance = 0.0f;
+      float interp = 0;
+      if (numberOfFrames > 0)
+        interp = float(std::max(_realFrameNumber,0))/float(numberOfFrames);
+      params.focalDistance = 125 + 200*interp;
+      params.aperture = 1.0*(1.0-interp) + 0.1;
+      updateCamera();
+    }
+    static int realSPP = params.num_samples;
+    params.num_samples = 1;
+    if(_frameNumber > 3)
+       params.num_samples = realSPP;
+  }
+  //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
   embreeMutex.lock();
   //printf("adding %d instances to scene\n", next_scene->instances.size());
@@ -799,9 +854,12 @@ void EmbreeManager::render()
     Manta::AffineTransform mt = itr->transform;
     Renderable* ren = itr->renderable;
     ERenderable* er = dynamic_cast<ERenderable*>(ren);
-    AffineSpace3f et(LinearSpace3f(mt(0,0), mt(0,1), mt(0,2), mt(1,0), mt(1,1), mt(1,2), mt(2,0),mt(2,1),mt(2,2)), Vector3f(mt(0,3),mt(1,3),mt(2,3)));
-    //AffineSpace3f et(LinearSpace3f(mt(0,0), mt(1,0), mt(2,0), mt(0,1), mt(1,1), mt(2,1), mt(0,2),mt(1,2),mt(2,2)), Vector3f(mt(3,0),mt(3,1),mt(3,2)));
-    prims.push_back(g_device->rtNewShapePrimitive(er->_data->d_mesh, er->_data->d_material, copyToArray(et)));
+    if (er->isBuilt())
+    {
+      AffineSpace3f et(LinearSpace3f(mt(0,0), mt(0,1), mt(0,2), mt(1,0), mt(1,1), mt(1,2), mt(2,0),mt(2,1),mt(2,2)), Vector3f(mt(0,3),mt(1,3),mt(2,3)));
+      //AffineSpace3f et(LinearSpace3f(mt(0,0), mt(1,0), mt(2,0), mt(0,1), mt(1,1), mt(2,1), mt(0,2),mt(1,2),mt(2,2)), Vector3f(mt(3,0),mt(3,1),mt(3,2)));
+      prims.push_back(g_device->rtNewShapePrimitive(er->_data->d_mesh, er->_data->d_material, copyToArray(et)));
+    }
   }
   next_scene->instances.resize(0);
   embreeMutex.unlock();
@@ -843,6 +901,8 @@ void EmbreeManager::render()
   {
     internalRender();
     displayFrame();
+    prims.clear();
+    g_device->rtClear(scene);
   }
   static bool once = false;
   if (!once)
@@ -859,6 +919,15 @@ void EmbreeManager::render()
     }
 
   }
+
+  /*rtClearTextureCache();*/
+  /*rtClearImageCache();*/
+  /*delete g_device;*/
+  /*g_device = NULL;*/
+  /*initialized = false;*/
+  /*init();*/
+
+
 }
 Display* dis2;
 Window win2;
@@ -876,8 +945,6 @@ void EmbreeManager::displayFrame()
   DEBUG("copying image\n");
   static CDTimer displayTimer;
   displayTimer.start();
-
-
 
   g_device->rtSwapBuffers(_frameBuffer);
 
@@ -898,14 +965,14 @@ void EmbreeManager::displayFrame()
 
   //for (size_t i = 0; i < _width*_height/8; i++)
   //{
-    //struct rgba { unsigned char r,g,b,a; };
-    //struct rgb { unsigned char r,g,b; };
-    //char* ptr = &((char*)data)[i*3];
-    ////rgba* val = &(((rgba*)ptr)[i]);
-    //rgb* val = &(((rgb*)ptr)[i]);
-    ////rgba color = {0,0,255,255};
-    //rgb color = {0,0,255};
-    //*val = color;
+  //struct rgba { unsigned char r,g,b,a; };
+  //struct rgb { unsigned char r,g,b; };
+  //char* ptr = &((char*)data)[i*3];
+  ////rgba* val = &(((rgba*)ptr)[i]);
+  //rgb* val = &(((rgb*)ptr)[i]);
+  ////rgba color = {0,0,255,255};
+  //rgb color = {0,0,255};
+  //*val = color;
   //}
 
   if (_format == "RGB_FLOAT32")
@@ -917,14 +984,14 @@ void EmbreeManager::displayFrame()
   else
     throw std::runtime_error("unkown format: "+_format);
 
-/*
- *X Test
- */
+  /*
+   *X Test
+   */
 #if 0
 
   //static Display* dis;
   //static Window win;
-    char green[] = "#00FF00";
+  char green[] = "#00FF00";
 
   static bool once = false;
   if (!once)
@@ -946,8 +1013,8 @@ void EmbreeManager::displayFrame()
     //XSetForeground(dis, green_gc, green_col.pixel);
     //XDrawRectangle(dis,win,green_gc,50,50,200,200);
     //XFlush(dis);
-  Display *dis;
-  Window win;
+    Display *dis;
+    Window win;
 
     XEvent report;
     GC green_gc;
@@ -976,10 +1043,10 @@ void EmbreeManager::displayFrame()
 
       XDrawRectangle(dis, win, green_gc, 1, 1, 497, 497);
       //XDrawRectangle(dis, win, green_gc, 50, 50, 398,   398);
-  Pixmap pixmap = XCreatePixmapFromBitmapData(dis,win, (char*)data, _width, _height, BlackPixel(dis,0), BlackPixel(dis,0), 4);
+      Pixmap pixmap = XCreatePixmapFromBitmapData(dis,win, (char*)data, _width, _height, BlackPixel(dis,0), BlackPixel(dis,0), 4);
       XFlush(dis);
       _xDisplay = dis;
-*_xWin = win;
+      *_xWin = win;
 
       //while (1)  {
       //XNextEvent(dis, &report);
@@ -1003,22 +1070,22 @@ void EmbreeManager::displayFrame()
     }
 
   }
-    GC green_gc;
-    XColor green_col;
-    Colormap colormap;
-      colormap = DefaultColormap(_xDisplay, 0);
-      green_gc = XCreateGC(_xDisplay, *_xWin, 0, 0);
-      //XParseColor(_xDisplay, colormap, green, &green_col);
-      //XAllocColor(_xDisplay, colormap, &green_col);
-      //XSetForeground(_xDisplay, green_gc, green_col.pixel);
+  GC green_gc;
+  XColor green_col;
+  Colormap colormap;
+  colormap = DefaultColormap(_xDisplay, 0);
+  green_gc = XCreateGC(_xDisplay, *_xWin, 0, 0);
+  //XParseColor(_xDisplay, colormap, green, &green_col);
+  //XAllocColor(_xDisplay, colormap, &green_col);
+  //XSetForeground(_xDisplay, green_gc, green_col.pixel);
   //XDrawRectangle(_xDisplay, *_xWin, green_gc, 50, 50, 398,   398);
   Screen* screen = XDefaultScreenOfDisplay(_xDisplay);
   int screen2 = DefaultScreen(_xDisplay);
   int depth = DefaultDepth(_xDisplay,screen2);
   printf("xdepth: %d\n", depth);
   Pixmap pixmap = XCreatePixmapFromBitmapData(_xDisplay,*_xWin, (char*)data, _width, _height, BlackPixel(_xDisplay,0), BlackPixel(_xDisplay,0), depth);
-//Pixmap pixmap = XCreatePixmap(_xDisplay,*_xWin,_width,_height,DefaultDepthOfScreen(screen));
-//XFillRectangle(_xDisplay,pixmap,green_gc,0,0,_width,_height);
+  //Pixmap pixmap = XCreatePixmap(_xDisplay,*_xWin,_width,_height,DefaultDepthOfScreen(screen));
+  //XFillRectangle(_xDisplay,pixmap,green_gc,0,0,_width,_height);
   XSetFillStyle(_xDisplay,green_gc,FillTiled);
   XSetTile(_xDisplay, green_gc, pixmap);
   //XSetRegion(_xDisplay,green_gc,region);
@@ -1043,50 +1110,82 @@ void EmbreeManager::displayFrame()
   glFinish();
   g_device->rtUnmapFrameBuffer(_frameBuffer);
 
-
   DEBUG("copy image done\n");
 
+
+  //TODO: HACK
   if (params.write_to_file != "")
   {
-    char* rgba_data = (char*)data;
-    DEBUG("writing image\n");
-    string filename = params.write_to_file;
-    if (params.write_to_file == "generated")
+    /*static int _frameNumber = 0;*/
+    //TODO: SC VIDEO HACK!
+    //!!!!!!!!!!!!!!!!!!!!!
+    if (_frameNumber > 3)
     {
-      char cfilename[256];
-      static int frame_number = 0;
+      //TODO: SC VIDEO HACK!
+      /*static int numberOfFrames = 0;*/
+      /*static int _realFrameNumber = 0;*/
+      /*static bool once = false;*/
+      /*if (!once)*/
+      /*{*/
+        /*once = true;*/
+        /*GetVar<int>("GR_FrameNumber", _realFrameNumber);*/
+        /*GetVar<int>("GR_NumberOfFrames", numberOfFrames);*/
+        /*_frameNumber = _realFrameNumber;*/
+      /*}*/
+      /*float aperture = 0.0f;*/
+      /*float focalDistance = 0.0f;*/
+      /*float interp = 0;*/
+      /*if (numberOfFrames > 0)*/
+        /*interp = float(_frameNumber)/float(numberOfFrames);*/
+      /*params.focalDistance = 125 + 200*interp;*/
+      /*params.aperture = 0.6*(1.0-interp) + 0.1;*/
+      /*updateCamera();*/
+      //!!!!!!!!!!!!!!!!!!!!!
+      char* rgba_data = (char*)data;
+      DEBUG("writing image\n");
+      string filename = params.write_to_file;
+      if (params.write_to_file == "generated")
+      {
+        char cfilename[256];
 #if USE_MPI
-      sprintf(cfilename, "render_%04d_%dx%d_%d.rgb", frame_number++, _width, _height, _rank);
+        sprintf(cfilename, "render_%04d_%dx%d_%d.rgb", _realFrameNumber, _width, _height, _rank);
 #else
-      sprintf(cfilename, "render_%04d_%dx%d.rgb", frame_number++, _width, _height);
+        sprintf(cfilename, "render_%04d_%dx%d.rgb", _realFrameNumber, _width, _height);
 #endif
-      filename = string(cfilename);
-    }
-    //unsigned char* test = new unsigned char[xres*yres*3];
-    //glReadPixels(0,0,xres,yres,GL_RGB, GL_UNSIGNED_BYTE, test);
-    FILE* pFile = fopen(filename.c_str(), "w");
-    assert(pFile);
-    if (_format == "RGBA8")
-    {
-      fwrite((void*)&rgba_data[0], 1, _width*_height*4, pFile);
-      fclose(pFile);
-      stringstream s("");
-      //TODO: this fudge factor on teh sizes makes no sense... I'm assuming it's because they have row padding in the data but it doesn't show up in drawpixels... perplexing.  It can also crash just a hack for now
-      s  << "convert -flip -size " << _width << "x" << _height << " -depth 8 rgba:" << filename << " " << filename << ".png";
-      system(s.str().c_str());
-      //delete []test;
+        filename = string(cfilename);
+      }
 
+      printf("writing filename: %s\n", filename.c_str());
+
+      //unsigned char* test = new unsigned char[xres*yres*3];
+      //glReadPixels(0,0,xres,yres,GL_RGB, GL_UNSIGNED_BYTE, test);
+      FILE* pFile = fopen(filename.c_str(), "w");
+      assert(pFile);
+      if (_format == "RGBA8")
+      {
+        fwrite((void*)&rgba_data[0], 1, _width*_height*4, pFile);
+        fclose(pFile);
+        stringstream s("");
+        //TODO: this fudge factor on teh sizes makes no sense... I'm assuming it's because they have row padding in the data but it doesn't show up in drawpixels... perplexing.  It can also crash just a hack for now
+        s  << "convert -flip -size " << _width << "x" << _height << " -depth 8 rgba:" << filename << " " << filename << ".png && rm " << filename ;
+        /*printf("calling system call \"%s\"\n", s.str().c_str());*/
+        system(s.str().c_str());
+        //delete []test;
+
+      }
+      else
+      {
+        fwrite(data, 1, _width*_height*3, pFile);
+        fclose(pFile);
+        stringstream s("");
+        //TODO: this fudge factor on teh sizes makes no sense... I'm assuming it's because they have row padding in the data but it doesn't show up in drawpixels... perplexing.  It can also crash just a hack for now
+        s << "convert -flip -size " << _width << "x" << _height << " -depth 8 rgb:" << filename << " " << filename << ".png && rm " << filename;
+        system(s.str().c_str());
+      }
+      //delete []test;
     }
-    else
-    {
-      fwrite(data, 1, _width*_height*3, pFile);
-      fclose(pFile);
-      stringstream s("");
-      //TODO: this fudge factor on teh sizes makes no sense... I'm assuming it's because they have row padding in the data but it doesn't show up in drawpixels... perplexing.  It can also crash just a hack for now
-      s  << "convert -flip -size " << _width << "x" << _height << " -depth 8 rgb:" << filename << " " << filename << ".png";
-      system(s.str().c_str());
-    }
-    //delete []test;
+    _frameNumber++;
+    _realFrameNumber++;
   }
 
   DEBUG("draw pixels done \n");
@@ -1115,10 +1214,10 @@ void EmbreeManager::updateCamera()
   embree::Vector3f camUp = embree::Vector3f(p.camera_up.x(), p.camera_up.y(), p.camera_up.z());
   AffineSpace3f camTransform = AffineSpace3f::lookAtPoint(camPos, camLookAt, camUp);
   AffineSpace3f space(camTransform.l,camTransform.p);
-#if DEBUG_MSGS
-  printf("update camera hfov:%f vfov%f angle %f aspect %f eye %f %f %f lookat %f %f %f up %f %f %f \n", p.camera_hfov, p.camera_vfov, angle, aspectRatio, camPos[0], camPos[1], camPos[2], camLookAt[0], camLookAt[1], camLookAt[2],
+/*#if DEBUG_MSGS*/
+  printf("update camera hfov:%f vfov%f angle %f aspect %f focalDistance %f aperture %f eye %f %f %f lookat %f %f %f up %f %f %f \n", p.camera_hfov, p.camera_vfov, angle, aspectRatio, p.focalDistance, p.aperture, camPos[0], camPos[1], camPos[2], camLookAt[0], camLookAt[1], camLookAt[2],
       camUp[0], camUp[1], camUp[2]);
-#endif
+/*#endif*/
   float camRadius = 0.0f;
   if (p.camera != "pinhole")
     camRadius = p.aperture;
@@ -1178,40 +1277,100 @@ void EmbreeManager::addInstance(Renderable* ren)
 
 void EmbreeManager::addRenderable(Renderable* ren)
 {
+  //TODO: memory leaks appear to be happening entirely because of the geometry sent down to embree.  Commenting them out fixes memory usage... need to debug embree geom clearing.
   ERenderable* er = dynamic_cast<ERenderable*>(ren);
   if (!er)
     return;
   ren->glMaterial = gl_material;
   Manta::Mesh* mesh = er->_data->mesh;
-  printf("addrenderable called mesh size: %d\n", mesh->vertex_indices.size()/3);
-  /*if (mesh->vertex_indices.size()/3 < 100)  //TODO: HACK: this is a hack for the DNS videos*/
-    /*return;*/
+  size_t numTriangles = mesh->vertex_indices.size()/3;
+  size_t numNormals = mesh->vertexNormals.size();
+  size_t numTexCoords = mesh->texCoords.size();
+  size_t numPositions = mesh->vertices.size();
+  printf("addrenderable called mesh indices/3 vertices normals texcoords: %d %d %d %d \n", mesh->vertex_indices.size()/3, mesh->vertices.size(), mesh->vertexNormals.size(),
+      mesh->texCoords.size());
+  /*if (mesh->vertex_indices.size()/3 <= 4700)  //TODO: HACK: this is a hack for the DNS videos*/
+  /*return;*/
+
+  /*if (numPositions < mesh->vertex_indices.size())*/
+  /*{*/
+  /*printf("warning: vertex/indices mismatch ignoring renderable %d %d \n", numPositions, mesh->vertex_indices.size());*/
+  /*return;*/
+  /*}*/
+  if (numNormals > 0 && (numNormals < numPositions))
+  {
+    size_t diff = numPositions - numNormals;
+    for(size_t i=0; i < diff;i++)
+      mesh->vertexNormals.push_back(Vector(0,0,-1));
+  }
+  if (numTexCoords > 0 && (numTexCoords < numPositions))
+  {
+    size_t diff = numPositions - numTexCoords;
+    for(size_t i=0; i < diff;i++)
+      mesh->texCoords.push_back(Vector(0,0,0));
+  }
+  if (numTexCoords == 0)
+  {
+    //TODO: SC HACK, contour with normals was crashing.  Don't have time to debug embree
+    mesh->vertexNormals.resize(0);
+    numNormals = 0;
+  }
+  printf("addrenderable after refit mesh indices/3 vertices normals texcoords: %d %d %d %d \n", mesh->vertex_indices.size()/3, mesh->vertices.size(), mesh->vertexNormals.size(),
+      mesh->texCoords.size());
+
+  /*mesh->vertices.resize(0);*/
+  /*mesh->vertex_indices.resize(0);*/
+  /*mesh->vertices.push_back(Vector(0,0,0));*/
+  /*mesh->vertices.push_back(Vector(0,1,0));*/
+  /*mesh->vertices.push_back(Vector(1,0,0));*/
+  /*mesh->vertex_indices.push_back(0);*/
+  /*mesh->vertex_indices.push_back(1);*/
+  /*mesh->vertex_indices.push_back(2);*/
+
+  //TODO: THIS IS DEBUG CODE
+  /*numTexCoords = 0;*/
+  /*numNormals = 0;*/
+  /*if (numPositions > 300)*/
+  /*numPositions = 300;*/
+  /*if (numTriangles > 100)*/
+  /*numTriangles = 100;*/
+  //!!!!!!!!!!!!!!!!!!!!!
 
   embreeMutex.lock();
-  float positionsV[] = {-1000, 0, -1000, 1000, 0, -1000, 1000, 0, 1000, -1000, 0, 1000};
-  float* pv = (float*)alignedMalloc(sizeof(float)*3*4);
-  for(int i =0; i < 12; i++)
-    pv[i] = positionsV[i];
-  size_t numPositions = mesh->vertices.size();  Handle<Device::RTData> positions = g_device->rtNewData("immutable_managed",mesh->vertices.size()*sizeof(Manta::Vector), &mesh->vertices[0]);
+  /*float positionsV[] = {-1000, 0, -1000, 1000, 0, -1000, 1000, 0, 1000, -1000, 0, 1000};*/
+  /*float* pv = (float*)alignedMalloc(sizeof(float)*3*4);*/
+  /*for(int i =0; i < 12; i++)*/
+  /*pv[i] = positionsV[i];*/
+  embree::Vec3f* vertices = (embree::Vec3f*)alignedMalloc(sizeof(embree::Vec3f)*numPositions);
+  for(size_t i = 0; i < numPositions; i++)
+    vertices[i] = embree::Vec3f(mesh->vertices[i].x(), mesh->vertices[i].y(), mesh->vertices[i].z());
+  Handle<Device::RTData> positions = g_device->rtNewData("immutable_managed",numPositions*sizeof(Manta::Vector), &vertices[0]);
   size_t numMotions = 0;
-  size_t numNormals = mesh->vertexNormals.size();
   embree::Vec3f* nv = (embree::Vec3f*)alignedMalloc(sizeof(embree::Vec3f)*numNormals);
   for(size_t i = 0; i < numNormals; i++)
     nv[i] = embree::Vec3f(mesh->vertexNormals[i].x(), mesh->vertexNormals[i].y(), mesh->vertexNormals[i].z());
   Handle<Device::RTData> normals = g_device->rtNewData("immutable_managed",numNormals*sizeof(embree::Vec3f), &nv[0]);
-  //size_t numTexCoords = mesh->texCoords.size();
-  //embree::Vec2f* tv = (embree::Vec2f*)alignedMalloc(sizeof(embree::Vec2f)*numTexCoords);
-  //for(size_t i = 0; i < numTexCoords; i++)
-    //tv[i] = embree::Vec2f(mesh->texCoords[i].x(), mesh->texCoords[i].y());
-  //Handle<Device::RTData> texcoords = g_device->rtNewData("immutable_managed",numTexCoords*sizeof(embree::Vec2f), tv);
-  size_t numTriangles = mesh->vertex_indices.size()/3;  Handle<Device::RTData> triangles = g_device->rtNewData("immutable_managed",(mesh->vertex_indices.size()/3)*sizeof(embree::Vec3i), &mesh->vertex_indices[0]);
+  embree::Vec2f* tv = (embree::Vec2f*)alignedMalloc(sizeof(embree::Vec2f)*numTexCoords);
+  for(size_t i = 0; i < numTexCoords; i++)
+    tv[i] = embree::Vec2f(mesh->texCoords[i].x(), mesh->texCoords[i].y());
+  Handle<Device::RTData> texcoords = g_device->rtNewData("immutable_managed",numTexCoords*sizeof(embree::Vec2f), tv);
+  embree::Vec3i* vertex_indices = (embree::Vec3i*)alignedMalloc(sizeof(embree::Vec3i)*numTriangles);
+  for(size_t i = 0, mi = 0; i < numTriangles; i++, mi+=3)
+  {
+    vertex_indices[i] = embree::Vec3i(mesh->vertex_indices[mi+0], mesh->vertex_indices[mi+1], mesh->vertex_indices[mi+2]);
+  }
+  Handle<Device::RTData> triangles = g_device->rtNewData("immutable_managed",numTriangles*sizeof(embree::Vec3i), &vertex_indices[0]);
 
   Handle<Device::RTShape> d_mesh = g_device->rtNewShape("trianglemesh");
   if (numPositions) g_device->rtSetArray(d_mesh, "positions", "float3", positions, numPositions, sizeof(embree::Vec3f), 0);
+  mesh->vertices.resize(0);
   //if (numMotions  ) g_device->rtSetArray(d_mesh, "motions"  , "float3", motions  , numMotions  , sizeof(embree::Vec3f), 0);
   if (numNormals  ) g_device->rtSetArray(d_mesh, "normals"  , "float3", normals  , numNormals  , sizeof(embree::Vec3f), 0);
-  //if (numTexCoords) g_device->rtSetArray(d_mesh, "texcoords", "float2", texcoords, numTexCoords, sizeof(embree::Vec2f ), 0);
+  mesh->vertexNormals.resize(0);
+  if (numTexCoords) g_device->rtSetArray(d_mesh, "texcoords", "float2", texcoords, numTexCoords, sizeof(embree::Vec2f ), 0);
+  mesh->texCoords.resize(0);
   if (numTriangles) g_device->rtSetArray(d_mesh, "indices"  , "int3"  , triangles, numTriangles, sizeof(embree::Vec3i ), 0);
+  mesh->vertex_indices.resize(0);
   g_device->rtSetString(d_mesh,"accel",g_mesh_accel.c_str());
   g_device->rtSetString(d_mesh,"builder",g_mesh_builder.c_str());
   g_device->rtSetString(d_mesh,"traverser",g_mesh_traverser.c_str());
@@ -1220,7 +1379,7 @@ void EmbreeManager::addRenderable(Renderable* ren)
    *TODO: CARSON:  need to specify local transforms for each mesh instance?
    */
   g_device->rtCommit(d_mesh);
-  /*g_device->rtClear(d_mesh);*/
+  g_device->rtClear(d_mesh);
 
   er->_data->d_mesh = d_mesh;
   er->_data->d_material = g_current_material;
@@ -1230,30 +1389,30 @@ void EmbreeManager::addRenderable(Renderable* ren)
   _newRenderables.push_back(er);
   embreeMutex.unlock();
 
-    /*for(size_t vi = 0; vi < mesh->vertices.size(); vi++)*/
-    /*{*/
-      /*OBJVertex v;*/
-      /*Vector& mv = mesh->vertices[vi];*/
-      /*v.x = mv[0];*/
-      /*v.y = mv[1];*/
-      /*v.z = mv[2];*/
-      /*_objScene->vertices.push_back(v);*/
-    /*}*/
-    /*OBJGroup group;*/
-    /*for(size_t vi = 0; vi < mesh->vertex_indices.size(); vi++)*/
-    /*{*/
-      /*if ( (vi + 2) >= mesh->vertex_indices.size())*/
-        /*break;*/
-      /*OBJFace f;*/
-      /*size_t mvi0 = mesh->vertex_indices[vi];*/
-      /*size_t mvi1 = mesh->vertex_indices[vi+1];*/
-      /*size_t mvi2 = mesh->vertex_indices[vi+2];*/
-      /*f.vertexIndices.push_back(mvi0);*/
-      /*f.vertexIndices.push_back(mvi1);*/
-      /*f.vertexIndices.push_back(mvi2);*/
-      /*group.faces.push_back(f);*/
-    /*}*/
-    /*_objScene->groups.push_back(group);*/
+  /*for(size_t vi = 0; vi < mesh->vertices.size(); vi++)*/
+  /*{*/
+  /*OBJVertex v;*/
+  /*Vector& mv = mesh->vertices[vi];*/
+  /*v.x = mv[0];*/
+  /*v.y = mv[1];*/
+  /*v.z = mv[2];*/
+  /*_objScene->vertices.push_back(v);*/
+  /*}*/
+  /*OBJGroup group;*/
+  /*for(size_t vi = 0; vi < mesh->vertex_indices.size(); vi++)*/
+  /*{*/
+  /*if ( (vi + 2) >= mesh->vertex_indices.size())*/
+  /*break;*/
+  /*OBJFace f;*/
+  /*size_t mvi0 = mesh->vertex_indices[vi];*/
+  /*size_t mvi1 = mesh->vertex_indices[vi+1];*/
+  /*size_t mvi2 = mesh->vertex_indices[vi+2];*/
+  /*f.vertexIndices.push_back(mvi0);*/
+  /*f.vertexIndices.push_back(mvi1);*/
+  /*f.vertexIndices.push_back(mvi2);*/
+  /*group.faces.push_back(f);*/
+  /*}*/
+  /*_objScene->groups.push_back(group);*/
 
 #if 0
   MRenderable* mr = dynamic_cast<MRenderable*>(ren);
@@ -1270,6 +1429,15 @@ void EmbreeManager::addRenderable(Renderable* ren)
 void EmbreeManager::deleteRenderable(Renderable* ren)
 {
   //TODO: DELETE RENDERABLES
+  ERenderable* er = dynamic_cast<ERenderable*>(ren);
+  printf("deleting renderable of size: %d\n", er->_data->mesh->vertex_indices.size()/3);
+  embreeMutex.lock();
+  /*if (er->isBuilt())*/
+  /*g_device->rtClear(er->_data->d_mesh);*/
+  er->setBuilt(false);
+  /*er->_data->mesh->vertexNormals.resize(0);*/
+  delete er->_data->mesh;  //embree handles clearing the data... not sure how to get it to not do that with rtclear yet
+  embreeMutex.unlock();
 }
 
 Handle<Device::RTImage> createRandomImage(Device *device, size_t width, size_t height)
@@ -1311,8 +1479,8 @@ void EmbreeManager::exportOBJ(EScene* scene)
   ofstream out("output.obj");
   /*if (out)*/
   /*{*/
-    /*out << *_objScene;*/
-    /*out.close();*/
+  /*out << *_objScene;*/
+  /*out.close();*/
   /*}*/
   /*return;*/
 
@@ -1331,12 +1499,12 @@ void EmbreeManager::exportOBJ(EScene* scene)
       printf("exportOBJ ERROR - wrong instance type\n");
       continue;
     }
-  Manta::Mesh* mesh = er->_data->mesh;
-  printf("objexport called mesh size: %d\n", mesh->vertex_indices.size()/3);
-  printf("objexport called mesh texcoords: %d\n", mesh->texCoords.size());
-  fflush(stdout);
-  if (mesh->vertex_indices.size()/3 < 100)  //TODO: HACK: this is a hack for the DNS videos
-    continue;
+    Manta::Mesh* mesh = er->_data->mesh;
+    printf("objexport called mesh size: %d\n", mesh->vertex_indices.size()/3);
+    printf("objexport called mesh texcoords: %d\n", mesh->texCoords.size());
+    fflush(stdout);
+    /*if (mesh->vertex_indices.size()/3 < 100)  //TODO: HACK: this is a hack for the DNS videos*/
+    /*continue;*/
     /*AffineSpace3f et(LinearSpace3f(mt(0,0), mt(0,1), mt(0,2), mt(1,0), mt(1,1), mt(1,2), mt(2,0),mt(2,1),mt(2,2)), Vector3f(mt(0,3),mt(1,3),mt(2,3)));*/
     //AffineSpace3f et(LinearSpace3f(mt(0,0), mt(1,0), mt(2,0), mt(0,1), mt(1,1), mt(2,1), mt(0,2),mt(1,2),mt(2,2)), Vector3f(mt(3,0),mt(3,1),mt(3,2)));
     /*prims.push_back(g_device->rtNewShapePrimitive(er->_data->d_mesh, er->_data->d_material, copyToArray(et)));*/
@@ -1474,7 +1642,8 @@ void EmbreeManager::addTexture(int handle, int target, int level, int internalFo
   /*Handle<Device::RTImage> image = createRandomImage(g_device, width, height); // g_device->rtNewImage("RGBA8", width, height, data);*/
   /*g_device->rtSetImage(texture, "image", image);*/
   g_device->rtSetImage(texture, "image",
-      rtLoadImage("/home1/01336/carson/colormap.ppm"));
+      rtLoadImage("/work/01336/carson/FIU_Videos/SC_AnimatedStreamlines/colormap2.ppm"));
+  /*rtLoadImage("/home1/01336/carson/colormap.ppm"));*/
   printf("creating texture 3\n");
   g_device->rtCommit(texture);
   _textures[handle] = new Handle<Device::RTTexture>(texture);

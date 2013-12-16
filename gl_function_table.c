@@ -9154,7 +9154,7 @@ GLUNLOCK();
 }
 
 void glBegin(GLenum mode) {
-  gl2manta_beginPrimitive(mode);
+  gr_beginPrimitive(mode);
   ++__sgInsideBegin;
   sprintf(args, "(%s);\n",
       gl_lookup_enum_by_nr(mode, _BeginMode_enum_, tableSize(_BeginMode_enum_)));
@@ -9521,8 +9521,8 @@ GLUNLOCK();
 }
 
 void glCallList(GLuint list) {
-  gl2manta_callList(list);
-  //gl2manta_render();
+  gr_callList(list);
+  //gr_render();
   sprintf(args, "(%u);\n",
       list);
   GLLOCK();
@@ -9551,8 +9551,8 @@ GLUNLOCK();
 
 void glClear(GLbitfield mask) {
   dt->read_flag_write_msg("carson: opengl call made: ");    dt->read_flag_write_msg(dt->format_function_call(49, args));
-  //   gl2manta_render();
-  gl2manta_clear(mask);
+  //   gr_render();
+  gr_clear(mask);
   sprintf(args, "(%s);\n",
       gl_lookup_bitfields_by_nr(mask));
   /*GLLOCK();
@@ -9563,7 +9563,7 @@ next_glClear(mask);
   //  GLLOCK();
 /*next_glClear(GL_DEPTH_BUFFER_BIT);*/
   //    if (mask && (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT))
-  //      gl2manta_render();
+  //      gr_render();
   __sgPrintError();
 GLUNLOCK();
 }
@@ -9582,7 +9582,7 @@ GLUNLOCK();
 }
 
 void glClearColor(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha) {
-  gl2manta_setBackgroundColor(red, green, blue, alpha);
+  gr_setBackgroundColor(red, green, blue, alpha);
   sprintf(args, "(%g, %g, %g, %g);\n",
       red,
       green,
@@ -9687,7 +9687,7 @@ GLUNLOCK();
 }
 
 void glColor3d(GLdouble red, GLdouble green, GLdouble blue) {
-  gl2manta_setColor(red,green,blue, 1.0f);
+  gr_setColor(red,green,blue, 1.0f);
 
   sprintf(args, "(%g, %g, %g);\n",
       red,
@@ -9701,7 +9701,7 @@ GLUNLOCK();
 }
 
 void glColor3dv(const GLdouble * v) {
-  gl2manta_setColor(v[0],v[1],v[2], 1.0f);
+  gr_setColor(v[0],v[1],v[2], 1.0f);
   sprintf(args, "(v);\n");
   GLLOCK();
 next_glColor3dv(v);
@@ -9711,7 +9711,7 @@ GLUNLOCK();
 }
 
 void glColor3f(GLfloat red, GLfloat green, GLfloat blue) {
-  gl2manta_setColor(red,green,blue, 1.0f);
+  gr_setColor(red,green,blue, 1.0f);
   sprintf(args, "(%g, %g, %g);\n",
       red,
       green,
@@ -9748,7 +9748,7 @@ GLUNLOCK();
 }
 
 void glColor3fv(const GLfloat * v) {
-  gl2manta_setColor(v[0],v[1],v[2], 1.0f);
+  gr_setColor(v[0],v[1],v[2], 1.0f);
   sprintf(args, "(v);\n");
   GLLOCK();
 next_glColor3fv(v);
@@ -9770,7 +9770,7 @@ GLUNLOCK();
 }
 
 void glColor3iv(const GLint * v) {
-  gl2manta_setColor(v[0],v[1],v[2], 1.0f);
+  gr_setColor(v[0],v[1],v[2], 1.0f);
   sprintf(args, "(v);\n");
   GLLOCK();
 next_glColor3iv(v);
@@ -9813,7 +9813,7 @@ GLUNLOCK();
 }
 
 void glColor3ubv(const GLubyte * v) {
-  gl2manta_setColorub(v[0], v[1], v[2], 255);
+  gr_setColorub(v[0], v[1], v[2], 255);
   sprintf(args, "(v);\n");
   GLLOCK();
 next_glColor3ubv(v);
@@ -9887,7 +9887,7 @@ GLUNLOCK();
 }
 
 void glColor4d(GLdouble red, GLdouble green, GLdouble blue, GLdouble alpha) {
-  gl2manta_setColor(red,green,blue, alpha);
+  gr_setColor(red,green,blue, alpha);
   sprintf(args, "(%g, %g, %g, %g);\n",
       red,
       green,
@@ -9901,7 +9901,7 @@ GLUNLOCK();
 }
 
 void glColor4dv(const GLdouble * v) {
-  gl2manta_setColor(v[0],v[1],v[2],v[3]);
+  gr_setColor(v[0],v[1],v[2],v[3]);
   sprintf(args, "(v);\n");
   GLLOCK();
 next_glColor4dv(v);
@@ -9911,7 +9911,7 @@ GLUNLOCK();
 }
 
 void glColor4f(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha) {
-  gl2manta_setColor(red,green,blue, alpha);
+  gr_setColor(red,green,blue, alpha);
   sprintf(args, "(%g, %g, %g, %g);\n",
       red,
       green,
@@ -9953,7 +9953,7 @@ GLUNLOCK();
 }
 
 void glColor4fv(const GLfloat * v) {
-  gl2manta_setColor(v[0],v[1],v[2],v[3]);
+  gr_setColor(v[0],v[1],v[2],v[3]);
   sprintf(args, "(v);\n");
   GLLOCK();
 next_glColor4fv(v);
@@ -10069,7 +10069,7 @@ GLUNLOCK();
 }
 
 void glColor4ubv(const GLubyte * v) {
-  gl2manta_setColorub(v[0],v[1],v[2],v[3]);
+  gr_setColorub(v[0],v[1],v[2],v[3]);
   sprintf(args, "(v);\n");
   GLLOCK();
 next_glColor4ubv(v);
@@ -10204,7 +10204,7 @@ GLUNLOCK();
 }
 
 void glColorPointer(GLint size, GLenum type, GLsizei stride, const GLvoid * pointer) {
-  gl2manta_colorPointer(size,type,stride, pointer);
+  gr_colorPointer(size,type,stride, pointer);
   sprintf(args, "(%d, %s, %d, pointer);\n",
       size,
       gl_lookup_enum_by_nr(type, _ColorPointerType_enum_, tableSize(_ColorPointerType_enum_)),
@@ -11187,6 +11187,16 @@ void glDeformationMap3fSGIX(GLenum target, GLfloat u1, GLfloat u2, GLint ustride
 GLUNLOCK();
 }
 
+void glDeleteLists(GLuint list, GLsizei range)
+{
+  gr_deleteLists(list, range);
+  GLLOCK();
+next_glDeleteLists(list, range);
+  __sgPrintError();
+  dt->read_flag_write_msg("carson: opengl call made: glDeleteLists");
+  GLUNLOCK();
+}
+
 void glDetailTexFuncSGIS(GLenum target, GLsizei n, const GLfloat * points) {
   sprintf(args, "(%s, %d, points);\n",
       gl_lookup_enum_by_nr(target, _TextureTarget_enum_, tableSize(_TextureTarget_enum_)),
@@ -11199,7 +11209,7 @@ GLUNLOCK();
 }
 
 void glDisable(GLenum cap) {
-  gl2manta_disable(cap);
+  gr_disable(cap);
   sprintf(args, "(%s);\n",
       gl_lookup_enum_by_nr(cap, _EnableCap_enum_, tableSize(_EnableCap_enum_)));
   GLLOCK();
@@ -11210,7 +11220,7 @@ GLUNLOCK();
 }
 
 void glDisableClientState(GLenum array) {
-  gl2manta_disableClientState(array);
+  gr_disableClientState(array);
   sprintf(args, "(%s);\n",
       gl_lookup_enum_by_nr(array, _EnableCap_enum_, tableSize(_EnableCap_enum_)));
   GLLOCK();
@@ -11231,7 +11241,7 @@ GLUNLOCK();
 }
 
 void glDrawArrays(GLenum mode, GLint first, GLsizei count) {
-  gl2manta_drawArrays(mode, first, count);
+  gr_drawArrays(mode, first, count);
   sprintf(args, "(%s, %d, %d);\n",
       gl_lookup_enum_by_nr(mode, _BeginMode_enum_, tableSize(_BeginMode_enum_)),
       first,
@@ -11292,7 +11302,7 @@ GLUNLOCK();
 }
 
 void glDrawElements(GLenum mode, GLsizei count, GLenum type, const GLvoid * indices) {
-  gl2manta_drawElements(mode, count, type, indices);
+  gr_drawElements(mode, count, type, indices);
   sprintf(args, "(%s, %d, %s, indices);\n",
       gl_lookup_enum_by_nr(mode, _BeginMode_enum_, tableSize(_BeginMode_enum_)),
       count,
@@ -11435,7 +11445,7 @@ GLUNLOCK();
 }
 
 void glEnable(GLenum cap) {
-  gl2manta_enable(cap);
+  gr_enable(cap);
   sprintf(args, "(%s);\n",
       gl_lookup_enum_by_nr(cap, _EnableCap_enum_, tableSize(_EnableCap_enum_)));
   GLLOCK();
@@ -11446,7 +11456,7 @@ GLUNLOCK();
 }
 
 void glEnableClientState(GLenum array) {
-  gl2manta_enableClientState(array);
+  gr_enableClientState(array);
   sprintf(args, "(%s);\n",
       gl_lookup_enum_by_nr(array, _EnableCap_enum_, tableSize(_EnableCap_enum_)));
   GLLOCK();
@@ -11467,7 +11477,7 @@ GLUNLOCK();
 }
 
 void glEnd() {
-  gl2manta_endPrimitive();
+  gr_endPrimitive();
   sprintf(args, "();\n");
   GLLOCK();
 next_glEnd();
@@ -11487,7 +11497,7 @@ GLUNLOCK();
 }
 
 void glEndList() {
-  gl2manta_endList();
+  gr_endList();
   sprintf(args, "();\n");
   GLLOCK();
 #if USE_GL
@@ -11692,7 +11702,7 @@ GLUNLOCK();
 
 void glFinish() {
   if (GLURAY_RENDER_MODE & GLURAY_RENDER_GLFINISH)
-    gl2manta_render();
+    gr_render();
   sprintf(args, "();\n");
   GLLOCK();
 next_glFinish();
@@ -11734,7 +11744,7 @@ GLUNLOCK();
 
 void glFlush() {
   if (GLURAY_RENDER_MODE & GLURAY_RENDER_GLFLUSH)
-   gl2manta_render();
+   gr_render();
   sprintf(args, "();\n");
   GLLOCK();
 next_glFlush();
@@ -11755,7 +11765,7 @@ GLUNLOCK();
         , GLdouble upZ
         )
 {
-  gl2manta_lookAt(eyeX,eyeY,eyeZ,centerX,centerY,centerZ,upX,upY,upZ);
+  gr_lookAt(eyeX,eyeY,eyeZ,centerX,centerY,centerZ,upX,upY,upZ);
   dt->read_flag_write_msg("wakka opengl call made: gluLookAt ");
 GLUNLOCK();
 }
@@ -14050,7 +14060,7 @@ GLUNLOCK();
 }
 
 void glLightfv(GLenum light, GLenum pname, const GLfloat * params) {
-  gl2manta_light(light, pname, params);
+  gr_light(light, pname, params);
   sprintf(args, "(%s, %s, params);\n",
       gl_lookup_enum_by_nr(light, _LightName_enum_, tableSize(_LightName_enum_)),
       gl_lookup_enum_by_nr(pname, _LightParameter_enum_, tableSize(_LightParameter_enum_)));
@@ -14162,7 +14172,7 @@ GLUNLOCK();
 }
 
 void glLoadIdentity() {
-  gl2manta_loadIdentity();
+  gr_loadIdentity();
   sprintf(args, "();\n");
   GLLOCK();
 next_glLoadIdentity();
@@ -14182,7 +14192,7 @@ GLUNLOCK();
 }
 
 void glLoadMatrixd(const GLdouble * m) {
-  gl2manta_loadMatrixd(m);
+  gr_loadMatrixd(m);
   sprintf(args, "(m);\n");
   GLLOCK();
 next_glLoadMatrixd(m);
@@ -14192,7 +14202,7 @@ GLUNLOCK();
 }
 
 void glLoadMatrixf(const GLfloat * m) {
-  gl2manta_loadMatrixf(m);
+  gr_loadMatrixf(m);
   sprintf(args, "(m);\n");
   GLLOCK();
 next_glLoadMatrixf(m);
@@ -14438,7 +14448,7 @@ GLUNLOCK();
 }
 
 void glMaterialf(GLenum face, GLenum pname, GLfloat param) {
-  gl2manta_materialf(face, pname, param);
+  gr_materialf(face, pname, param);
   sprintf(args, "(%s, %s, %g);\n",
       gl_lookup_enum_by_nr(face, _MaterialFace_enum_, tableSize(_MaterialFace_enum_)),
       gl_lookup_enum_by_nr(pname, _MaterialParameter_enum_, tableSize(_MaterialParameter_enum_)),
@@ -14456,7 +14466,7 @@ void glMaterialfv(GLenum face, GLenum pname, const GLfloat * params) {
       gl_lookup_enum_by_nr(pname, _MaterialParameter_enum_, tableSize(_MaterialParameter_enum_)));
   dt->read_flag_write_msg("carson: opengl call made: ");    dt->read_flag_write_msg(dt->format_function_call(475, args));
   /*printf("cdglmaterialfv \"%s params: %f %f %f\"\n", dt->format_function_call(475, args), params[0], params[1], params[2]);*/
-  gl2manta_materialfv(face, pname, params);
+  gr_materialfv(face, pname, params);
   GLLOCK();
 next_glMaterialfv(face, pname, params);
   __sgPrintError();
@@ -14464,7 +14474,7 @@ GLUNLOCK();
 }
 
 void glMateriali(GLenum face, GLenum pname, GLint param) {
-  gl2manta_materiali(face, pname, param);
+  gr_materiali(face, pname, param);
   sprintf(args, "(%s, %s, %d);\n",
       gl_lookup_enum_by_nr(face, _MaterialFace_enum_, tableSize(_MaterialFace_enum_)),
       gl_lookup_enum_by_nr(pname, _MaterialParameter_enum_, tableSize(_MaterialParameter_enum_)),
@@ -14477,7 +14487,7 @@ GLUNLOCK();
 }
 
 void glMaterialiv(GLenum face, GLenum pname, const GLint * params) {
-  gl2manta_materialiv(face, pname, params);
+  gr_materialiv(face, pname, params);
   sprintf(args, "(%s, %s, params);\n",
       gl_lookup_enum_by_nr(face, _MaterialFace_enum_, tableSize(_MaterialFace_enum_)),
       gl_lookup_enum_by_nr(pname, _MaterialParameter_enum_, tableSize(_MaterialParameter_enum_)));
@@ -14531,7 +14541,7 @@ GLUNLOCK();
 }
 
 void glMatrixMode(GLenum mode) {
-  gl2manta_matrixMode(mode);
+  gr_matrixMode(mode);
   sprintf(args, "(%s);\n",
       gl_lookup_enum_by_nr(mode, _MatrixMode_enum_, tableSize(_MatrixMode_enum_)));
   GLLOCK();
@@ -14566,7 +14576,7 @@ GLUNLOCK();
 }
 
 void glMultMatrixd(const GLdouble * m) {
-  gl2manta_multMatrixd(m);
+  gr_multMatrixd(m);
   sprintf(args, "(m);\n");
   /*
      float modelview[16];
@@ -14611,7 +14621,7 @@ GLUNLOCK();
 }
 
 void glMultMatrixf(const GLfloat * m) {
-  gl2manta_multMatrixf(m);
+  gr_multMatrixf(m);
   sprintf(args, "(m);\n");
   GLLOCK();
 next_glMultMatrixf(m);
@@ -15424,7 +15434,7 @@ GLUNLOCK();
 }
 
 void glNewList(GLuint list, GLenum mode) {
-  gl2manta_newList(list,mode);
+  gr_newList(list,mode);
   sprintf(args, "(%u, %s);\n",
       list,
       gl_lookup_enum_by_nr(mode, _ListMode_enum_, tableSize(_ListMode_enum_)));
@@ -15473,7 +15483,7 @@ GLUNLOCK();
 }
 
 void glNormal3d(GLdouble nx, GLdouble ny, GLdouble nz) {
-  gl2manta_normal(nx,ny,nz);
+  gr_normal(nx,ny,nz);
   sprintf(args, "(%g, %g, %g);\n",
       nx,
       ny,
@@ -15488,7 +15498,7 @@ GLUNLOCK();
 }
 
 void glNormal3dv(const GLdouble * v) {
-  gl2manta_normal(v[0],v[1],v[2]);
+  gr_normal(v[0],v[1],v[2]);
   sprintf(args, "(v);\n");
   GLLOCK();
 #if USE_GL
@@ -15500,7 +15510,7 @@ GLUNLOCK();
 }
 
 void glNormal3f(GLfloat nx, GLfloat ny, GLfloat nz) {
-  gl2manta_normal(nx,ny,nz);
+  gr_normal(nx,ny,nz);
   sprintf(args, "(%g, %g, %g);\n",
       nx,
       ny,
@@ -15539,7 +15549,7 @@ GLUNLOCK();
 }
 
 void glNormal3fv(const GLfloat * v) {
-  gl2manta_normal(v[0],v[1],v[2]);
+  gr_normal(v[0],v[1],v[2]);
   sprintf(args, "(v);\n");
   GLLOCK();
 #if USE_GL
@@ -15551,7 +15561,7 @@ GLUNLOCK();
 }
 
 void glNormal3i(GLint nx, GLint ny, GLint nz) {
-  gl2manta_normal(nx,ny,nz);
+  gr_normal(nx,ny,nz);
   sprintf(args, "(%d, %d, %d);\n",
       nx,
       ny,
@@ -15564,7 +15574,7 @@ GLUNLOCK();
 }
 
 void glNormal3iv(const GLint * v) {
-  gl2manta_normal(v[0],v[1],v[2]);
+  gr_normal(v[0],v[1],v[2]);
   sprintf(args, "(v);\n");
   GLLOCK();
 next_glNormal3iv(v);
@@ -15574,7 +15584,7 @@ GLUNLOCK();
 }
 
 void glNormal3s(GLshort nx, GLshort ny, GLshort nz) {
-  gl2manta_normal(nx,ny,nz);
+  gr_normal(nx,ny,nz);
   sprintf(args, "(%d, %d, %d);\n",
       nx,
       ny,
@@ -15587,7 +15597,7 @@ GLUNLOCK();
 }
 
 void glNormal3sv(const GLshort * v) {
-  gl2manta_normal(v[0],v[1],v[2]);
+  gr_normal(v[0],v[1],v[2]);
   sprintf(args, "(v);\n");
   GLLOCK();
 next_glNormal3sv(v);
@@ -16159,7 +16169,7 @@ GLUNLOCK();
 }
 
 void glPopMatrix() {
-  gl2manta_popMatrix();
+  gr_popMatrix();
   sprintf(args, "();\n");
   GLLOCK();
 next_glPopMatrix();
@@ -16294,7 +16304,7 @@ GLUNLOCK();
 }
 
 void glPushMatrix() {
-  gl2manta_pushMatrix();
+  gr_pushMatrix();
   sprintf(args, "();\n");
   GLLOCK();
 next_glPushMatrix();
@@ -16596,7 +16606,7 @@ void glReadPixels(GLint x, GLint y, GLsizei width, GLsizei height, GLenum format
   dt->read_flag_write_msg("carson: opengl call made: ");    dt->read_flag_write_msg(dt->format_function_call(664, args));
   if (format == GL_RGBA //TODO: this assumes compositors will read in rgba first...
     && (GLURAY_RENDER_MODE & GLURAY_RENDER_GLREADPIXELS) )
-    gl2manta_render();
+    gr_render();
   GLLOCK();
 next_glReadPixels(x, y, width, height, format, type, pixels);
   __sgPrintError();
@@ -17050,7 +17060,7 @@ GLUNLOCK();
 }
 
 void glRotated(GLdouble angle, GLdouble x, GLdouble y, GLdouble z) {
-  gl2manta_rotate(angle,x,y,z);
+  gr_rotate(angle,x,y,z);
   sprintf(args, "(%g, %g, %g, %g);\n",
       angle,
       x,
@@ -17064,7 +17074,7 @@ GLUNLOCK();
 }
 
 void glRotatef(GLfloat angle, GLfloat x, GLfloat y, GLfloat z) {
-  gl2manta_rotate(angle,x,y,z);
+  gr_rotate(angle,x,y,z);
   sprintf(args, "(%g, %g, %g, %g);\n",
       angle,
       x,
@@ -17154,7 +17164,7 @@ GLUNLOCK();
 }
 
 void glScaled(GLdouble x, GLdouble y, GLdouble z) {
-  gl2manta_scale(x,y,z);
+  gr_scale(x,y,z);
   sprintf(args, "(%g, %g, %g);\n",
       x,
       y,
@@ -17167,7 +17177,7 @@ GLUNLOCK();
 }
 
 void glScalef(GLfloat x, GLfloat y, GLfloat z) {
-  gl2manta_scale(x,y,z);
+  gr_scale(x,y,z);
   sprintf(args, "(%g, %g, %g);\n",
       x,
       y,
@@ -18051,7 +18061,7 @@ GLUNLOCK();
 
 void glTexCoord2fv(const GLfloat * v) {
   sprintf(args, "(v);\n");
-  gl2manta_texCoord(v[0], v[1], 0.0);
+  gr_texCoord(v[0], v[1], 0.0);
   GLLOCK();
 next_glTexCoord2fv(v);
   __sgPrintError();
@@ -18520,7 +18530,7 @@ next_glTexImage1D(target, level, internalformat, width, border, format, type, pi
   __sgPrintError();
   dt->read_flag_write_msg("carson: opengl call made: ");    dt->read_flag_write_msg(dt->format_function_call(833, args));
 GLUNLOCK();
-  gr_glTexImage1D(target, level, internalformat, width, border, format, type, pixels);
+  gr_TexImage1D(target, level, internalformat, width, border, format, type, pixels);
 }
 
 void glTexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, const GLvoid * pixels) {
@@ -18823,7 +18833,7 @@ GLUNLOCK();
 }
 
 void glTranslated(GLdouble x, GLdouble y, GLdouble z) {
-  gl2manta_translate(x,y,z);
+  gr_translate(x,y,z);
   sprintf(args, "(%g, %g, %g);\n",
       x,
       y,
@@ -18836,7 +18846,7 @@ GLUNLOCK();
 }
 
 void glTranslatef(GLfloat x, GLfloat y, GLfloat z) {
-  gl2manta_translate(x,y,z);
+  gr_translate(x,y,z);
   sprintf(args, "(%g, %g, %g);\n",
       x,
       y,
@@ -18977,7 +18987,7 @@ GLUNLOCK();
 }
 
 void glVertex2d(GLdouble x, GLdouble y) {
-  gl2manta_addVertex(x,y,0);
+  gr_addVertex(x,y,0);
   sprintf(args, "(%g, %g);\n",
       x,
       y);
@@ -19060,7 +19070,7 @@ GLUNLOCK();
 }
 
 void glVertex3d(GLdouble x, GLdouble y, GLdouble z) {
-  gl2manta_addVertex(x,y,z);
+  gr_addVertex(x,y,z);
   sprintf(args, "(%g, %g, %g);\n",
       x,
       y,
@@ -19075,7 +19085,7 @@ GLUNLOCK();
 }
 
 void glVertex3dv(const GLdouble * v) {
-  gl2manta_addVertex(v[0],v[1],v[2]);
+  gr_addVertex(v[0],v[1],v[2]);
   sprintf(args, "(v);\n");
   GLLOCK();
 #if USE_GL
@@ -19087,7 +19097,7 @@ GLUNLOCK();
 }
 
 void glVertex3f(GLfloat x, GLfloat y, GLfloat z) {
-  gl2manta_addVertex(x,y,z);
+  gr_addVertex(x,y,z);
   sprintf(args, "(%g, %g, %g);\n",
       x,
       y,
@@ -19102,7 +19112,7 @@ GLUNLOCK();
 }
 
 void glVertex3fv(const GLfloat * v) {
-  gl2manta_addVertex(v[0],v[1],v[2]);
+  gr_addVertex(v[0],v[1],v[2]);
   sprintf(args, "(%f, %f, %f);\n", v[0], v[1], v[2]);
   GLLOCK();
 #if USE_GL
@@ -19128,7 +19138,7 @@ GLUNLOCK();
 }
 
 void glVertex3iv(const GLint * v) {
-  gl2manta_addVertex(v[0],v[1],v[2]);
+  gr_addVertex(v[0],v[1],v[2]);
   sprintf(args, "(v);\n");
   GLLOCK();
 next_glVertex3iv(v);
@@ -19150,7 +19160,7 @@ GLUNLOCK();
 }
 
 void glVertex3sv(const GLshort * v) {
-  gl2manta_addVertex(v[0],v[1],v[2]);
+  gr_addVertex(v[0],v[1],v[2]);
   sprintf(args, "(v);\n");
   GLLOCK();
 next_glVertex3sv(v);
@@ -19173,7 +19183,7 @@ GLUNLOCK();
 }
 
 void glVertex4dv(const GLdouble * v) {
-  gl2manta_addVertex(v[0],v[1],v[2]);
+  gr_addVertex(v[0],v[1],v[2]);
   sprintf(args, "(v);\n");
   GLLOCK();
 next_glVertex4dv(v);
@@ -19196,7 +19206,7 @@ GLUNLOCK();
 }
 
 void glVertex4fv(const GLfloat * v) {
-  gl2manta_addVertex(v[0],v[1],v[2]);
+  gr_addVertex(v[0],v[1],v[2]);
   sprintf(args, "(v);\n");
   GLLOCK();
 next_glVertex4fv(v);
@@ -19219,7 +19229,7 @@ GLUNLOCK();
 }
 
 void glVertex4iv(const GLint * v) {
-  gl2manta_addVertex(v[0],v[1],v[2]);
+  gr_addVertex(v[0],v[1],v[2]);
   sprintf(args, "(v);\n");
   GLLOCK();
 next_glVertex4iv(v);
@@ -19242,7 +19252,7 @@ GLUNLOCK();
 }
 
 void glVertex4sv(const GLshort * v) {
-  gl2manta_addVertex(v[0],v[1],v[2]);
+  gr_addVertex(v[0],v[1],v[2]);
   sprintf(args, "(v);\n");
   GLLOCK();
 next_glVertex4sv(v);
@@ -19744,7 +19754,7 @@ GLUNLOCK();
 }
 
 void glVertexPointer(GLint size, GLenum type, GLsizei stride, const GLvoid * pointer) {
-  gl2manta_vertexPointer(size,type,stride,pointer);
+  gr_vertexPointer(size,type,stride,pointer);
   sprintf(args, "(%d, %s, %d, pointer);\n",
       size,
       gl_lookup_enum_by_nr(type, _VertexPointerType_enum_, tableSize(_VertexPointerType_enum_)),
@@ -20185,7 +20195,7 @@ GLUNLOCK();
 }
 
 void glViewport(GLint x, GLint y, GLsizei width, GLsizei height) {
-  gl2manta_viewport(x,y,width,height);
+  gr_viewport(x,y,width,height);
   sprintf(args, "(%d, %d, %d, %d);\n",
       x,
       y,
@@ -20761,7 +20771,7 @@ XVisualInfo * glXChooseVisual(Display * dpy, GLint screen, GLint * attriblist) {
   GLLOCK();
   result =
 next_glXChooseVisual(dpy, screen, attriblist);
-  gl2manta_chooseVisual(result);
+  gr_chooseVisual(result);
 
   __sgPrintError();
   dt->read_flag_write_msg("carson: opengl call made: ");    dt->read_flag_write_msg(dt->format_function_call(1029, args));
@@ -20915,7 +20925,8 @@ GLUNLOCK();
 }
 
 void glXDestroyContext(Display * dpy, GLXContext ctx) {
-  printf("destroy contex\n");
+  printf("destroy context\n");
+  return;
   sprintf(args, "(%p, %p);\n",
       dpy,
       ctx);
@@ -21097,7 +21108,7 @@ GLUNLOCK();
 }
 
 Bool glXMakeCurrent(Display * dpy, GLXDrawable drawable, GLXContext ctx) {
-  gl2manta_makeCurrent(drawable);
+  gr_makeCurrent(drawable);
   Bool result;
   sprintf(args, "(%p, %ld, %p);\n",
       dpy,
@@ -21250,7 +21261,7 @@ GLUNLOCK();
 void glXSwapBuffers(Display * dpy, GLXDrawable drawable) {
   dt->read_flag_write_msg("carson: swap buffers called, rendering: ");    dt->read_flag_write_msg(dt->format_function_call(1068, args));
   if (GLURAY_RENDER_MODE & GLURAY_RENDER_GLXSWAPBUFFERS)
-    gl2manta_render();
+    gr_render();
   sprintf(args, "(%p, %lDRAWn",
       dpy,
       drawable);

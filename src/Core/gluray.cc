@@ -12,53 +12,53 @@
 #include <fstream>
 int GLURAY_RENDER_MODE=0;   //extern in defines
 
-void gl2manta_init(){}
-void gl2manta_addVertex(float x, float y, float z){}
-void gl2manta_beginPrimitive(int type){}
-void gl2manta_endPrimitive(){}
-void gl2manta_render(){}
-void gl2manta_setColor(float r, float g, float b, float a){}
-void gl2manta_setColorub(unsigned char r, unsigned char g, unsigned char b, unsigned char a){}
-void gl2manta_setBackgroundColor(float r, float g, float b, float a){}
-void gl2manta_normal(float x,float y,float z){}
-void gl2manta_materialfv(int face, int pname, float* params){}
-void gl2manta_materialf(int face, int pname, float param){}
-void gl2manta_materialiv(int face, int pname, int* params){}
-void gl2manta_materiali(int face, int pname, int param){}
-void gl2manta_translate(float x, float y, float z){}
-void gl2manta_rotate(float angle, float x, float y, float z){}
-void gl2manta_scale(float x, float y, float z){}
-void gl2manta_newList(size_t list, int mode){}
-void gl2manta_endList(){}
-void gl2manta_callList(int list){}
-void gl2manta_deleteLists(GLuint list, GLsizei range){}
-void gl2manta_enableClientState(GLenum st){}
-void gl2manta_vertexPointer(GLint dim, GLenum type, GLsizei stride, const GLvoid* pointer){}
-void gl2manta_colorPointer(GLint size, GLenum type, GLsizei stride, const GLvoid * pointer){}
-void gl2manta_drawArrays(GLenum type, GLint first, GLsizei count){}
-void gl2manta_drawElements(GLenum mode, GLsizei count, GLenum type, const GLvoid* indices){}
-void gl2manta_drawElements_internal(GLenum mode, GLsizei count, GLenum type, const GLvoid* indices, GLint first){}
-void gl2manta_disableClientState(GLenum st){}
-void gl2manta_pushMatrix(){}
-void gl2manta_popMatrix(){}
-void gl2manta_loadIdentity(){}
-void gl2manta_viewport(int x, int y, int width, int height){}
-void gl2manta_lookAt(float ex,float ey, float ez, float lx,
+void gr_init(){}
+void gr_addVertex(float x, float y, float z){}
+void gr_beginPrimitive(int type){}
+void gr_endPrimitive(){}
+void gr_render(){}
+void gr_setColor(float r, float g, float b, float a){}
+void gr_setColorub(unsigned char r, unsigned char g, unsigned char b, unsigned char a){}
+void gr_setBackgroundColor(float r, float g, float b, float a){}
+void gr_normal(float x,float y,float z){}
+void gr_materialfv(int face, int pname, float* params){}
+void gr_materialf(int face, int pname, float param){}
+void gr_materialiv(int face, int pname, int* params){}
+void gr_materiali(int face, int pname, int param){}
+void gr_translate(float x, float y, float z){}
+void gr_rotate(float angle, float x, float y, float z){}
+void gr_scale(float x, float y, float z){}
+void gr_newList(size_t list, int mode){}
+void gr_endList(){}
+void gr_callList(int list){}
+void gr_deleteLists(GLuint list, GLsizei range){}
+void gr_enableClientState(GLenum st){}
+void gr_vertexPointer(GLint dim, GLenum type, GLsizei stride, const GLvoid* pointer){}
+void gr_colorPointer(GLint size, GLenum type, GLsizei stride, const GLvoid * pointer){}
+void gr_drawArrays(GLenum type, GLint first, GLsizei count){}
+void gr_drawElements(GLenum mode, GLsizei count, GLenum type, const GLvoid* indices){}
+void gr_drawElements_internal(GLenum mode, GLsizei count, GLenum type, const GLvoid* indices, GLint first){}
+void gr_disableClientState(GLenum st){}
+void gr_pushMatrix(){}
+void gr_popMatrix(){}
+void gr_loadIdentity(){}
+void gr_viewport(int x, int y, int width, int height){}
+void gr_lookAt(float ex,float ey, float ez, float lx,
 		     float ly, float lz, float ux, float uy, float uz){}
-void gl2manta_makeCurrent(unsigned long winID){}
-void gl2manta_chooseVisual(XVisualInfo* info){}
-void gl2manta_matrixMode(int mode){}
-void gl2manta_multMatrixf(const float* m){}
-void gl2manta_multMatrixd(const double* m){}
-void gl2manta_loadMatrixf(const float* m){}
-void gl2manta_loadMatrixd(const double* m){}
-void gl2manta_clear(GLbitfield mask){}
+void gr_makeCurrent(unsigned long winID){}
+void gr_chooseVisual(XVisualInfo* info){}
+void gr_matrixMode(int mode){}
+void gr_multMatrixf(const float* m){}
+void gr_multMatrixd(const double* m){}
+void gr_loadMatrixf(const float* m){}
+void gr_loadMatrixd(const double* m){}
+void gr_clear(GLbitfield mask){}
 
-void gl2manta_light(int light, int pname, float* params){}
-void gl2manta_enable(int what){}
-void gl2manta_disable(int what){}
+void gr_light(int light, int pname, float* params){}
+void gr_enable(int what){}
+void gr_disable(int what){}
 
-void gl2manta_material(int pname, float* params){}
+void gr_material(int pname, float* params){}
 void gr_frustum(GLdouble left, GLdouble right, GLdouble bottom, GLdouble top, GLdouble near, GLdouble ar){}
 void gr_glTexImage1D(GLenum target, GLint level, GLint internalFormat, GLsizei width,
     GLint border, GLenum format, GLenum type, const GLvoid* data){}
@@ -134,7 +134,7 @@ size_t numadds = 0;
 #if (USE_GLURAY == 0)
 #define GRCHECK() { return; }
 #else
-#define GRCHECK() { gl2manta_init(); }
+#define GRCHECK() { gr_init(); }
 #endif
 
 float poly_vert[4][3];
@@ -161,17 +161,17 @@ int resolution[2];
 int max_packet_size = 100;
 bool rendered = true;
 
-enum GL2MANTA_MATERIALS {
-  GL2MANTA_PHONG,
-  GL2MANTA_LAMBERTIAN,
-  GL2MANTA_AO,
-  GL2MANTA_METAL
+enum gr_MATERIALS {
+  gr_PHONG,
+  gr_LAMBERTIAN,
+  gr_AO,
+  gr_METAL
 };
 
 ThreadGroup* accelThreads;
 Mutex* accelThreadsMutex;
 
-int material = GL2MANTA_PHONG;
+int material = gr_PHONG;
 map<std::size_t, vector<Renderable*>* > display_lists;
 Renderable* __dl_renderable;
 const GLvoid* __color_pointer = 0;
@@ -192,7 +192,7 @@ static int attributeListDbl[] = { GLX_RGBA, GLX_DOUBLEBUFFER, /*In case single b
 
 RenderManager* rm = 0;
 
-void gl2manta_init()
+void gr_init()
 {
 #if (USE_GLURAY == 0)
   return;
@@ -282,7 +282,7 @@ void gl2manta_init()
 #endif
 
 
-  gl2manta_setColor(1,1,1,1);
+  gr_setColor(1,1,1,1);
 
   string configFile;
   GetVar<string>("GLURAY_CONFIG", configFile);
@@ -334,8 +334,9 @@ void gl2manta_init()
 }
 
 
-void gl2manta_addVertex(float x, float y, float z)
+void gr_addVertex(float x, float y, float z)
 {
+  GRCHECK();
   numadds++;
   if (!support_immediate && !IN_DL)
     return;
@@ -367,9 +368,9 @@ void gl2manta_addVertex(float x, float y, float z)
       rm->setCurrentRenderable(mr);
       display_lists[DL_NUM]->push_back(__dl_renderable);
 
-      gl2manta_endPrimitive();
+      gr_endPrimitive();
       //TODO: this will break strips
-      gl2manta_beginPrimitive(PRIM_TYPE);
+      gr_beginPrimitive(PRIM_TYPE);
     }
   }
 
@@ -381,34 +382,46 @@ void gl2manta_addVertex(float x, float y, float z)
   mr->addVertex(x,y,z);
 }
 
-void gl2manta_texCoord(float x, float y, float z)
+void gr_texCoord(float x, float y, float z)
 {
+  GRCHECK();
   Renderable* mr = rm->current_renderable;
   assert(mr);
   mr->addTextureCoord(x,y,z,1);
 }
 
-void gl2manta_setColor(float r, float g, float b, float a)
-{
-  rm->setColor(r,g,b,a);
-  if (!rm->getUsePerVertexColors())
-    rm->updateMaterial();
-}
-
-void gl2manta_setColorub(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
-{
-  static float s = 1.0f/255.0f;
-  gl2manta_setColor(float(r)*s, float(g)*s, float(b)*s, float(a)*s);
-}
-
-void gl2manta_setBackgroundColor(float r, float g, float b, float a)
+void gr_setColor(float r, float g, float b, float a)
 {
   GRCHECK();
-  rm->setBGColor(r,g,b,a);
+  static float oldr, oldg, oldb, olda;
+  if (r != oldr || g != oldg || b != oldb || a != olda)
+  {
+    rm->setColor(r,g,b,a);
+    if (!rm->getUsePerVertexColors())
+      rm->updateMaterial();
+    oldr = r; oldg=g; oldb=b; olda=a;
+  }
+}
+
+void gr_setColorub(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
+{
+  static float s = 1.0f/255.0f;
+  gr_setColor(float(r)*s, float(g)*s, float(b)*s, float(a)*s);
+}
+
+void gr_setBackgroundColor(float r, float g, float b, float a)
+{
+  GRCHECK();
+  static float oldr, oldg, oldb, olda;
+  if (r != oldr || g != oldg || b != oldb || a != olda)
+  {
+    rm->setBGColor(r,g,b,a);
+    oldr = r; oldg=g; oldb=b; olda=a;
+  }
 }
 
 
-void gl2manta_normal(float x, float y, float z)
+void gr_normal(float x, float y, float z)
 {
   GRCHECK();
   if (IN_DL)
@@ -419,7 +432,7 @@ void gl2manta_normal(float x, float y, float z)
 //
 ////  TODO:  currently does not support immediate mode!
 //
-void gl2manta_beginPrimitive(int type)
+void gr_beginPrimitive(int type)
 {
   GRCHECK();
   LOGSTARTC("beginPrim", 0,0.3,0.5);
@@ -429,7 +442,7 @@ void gl2manta_beginPrimitive(int type)
     return;
   bool ok = true;
   PRIM_TYPE = type;
-  gl2manta_init();
+  gr_init();
   vertex_counter = 0;
   prim_counter = 0;
   Renderable* renderable = NULL;
@@ -438,7 +451,7 @@ void gl2manta_beginPrimitive(int type)
   if (!IN_DL)
   {
     GLint dl = glGenLists(1);
-    gl2manta_newList(dl, GL_COMPILE);
+    gr_newList(dl, GL_COMPILE);
     IN_IMMEDIATE = true;
     //assert("error" == "immediate mode not supported");  //TODO: support immediate
   }
@@ -458,7 +471,7 @@ void gl2manta_beginPrimitive(int type)
 }
 
 
-void gl2manta_endPrimitive()
+void gr_endPrimitive()
 {
   GRCHECK();
 #if (DEBUG_MSGS == 1)
@@ -472,10 +485,10 @@ void gl2manta_endPrimitive()
     {
       PRIM_TYPE = GL_QUADS;
       __dl_renderable->setGenerator(rm->getGeometryGenerator(GL_QUADS));
-      gl2manta_addVertex(poly_vert[0][0], poly_vert[0][1],poly_vert[0][2]);
-      gl2manta_addVertex(poly_vert[1][0], poly_vert[1][1],poly_vert[1][2]);
-      gl2manta_addVertex(poly_vert[2][0], poly_vert[2][1],poly_vert[2][2]);
-      gl2manta_addVertex(poly_vert[3][0], poly_vert[3][1],poly_vert[3][2]);
+      gr_addVertex(poly_vert[0][0], poly_vert[0][1],poly_vert[0][2]);
+      gr_addVertex(poly_vert[1][0], poly_vert[1][1],poly_vert[1][2]);
+      gr_addVertex(poly_vert[2][0], poly_vert[2][1],poly_vert[2][2]);
+      gr_addVertex(poly_vert[3][0], poly_vert[3][1],poly_vert[3][2]);
     }
     else
     {
@@ -486,9 +499,9 @@ void gl2manta_endPrimitive()
 
   if (IN_IMMEDIATE)
   {
-    gl2manta_endList();
+    gr_endList();
     IN_IMMEDIATE = false;
-    //gl2manta_callList(DL_NUM);
+    //gr_callList(DL_NUM);
   }
   LOGSTOP("beginPrim");
   //TODO: vapor hack3, no support for immediate
@@ -529,13 +542,13 @@ void gl2manta_endPrimitive()
 
 int frame = 0;
 bool newCamFrame = true; // boolean added for taking maximum viewport size each frame
-void gl2manta_render()
+void gr_render()
 {
   GRCHECK();
-  DEBUG("gl2manta_render called\n");
+  DEBUG("gr_render called\n");
   //if (rm->next_scene->instances.size() < 1)
   {
-    //DEBUG("gl2manta_render nothing, returning\n");  //TODO: removed for mpi tests
+    //DEBUG("gr_render nothing, returning\n");  //TODO: removed for mpi tests
     //return;
   }
   //TODO: DEBUG: paraview is stalling here... ranks 1-2 aren't getting cleared first
@@ -576,6 +589,30 @@ void gl2manta_render()
   //timer.start();
   static CDTimer sceneTimer, renderTimer, displayTimer;
 
+
+  //HACK: ADD PLANE FOR SC VIDEO
+  glDisable(GL_TEXTURE_2D);
+  glColor3f(1,1,1);
+  static bool once = false;
+  if (!once)
+  {
+    once = true;
+    gr_newList(55555, GL_COMPILE);
+    gr_beginPrimitive(GL_QUADS);
+    gr_addVertex(-1500,-1000,-1500);
+    gr_addVertex(-1500,1000,-1500);
+    gr_addVertex(1500,1000,-1500);
+    gr_addVertex(1500,-1000,-1500);
+
+    gr_addVertex(-1500,-1000,-1501);
+    gr_addVertex(-1500,-1000,1501);
+    gr_addVertex(-1500,1000,1501);
+    gr_addVertex(-1500,1000,-1501);
+    gr_endPrimitive();
+    gr_endList();
+  }
+  gr_callList(55555);
+
   //renderTimer.start();
   rm->render();
   //renderTimer.stop();
@@ -588,7 +625,7 @@ void gl2manta_render()
 
 
 
-void gl2manta_materialfv(int face, int pname, float* params)
+void gr_materialfv(int face, int pname, float* params)
 {
   GRCHECK();
   GLMaterial& mat = rm->getCurrentMaterial();
@@ -629,19 +666,19 @@ void gl2manta_materialfv(int face, int pname, float* params)
   rm->updateMaterial();
 }
 
-void gl2manta_materialf(int face, int pname, float param)
+void gr_materialf(int face, int pname, float param)
 {
   GRCHECK();
 
 }
 
-void gl2manta_materialiv(int face, int pname, int* params)
+void gr_materialiv(int face, int pname, int* params)
 {
   GRCHECK();
 
 }
 
-void gl2manta_materiali(int face, int pname, int param)
+void gr_materiali(int face, int pname, int param)
 {
   GRCHECK();
 
@@ -649,7 +686,7 @@ void gl2manta_materiali(int face, int pname, int param)
 
 
 
-void gl2manta_translate(float x, float y, float z)
+void gr_translate(float x, float y, float z)
 {
   GRCHECK();
   if (matrix_mode != GL_MODELVIEW)
@@ -669,7 +706,7 @@ void gl2manta_translate(float x, float y, float z)
 
 #define DEG_TO_RADIONS 3.14f/180.0f
 
-void gl2manta_rotate(float angle, float x, float y, float z)
+void gr_rotate(float angle, float x, float y, float z)
 {
   GRCHECK();
   if (matrix_mode != GL_MODELVIEW)
@@ -681,7 +718,7 @@ void gl2manta_rotate(float angle, float x, float y, float z)
 }
 
 
-void gl2manta_scale(float x, float y, float z)
+void gr_scale(float x, float y, float z)
 {
   GRCHECK();
   if (matrix_mode != GL_MODELVIEW)
@@ -691,7 +728,7 @@ void gl2manta_scale(float x, float y, float z)
   rm->current_transform = rm->current_transform*t;
 }
 
-void gl2manta_loadIdentity()
+void gr_loadIdentity()
 {
   GRCHECK();
   if (matrix_mode != GL_MODELVIEW)
@@ -699,10 +736,10 @@ void gl2manta_loadIdentity()
   rm->current_transform.initWithIdentity();
 }
 
-void gl2manta_newList(size_t list, int mode)
+void gr_newList(size_t list, int mode)
 {
   GRCHECK();
-  gl2manta_pushMatrix();
+  gr_pushMatrix();
   //
   //  setting color before and after display list so we can safely delete all materials...
   //
@@ -716,22 +753,23 @@ void gl2manta_newList(size_t list, int mode)
   DL_NUM = list;
   //TODO: check if exists
   if (display_lists[DL_NUM])
-    gl2manta_deleteLists(DL_NUM, 1);
+    gr_deleteLists(DL_NUM, 1);
   display_lists[DL_NUM] = new vector<Renderable*>();
   assert(display_lists[DL_NUM]);
-  if (mode == GL_COMPILE_AND_EXECUTE)
-  {
-    assert(GL_COMPILE_AND_EXECUTE==55);
-    //TODO:
-  }
 
   //TODO: vapor hack
   __dl_renderable = rm->createRenderable(rm->getGeometryGenerator(0));
   //MantaManager::singleton()->next_scene->renderables.push_back(__dl_renderable);
   display_lists[DL_NUM]->push_back(__dl_renderable);
+
+  if (mode == GL_COMPILE_AND_EXECUTE)
+  {
+    //assert(GL_COMPILE_AND_EXECUTE==55);
+    gr_callList(DL_NUM);
+  }
 }
 
-void gl2manta_endList()
+void gr_endList()
 {
   GRCHECK();
   //
@@ -787,13 +825,13 @@ void gl2manta_endList()
   //       delete display_lists[DL_NUM];
   //       display_lists[DL_NUM] = NULL;
   //     }
-  gl2manta_popMatrix();
+  gr_popMatrix();
   IN_DL = false;
-  gl2manta_callList(DL_NUM);
+  gr_callList(DL_NUM);
   DL_NUM = 0;
 }
 
-void gl2manta_callList(int list)
+void gr_callList(int list)
 {
   GRCHECK();
   DEBUG("callList\n");
@@ -907,7 +945,7 @@ void gl2manta_callList(int list)
   //LOGSTOP("gluray_callList");
 }
 
-void gl2manta_deleteLists(GLuint list, GLsizei range)
+void gr_deleteLists(GLuint list, GLsizei range)
 {
   GRCHECK();
   for(int i = 0; i < range; i++)
@@ -928,7 +966,7 @@ void gl2manta_deleteLists(GLuint list, GLsizei range)
   }
 }
 
-void gl2manta_enableClientState(GLenum st)
+void gr_enableClientState(GLenum st)
 {
   GRCHECK();
 
@@ -938,7 +976,7 @@ const GLvoid* __vertex_pointer = 0;
 int __vertex_stride = 0;
 bool __vertex_fill =  false;
 
-void gl2manta_vertexPointer(GLint dim, GLenum type, GLsizei stride, const GLvoid* pointer)
+void gr_vertexPointer(GLint dim, GLenum type, GLsizei stride, const GLvoid* pointer)
 {
   GRCHECK();
   __vertex_pointer = pointer;
@@ -968,10 +1006,10 @@ void gl2manta_vertexPointer(GLint dim, GLenum type, GLsizei stride, const GLvoid
 
 
 
-void gl2manta_colorPointer(GLint size, GLenum type, GLsizei stride, const GLvoid * pointer)
+void gr_colorPointer(GLint size, GLenum type, GLsizei stride, const GLvoid * pointer)
 {
   GRCHECK();
-  cout << "gl2manta_colorPointer\n";
+  cout << "gr_colorPointer\n";
   __color_pointer = pointer;
   //if (pointer == 0)
   //	cout << "null color pointer give\n";
@@ -997,19 +1035,19 @@ void gl2manta_colorPointer(GLint size, GLenum type, GLsizei stride, const GLvoid
 
 }
 
-void gl2manta_drawArrays(GLenum mode, GLint first, GLsizei count)
+void gr_drawArrays(GLenum mode, GLint first, GLsizei count)
 {
   GRCHECK();
-  gl2manta_drawElements(mode, count, GL_UNSIGNED_INT, NULL);
+  gr_drawElements(mode, count, GL_UNSIGNED_INT, NULL);
 }
 
-void gl2manta_drawElements(GLenum mode, GLsizei count, GLenum type, const GLvoid* indices)
+void gr_drawElements(GLenum mode, GLsizei count, GLenum type, const GLvoid* indices)
 {
   GRCHECK();
-  gl2manta_drawElements_internal(mode, count, type, indices, 0);
+  gr_drawElements_internal(mode, count, type, indices, 0);
 }
 
-void gl2manta_drawElements_internal(GLenum mode, GLsizei count, GLenum type, const GLvoid* indices, GLint first)
+void gr_drawElements_internal(GLenum mode, GLsizei count, GLenum type, const GLvoid* indices, GLint first)
 {
   GRCHECK();
   //assert(__vertex_pointer);
@@ -1017,8 +1055,8 @@ void gl2manta_drawElements_internal(GLenum mode, GLsizei count, GLenum type, con
     return;
   RGBAColor c = rm->getCurrentColor();
   //if (__color_pointer)   //  MantaManager::singleton()->usePerVertexColors = true;
-  gl2manta_setColor(c.color[0], c.color[1], c.color[2],  c.a);
-  gl2manta_beginPrimitive(mode);
+  gr_setColor(c.color[0], c.color[1], c.color[2],  c.a);
+  gr_beginPrimitive(mode);
   switch(mode)
   {
     case GL_TRIANGLE_STRIP:
@@ -1032,7 +1070,7 @@ void gl2manta_drawElements_internal(GLenum mode, GLsizei count, GLenum type, con
         if (!display_lists[index])
         {
         cout << "drawArrays new list\n";
-        gl2manta_newList(index, GL_COMPILE);*/
+        gr_newList(index, GL_COMPILE);*/
         const float* data = &(static_cast<const float*>(__vertex_pointer)[first*__vertex_stride]);
         const float* cdata = &(static_cast<const float*>(__color_pointer)[first*__color_stride]);
         if (indices == NULL)
@@ -1044,7 +1082,7 @@ void gl2manta_drawElements_internal(GLenum mode, GLsizei count, GLenum type, con
             {
               rm->current_renderable->addTextureCoord(cdata[2],cdata[1],cdata[0],cdata[3]);
             }
-            gl2manta_addVertex(data[0],data[1],data[2]);
+            gr_addVertex(data[0],data[1],data[2]);
             data += 3*__vertex_stride;
             cdata += 4*__color_stride;
           }
@@ -1063,15 +1101,15 @@ void gl2manta_drawElements_internal(GLenum mode, GLsizei count, GLenum type, con
               cout << "add vert2\n";
               rm->getCurrentRenderable()->addTextureCoord(c[0],c[1],c[2],c[3]);
             }
-            gl2manta_addVertex(v[0],v[1],v[2]);
+            gr_addVertex(v[0],v[1],v[2]);
           }
         }
-        /*    gl2manta_endList();
-              gl2manta_callList(index);*/
+        /*    gr_endList();
+              gr_callList(index);*/
         //}
         //else
         //{
-        /*	gl2manta_callList(index);*/
+        /*	gr_callList(index);*/
         //}
 
       }
@@ -1079,11 +1117,11 @@ void gl2manta_drawElements_internal(GLenum mode, GLsizei count, GLenum type, con
     default:
       break;
   }
-  gl2manta_endPrimitive();
-  gl2manta_setColor(c.color[0], c.color[1], c.color[2], c.a);
+  gr_endPrimitive();
+  gr_setColor(c.color[0], c.color[1], c.color[2], c.a);
 }
 
-void gl2manta_disableClientState(GLenum st)
+void gr_disableClientState(GLenum st)
 {
   GRCHECK();
   if (st == GL_VERTEX_ARRAY)
@@ -1093,45 +1131,45 @@ void gl2manta_disableClientState(GLenum st)
 }
 
 
-void gl2manta_pushMatrix()
+void gr_pushMatrix()
 {
   GRCHECK();
   transform_stack.push(rm->getCurrentTransform());
 }
 
-void gl2manta_popMatrix()
+void gr_popMatrix()
 {
   GRCHECK();
   rm->current_transform = transform_stack.top();
   transform_stack.pop();
 }
 
-void gl2manta_makeCurrent(unsigned long winID)
+void gr_makeCurrent(unsigned long winID)
 {
   GRCHECK();
   rm->window_id = winID;
 }
 
 
-void gl2manta_chooseVisual(XVisualInfo* info)
+void gr_chooseVisual(XVisualInfo* info)
 {
   GRCHECK();
   //  MantaManager::singleton()->visual = info->visual;  //crashes ensight...
 }
 
-void gl2manta_viewport(int x, int y, int width, int height)
+void gr_viewport(int x, int y, int width, int height)
 {
   GRCHECK();
   //TODO: this is a hack to keep paraview and other programs from messing up the viewport by drawing axis and other annoyances
   if(!newCamFrame)
   {
     //if (width < 300)  //TODO: this is a hack... paraview keeps changing it to 164 for some unknown reason
-      //return;
+    //return;
     if (width < resolution[0] && height < resolution[0])
       return;
   }
   newCamFrame = false;
-  gl2manta_init();
+  gr_init();
   // rtrt->changeResolution(0,width,height,false);
   // rtrt->addOneShotCallback(MantaInterface::Absolute, 0,
   //
@@ -1159,7 +1197,7 @@ void gl2manta_viewport(int x, int y, int width, int height)
 }
 
 
-void gl2manta_lookAt(float ex,float ey, float ez, float lx,float ly, float lz, float ux, float uy, float uz)
+void gr_lookAt(float ex,float ey, float ez, float lx,float ly, float lz, float ux, float uy, float uz)
 {
   GRCHECK();
   GLuRayRenderParameters& p = rm->params;
@@ -1170,13 +1208,13 @@ void gl2manta_lookAt(float ex,float ey, float ez, float lx,float ly, float lz, f
   rm->updateCamera();
 }
 
-void gl2manta_matrixMode(int mode)
+void gr_matrixMode(int mode)
 {
   GRCHECK();
   matrix_mode = mode;
 }
 
-void gl2manta_multMatrixf(const float* m)
+void gr_multMatrixf(const float* m)
 {
   GRCHECK();
   if (matrix_mode != GL_MODELVIEW)
@@ -1195,7 +1233,7 @@ void gl2manta_multMatrixf(const float* m)
   //cout << "\n\n result: \n" << current_transform << endl << endl;
 }
 
-void gl2manta_multMatrixd(const double* m)
+void gr_multMatrixd(const double* m)
 {
   GRCHECK();
   if (matrix_mode != GL_MODELVIEW)
@@ -1210,7 +1248,7 @@ void gl2manta_multMatrixd(const double* m)
   rm->current_transform = rm->current_transform*t;
 }
 
-void gl2manta_loadMatrixf(const float* m)
+void gr_loadMatrixf(const float* m)
 {
   GRCHECK();
   if (matrix_mode != GL_MODELVIEW)
@@ -1222,7 +1260,7 @@ void gl2manta_loadMatrixf(const float* m)
   }
 }
 
-void gl2manta_loadMatrixd(const double* m)
+void gr_loadMatrixd(const double* m)
 {
   GRCHECK();
 
@@ -1235,7 +1273,7 @@ void gl2manta_loadMatrixd(const double* m)
   }
 }
 
-void gl2manta_clear(GLbitfield mask)
+void gr_clear(GLbitfield mask)
 {
   GRCHECK();
   //MantaManager* mm = MantaManager::singleton();
@@ -1246,12 +1284,12 @@ void gl2manta_clear(GLbitfield mask)
     }*/
   rendered = false;
   //if (!rendered)
-  //  gl2manta_render(); //this is for single buffered rendering with no bufferswap
+  //  gr_render(); //this is for single buffered rendering with no bufferswap
 }
 
 
 
-void gl2manta_light(int light, int pname, float* params)
+void gr_light(int light, int pname, float* params)
 {
   GRCHECK();
   Vector p(params[0], params[1], params[2]);
@@ -1285,7 +1323,7 @@ void gl2manta_light(int light, int pname, float* params)
   rm->setLight(num, l);
 }
 
-void gl2manta_enable(int what)
+void gr_enable(int what)
 {
   GRCHECK();
 
@@ -1312,7 +1350,7 @@ void gl2manta_enable(int what)
   }
 }
 
-void gl2manta_disable(int what)
+void gr_disable(int what)
 {
   GRCHECK();
 
@@ -1342,7 +1380,7 @@ void gl2manta_disable(int what)
 
 }
 
-void gl2manta_material(int pname, float* params)
+void gr_material(int pname, float* params)
 {
   GRCHECK();
 }
@@ -1356,7 +1394,7 @@ void gr_frustum(GLdouble left, GLdouble right, GLdouble bottom, GLdouble top, GL
 void gr_texImage1D(GLenum target, GLint level, GLint internalFormat, GLsizei width,
     GLint border, GLenum format, GLenum type, const GLvoid* data)
 {
-GRCHECK();
+  GRCHECK();
 
 }
 
@@ -1368,7 +1406,7 @@ void gr_texImage2D(GLenum target, GLint level, GLint internalFormat, GLsizei wid
   if (texId <= 0)
     return;
   //if (data == 0)
-    //return;
+  //return;
   rm->addTexture(texId, target, level, internalFormat, width, height, border, format, type, (void*)data);
 #if USE_MPI
   static CDTimer displayTimer;
@@ -1391,7 +1429,7 @@ void gr_finalize()
 void gr_lock(const int num)
 {
   GRCHECK();
- rm->lock(num);
+  rm->lock(num);
 }
 
 

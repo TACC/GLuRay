@@ -136,6 +136,8 @@ class EmbreeManager : public RenderManager
     std::string _format;
     bool _resetAccumulation;
     bool rendered;
+    int _frameNumber;
+    int _realFrameNumber;  //corrected by env param
 
     embree::Handle<embree::Device::RTCamera> _camera;
     embree::Handle<embree::Device::RTMaterial> g_current_material;
