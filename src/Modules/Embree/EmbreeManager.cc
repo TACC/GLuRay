@@ -13,7 +13,7 @@
 //#include <X11/Xutil.h>
 
 //#include "../gl_functions.h"
-#include "CDTimer.h"
+#include "CDTimer.h" ljlkj
 #include "EScene.h"
 #include "ERenderable.h"
 #include "common.h"
@@ -229,7 +229,7 @@ void EmbreeManager::updateLights()
     //lights->add(new PointLight(Vector(8,5,6), Color(RGBColor(.6,.67,.9))*.4*compI));
   }
 
-  Manta::Color ambient(RGB(0,0,0));
+  Manta::Color ambient(RGB(0.0,0.0,0.0));
   bool addedLight = false;
   //TODO: modify light position by modelview!
   if (params.use_gl_lights && use_gl_lights)
@@ -242,49 +242,25 @@ void EmbreeManager::updateLights()
         addedLight = true;
         if (l.w == 0)
         {
-          cout << "adding gl directional light " << i << ":\n" << l << "\n";
-          //lights->add(new DirectionalLight(l.pos, l.diffuse));
-          //AffineSpace3f space(LinearSpace3f(1,0,0,0,1,0,0,0,1), Vector3f(0,0,0));
-          /*
-           *directional light
-           */
-          //AffineSpace3f as(LinearSpace3f(1,0,0.5,
-          //0,1,0-.5,
-          //0,0,-.3), Vector3f(0,0,0));
+          // cout << "adding gl directional light " << i << ":\n" << l << "\n";
           Handle<Device::RTLight> directionalLight = g_device->rtNewLight("directionallight");
           g_device->rtSetFloat3(directionalLight, "D", l.pos[0], l.pos[1], l.pos[2]);
           g_device->rtSetFloat3(directionalLight, "E", l.diffuse[0], l.diffuse[1], l.diffuse[2]);
           g_device->rtCommit(directionalLight);
-          /*//return;*/
           _lights.push_back(g_device->rtNewLightPrimitive(directionalLight, NULL, copyToArray(transform)));
-          /*
-           *end directional light
-           */
-    /*AffineSpace3f space = load<AffineSpace3f>(xml->child("AffineSpace"));*/
-      /*AffineSpace3f space(LinearSpace3f(1,0,0,0,0,1,0,0,0), Vector3f(-1,0,0));*/
-
-    /*Handle<Device::RTLight> light = g_device->rtNewLight("directionallight");*/
-    /*[>g_device->rtSetFloat3(light, "D", space.l.vz.x, space.l.vz.y, space.l.vz.z);<]*/
-    /*[>g_device->rtSetFloat3(light, "E", 1, 0, 0);<]*/
-          /*g_device->rtSetFloat3(light, "D", 1000,-500,-300);*/
-          /*g_device->rtSetFloat3(light, "E", 1.0, 0.8, 0.6);*/
-    /*g_device->rtCommit(light);*/
-    /*_lights.push_back(g_device->rtNewLightPrimitive(light, NULL, copyToArray(transform)));*/
-
-
-
         }
         else
         {
+          #if DEBUG_MSGS
           cout << "adding gl point light " << i << ":\n" << l << "\n";
-          //lights->add(new PointLight(l.pos, l.diffuse));
+          #endif
+          Handle<Device::RTLight> pointLight = g_device->rtNewLight("pointlight");
+          g_device->rtSetFloat3(pointLight, "P", l.pos[0], l.pos[1], l.pos[2]);
+          g_device->rtSetFloat3(pointLight, "I", l.diffuse[0], l.diffuse[1], l.diffuse[2]);
+          g_device->rtCommit(pointLight);
+          _lights.push_back(g_device->rtNewLightPrimitive(pointLight, NULL, copyToArray(transform)));
         }
-        if (use_gl_material)
-        {
-          ambient += l.ambient*0.0f; //TODO: HACK!  ambient should be mix of material properties and ambt... this does this but the material properties are global and old
-        }
-        else
-          ambient += l.ambient*0.5; //TODO: HACK!  ambient should be mix of material properties and amb
+          ambient += l.ambient; //TODO: HACK!  ambient should be mix of material properties and ambt... this does this but the material properties are global and old
       }
     }
     if (!addedLight) //Manta crashes with no lights...
@@ -307,6 +283,13 @@ void EmbreeManager::updateLights()
   }
   else {
     //lights->setAmbientLight(new ConstantAmbient(ambient));
+          //lights->add(new PointLight(l.pos, l.diffuse));
+     // ambient = Manta::Color(RGB(1,1,1));  //HACK!
+          Handle<Device::RTLight> ambientLight = g_device->rtNewLight("ambientlight");
+          g_device->rtSetFloat3(ambientLight, "L", ambient[0], ambient[1], ambient[2]);
+          g_device->rtCommit(ambientLight);
+          _lights.push_back(g_device->rtNewLightPrimitive(ambientLight, NULL, copyToArray(transform)));
+        
   }
   //TODO: tkae out, hardcoded from SC video
   //
@@ -792,11 +775,8 @@ void EmbreeManager::render()
 {
   if (!initialized)
     return;
-
-  printf("attempted render\n");
   if (next_scene->instances.size() == 0)
     return;
-  printf("rendering\n");
   //if (rendered && params.accumulate)
   //displayFrame();
   rendered = true;
@@ -810,42 +790,6 @@ void EmbreeManager::render()
 
   /*if (_frameNumber+1 == params.export_obj)*/
     /*exportOBJ(next_scene);*/
-
-  //TODO: HACK for SC Vid
-  if (params.write_to_file != "")
-  {
-    /*static int _frameNumber1 = 0;*/
-    //TODO: SC VIDEO HACK!
-    //!!!!!!!!!!!!!!!!!!!!!
-    if (_frameNumber > 2)
-    {
-      //TODO: SC VIDEO HACK!
-      static int numberOfFrames = 0;
-      static bool once = false;
-      if (!once)
-      {
-        once = true;
-        GetVar<int>("GR_FrameNumber", _realFrameNumber);
-        _realFrameNumber--;
-        GetVar<int>("GR_NumberOfFrames", numberOfFrames);
-        /*_frameNumber = max(_realFrameNumber,3);*/
-      }
-      printf("setting values framenumber: %d numframes: %d\n", _realFrameNumber, numberOfFrames);
-      float aperture = 0.0f;
-      float focalDistance = 0.0f;
-      float interp = 0;
-      if (numberOfFrames > 0)
-        interp = float(std::max(_realFrameNumber,0))/float(numberOfFrames);
-      params.focalDistance = 125 + 200*interp;
-      params.aperture = 1.0*(1.0-interp) + 0.1;
-      updateCamera();
-    }
-    static int realSPP = params.num_samples;
-    params.num_samples = 1;
-    if(_frameNumber > 3)
-       params.num_samples = realSPP;
-  }
-  //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
   embreeMutex.lock();
   //printf("adding %d instances to scene\n", next_scene->instances.size());
@@ -873,7 +817,6 @@ void EmbreeManager::render()
     g_device->rtSetPrimitive(scene,i,prims[i]);
   g_device->rtCommit(scene);
   _render_scene = scene;
-
 
   //glDrawPixels(fb->size.x, fb->size.y, GL_RGBA, GL_UNSIGNED_BYTE, fb->h_mem);
 
@@ -960,20 +903,7 @@ void EmbreeManager::displayFrame()
   glDrawBuffer(GL_BACK);
 
 
-  //printf("gldrawpixels %d %d \n", _width, _height);
   void* data = g_device->rtMapFrameBuffer(_frameBuffer);
-
-  //for (size_t i = 0; i < _width*_height/8; i++)
-  //{
-  //struct rgba { unsigned char r,g,b,a; };
-  //struct rgb { unsigned char r,g,b; };
-  //char* ptr = &((char*)data)[i*3];
-  ////rgba* val = &(((rgba*)ptr)[i]);
-  //rgb* val = &(((rgb*)ptr)[i]);
-  ////rgba color = {0,0,255,255};
-  //rgb color = {0,0,255};
-  //*val = color;
-  //}
 
   if (_format == "RGB_FLOAT32")
     glDrawPixels(_width,_height,GL_RGB,GL_FLOAT,data);
@@ -1116,31 +1046,6 @@ void EmbreeManager::displayFrame()
   //TODO: HACK
   if (params.write_to_file != "")
   {
-    /*static int _frameNumber = 0;*/
-    //TODO: SC VIDEO HACK!
-    //!!!!!!!!!!!!!!!!!!!!!
-    if (_frameNumber > 3)
-    {
-      //TODO: SC VIDEO HACK!
-      /*static int numberOfFrames = 0;*/
-      /*static int _realFrameNumber = 0;*/
-      /*static bool once = false;*/
-      /*if (!once)*/
-      /*{*/
-        /*once = true;*/
-        /*GetVar<int>("GR_FrameNumber", _realFrameNumber);*/
-        /*GetVar<int>("GR_NumberOfFrames", numberOfFrames);*/
-        /*_frameNumber = _realFrameNumber;*/
-      /*}*/
-      /*float aperture = 0.0f;*/
-      /*float focalDistance = 0.0f;*/
-      /*float interp = 0;*/
-      /*if (numberOfFrames > 0)*/
-        /*interp = float(_frameNumber)/float(numberOfFrames);*/
-      /*params.focalDistance = 125 + 200*interp;*/
-      /*params.aperture = 0.6*(1.0-interp) + 0.1;*/
-      /*updateCamera();*/
-      //!!!!!!!!!!!!!!!!!!!!!
       char* rgba_data = (char*)data;
       DEBUG("writing image\n");
       string filename = params.write_to_file;
@@ -1183,8 +1088,6 @@ void EmbreeManager::displayFrame()
         system(s.str().c_str());
       }
       //delete []test;
-    }
-    _frameNumber++;
     _realFrameNumber++;
   }
 
@@ -1202,22 +1105,20 @@ void EmbreeManager::syncInstances()
 void EmbreeManager::updateCamera()
 {
   embreeMutex.lock();
-  //  cout << "updateCamera\n";
   GLuRayRenderParameters& p = params;
   float angle = p.camera_vfov;
   float aspectRatio = float(_width)/float(_height);
 
-  //p.camera_hfov=p.camera_vfov=22.6;
   embree::Vector3f camPos = embree::Vector3f(p.camera_eye.x(), p.camera_eye.y(), p.camera_eye.z());
   Manta::Vector lookat = (p.camera_eye + p.camera_dir);
   embree::Vector3f camLookAt = embree::Vector3f(lookat.x(), lookat.y(), lookat.z());
   embree::Vector3f camUp = embree::Vector3f(p.camera_up.x(), p.camera_up.y(), p.camera_up.z());
   AffineSpace3f camTransform = AffineSpace3f::lookAtPoint(camPos, camLookAt, camUp);
   AffineSpace3f space(camTransform.l,camTransform.p);
-/*#if DEBUG_MSGS*/
+#if DEBUG_MSGS
   printf("update camera hfov:%f vfov%f angle %f aspect %f focalDistance %f aperture %f eye %f %f %f lookat %f %f %f up %f %f %f \n", p.camera_hfov, p.camera_vfov, angle, aspectRatio, p.focalDistance, p.aperture, camPos[0], camPos[1], camPos[2], camLookAt[0], camLookAt[1], camLookAt[2],
       camUp[0], camUp[1], camUp[2]);
-/*#endif*/
+#endif
   float camRadius = 0.0f;
   if (p.camera != "pinhole")
     camRadius = p.aperture;
@@ -1430,7 +1331,7 @@ void EmbreeManager::deleteRenderable(Renderable* ren)
 {
   //TODO: DELETE RENDERABLES
   ERenderable* er = dynamic_cast<ERenderable*>(ren);
-  printf("deleting renderable of size: %d\n", er->_data->mesh->vertex_indices.size()/3);
+  // printf("deleting renderable of size: %d\n", er->_data->mesh->vertex_indices.size()/3);
   embreeMutex.lock();
   /*if (er->isBuilt())*/
   /*g_device->rtClear(er->_data->d_mesh);*/

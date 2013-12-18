@@ -589,30 +589,6 @@ void gr_render()
   //timer.start();
   static CDTimer sceneTimer, renderTimer, displayTimer;
 
-
-  //HACK: ADD PLANE FOR SC VIDEO
-  glDisable(GL_TEXTURE_2D);
-  glColor3f(1,1,1);
-  static bool once = false;
-  if (!once)
-  {
-    once = true;
-    gr_newList(55555, GL_COMPILE);
-    gr_beginPrimitive(GL_QUADS);
-    gr_addVertex(-1500,-1000,-1500);
-    gr_addVertex(-1500,1000,-1500);
-    gr_addVertex(1500,1000,-1500);
-    gr_addVertex(1500,-1000,-1500);
-
-    gr_addVertex(-1500,-1000,-1501);
-    gr_addVertex(-1500,-1000,1501);
-    gr_addVertex(-1500,1000,1501);
-    gr_addVertex(-1500,1000,-1501);
-    gr_endPrimitive();
-    gr_endList();
-  }
-  gr_callList(55555);
-
   //renderTimer.start();
   rm->render();
   //renderTimer.stop();
