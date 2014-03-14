@@ -68,9 +68,10 @@ ENDIF(ENABLE_MPI)
 
 SET(USE_RIVL NO CACHE BOOL "using intels rivl")
 SET(USE_EMBREE NO CACHE BOOL "using intels embree")
+SET(USE_GVT NO CACHE BOOL "using gvt")
 INCLUDE_DIRECTORIES(src/Core src/Modules/Manta src/Modules/RIVL
   ${CMAKE_BINARY_DIR}/include
-  src/Modules/Embree src)
+  src/Modules/Embree src/Modules/Gvt src)
 #INCLUDE_DIRECTORIES( ${MANTA_INCLUDE} )
 
 ADD_LIBRARY(GLuRay SHARED ${GLURAY_SRC} ${GLURAY_HDR})
@@ -92,6 +93,9 @@ IF(USE_EMBREE)
   SUBDIRS(src/Modules/Embree)
   SET(GLURAY_LIBS ${GLURAY_LIBS} GLuRay_EMBREE)
 ENDIF(USE_EMBREE)
+IF(USE_GVT)
+  SUBDIRS(src/Modules/Gvt)
+ENDIF(USE_GVT)
 #SET(GLURAY_LIBS "")
  MESSAGE(STATUS "GLURAY_LIBS: " ${GLURAY_LIBS})
 TARGET_LINK_LIBRARIES(GLuRay ${GLURAY_LIBS})
