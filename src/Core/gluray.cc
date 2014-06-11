@@ -714,6 +714,8 @@ void gr_loadIdentity()
 
 void gr_newList(size_t list, int mode)
 {
+  printf("newlist\n");
+  fflush(stdout);
   GRCHECK();
   gr_pushMatrix();
   //
@@ -747,6 +749,8 @@ void gr_newList(size_t list, int mode)
 
 void gr_endList()
 {
+  printf("endlist\n");
+  fflush(stdout);
   GRCHECK();
   //
   //  setting color to safely delete materials

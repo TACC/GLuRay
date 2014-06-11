@@ -269,6 +269,10 @@ void RenderManager::setRenderParametersString(string in, bool need_relaunch)
       rp.material = "orenNayar";
       s >> rp.roughness;
     }
+    else if (arg == "-export_obj")
+    {
+      s >> rp.export_obj;
+    }
     else if (arg == "-write_to_file")
     {
       s >> rp.write_to_file;

@@ -289,7 +289,7 @@ void EmbreeManager::updateLights()
           g_device->rtSetFloat3(ambientLight, "L", ambient[0], ambient[1], ambient[2]);
           g_device->rtCommit(ambientLight);
           _lights.push_back(g_device->rtNewLightPrimitive(ambientLight, NULL, copyToArray(transform)));
-        
+
   }
   //TODO: tkae out, hardcoded from SC video
   //
@@ -788,8 +788,10 @@ void EmbreeManager::render()
   for(std::vector<embree::Handle<embree::Device::RTPrimitive> >::iterator itr = _lights.begin(); itr != _lights.end(); itr++)
     prims.push_back(*itr);
 
-  /*if (_frameNumber+1 == params.export_obj)*/
-    /*exportOBJ(next_scene);*/
+  if (++_frameNumber == params.export_obj)
+    exportOBJ(next_scene);
+  next_scene->instances.resize(0);
+  return; //TODO: DEBUG take out
 
   embreeMutex.lock();
   //printf("adding %d instances to scene\n", next_scene->instances.size());
@@ -1218,6 +1220,8 @@ void EmbreeManager::addRenderable(Renderable* ren)
   }
   printf("addrenderable after refit mesh indices/3 vertices normals texcoords: %d %d %d %d \n", mesh->vertex_indices.size()/3, mesh->vertices.size(), mesh->vertexNormals.size(),
       mesh->texCoords.size());
+  er->setBuilt(true);
+  return; //TODO DEBUG take this out
 
   /*mesh->vertices.resize(0);*/
   /*mesh->vertex_indices.resize(0);*/
@@ -1264,14 +1268,14 @@ void EmbreeManager::addRenderable(Renderable* ren)
 
   Handle<Device::RTShape> d_mesh = g_device->rtNewShape("trianglemesh");
   if (numPositions) g_device->rtSetArray(d_mesh, "positions", "float3", positions, numPositions, sizeof(embree::Vec3f), 0);
-  mesh->vertices.resize(0);
+  //mesh->vertices.resize(0);
   //if (numMotions  ) g_device->rtSetArray(d_mesh, "motions"  , "float3", motions  , numMotions  , sizeof(embree::Vec3f), 0);
   if (numNormals  ) g_device->rtSetArray(d_mesh, "normals"  , "float3", normals  , numNormals  , sizeof(embree::Vec3f), 0);
-  mesh->vertexNormals.resize(0);
+  //mesh->vertexNormals.resize(0);
   if (numTexCoords) g_device->rtSetArray(d_mesh, "texcoords", "float2", texcoords, numTexCoords, sizeof(embree::Vec2f ), 0);
-  mesh->texCoords.resize(0);
+  //mesh->texCoords.resize(0);
   if (numTriangles) g_device->rtSetArray(d_mesh, "indices"  , "int3"  , triangles, numTriangles, sizeof(embree::Vec3i ), 0);
-  mesh->vertex_indices.resize(0);
+  //mesh->vertex_indices.resize(0);
   g_device->rtSetString(d_mesh,"accel",g_mesh_accel.c_str());
   g_device->rtSetString(d_mesh,"builder",g_mesh_builder.c_str());
   g_device->rtSetString(d_mesh,"traverser",g_mesh_traverser.c_str());
@@ -1402,6 +1406,8 @@ void EmbreeManager::exportOBJ(EScene* scene)
     }
     Manta::Mesh* mesh = er->_data->mesh;
     printf("objexport called mesh size: %d\n", mesh->vertex_indices.size()/3);
+    printf("objexport called mesh vertices: %d\n", mesh->vertices.size());
+    printf("objexport called mesh vertexNormals: %d\n", mesh->vertexNormals.size());
     printf("objexport called mesh texcoords: %d\n", mesh->texCoords.size());
     fflush(stdout);
     /*if (mesh->vertex_indices.size()/3 < 100)  //TODO: HACK: this is a hack for the DNS videos*/
@@ -1421,30 +1427,30 @@ void EmbreeManager::exportOBJ(EScene* scene)
       v.z = mv[2]+mt(2,3);
       objScene.vertices.push_back(v);
     }
-    for(size_t ni = 0; ni < mesh->vertexNormals.size(); ni++)
-    {
-      OBJNormal v;
-      Vector mv = mesh->vertexNormals[ni];
-      /*printf("premult %f %f %f\n", mv[0], mv[1], mv[2]);*/
-      /*mv = mt.multiply_vector(mv);*/
-      /*printf("postmult %f %f %f\n", mv[0], mv[1], mv[2]);*/
-      v.x = mv[0];
-      v.y = mv[1];
-      v.z = mv[2];
-      objScene.normals.push_back(v);
-    }
-    for(size_t ni = 0; ni < mesh->texCoords.size(); ni++)
-    {
-      OBJTexCoord v;
-      Vector mv = mesh->texCoords[ni];
-      /*printf("premult %f %f %f\n", mv[0], mv[1], mv[2]);*/
-      /*mv = mt.multiply_vector(mv);*/
-      /*printf("postmult %f %f %f\n", mv[0], mv[1], mv[2]);*/
-      v.u = mv[0];
-      v.v = mv[1];
-      v.w = mv[2];
-      objScene.texCoords.push_back(v);
-    }
+    //for(size_t ni = 0; ni < mesh->vertexNormals.size(); ni++)
+    //{
+      //OBJNormal v;
+      //Vector mv = mesh->vertexNormals[ni];
+      //[>printf("premult %f %f %f\n", mv[0], mv[1], mv[2]);<]
+      //[>mv = mt.multiply_vector(mv);<]
+      //[>printf("postmult %f %f %f\n", mv[0], mv[1], mv[2]);<]
+      //v.x = mv[0];
+      //v.y = mv[1];
+      //v.z = mv[2];
+      //objScene.normals.push_back(v);
+    //}
+    //for(size_t ni = 0; ni < mesh->texCoords.size(); ni++)
+    //{
+      //OBJTexCoord v;
+      //Vector mv = mesh->texCoords[ni];
+      //[>printf("premult %f %f %f\n", mv[0], mv[1], mv[2]);<]
+      //[>mv = mt.multiply_vector(mv);<]
+      //[>printf("postmult %f %f %f\n", mv[0], mv[1], mv[2]);<]
+      //v.u = mv[0];
+      //v.v = mv[1];
+      //v.w = mv[2];
+      //objScene.texCoords.push_back(v);
+    //}
     std::stringstream name;
     name << "Group" << itr - scene->instances.begin()+1;
     OBJGroup group(name.str());
@@ -1468,18 +1474,18 @@ void EmbreeManager::exportOBJ(EScene* scene)
       f.vertexIndices.push_back(mvi0+indexCounter+1);
       f.vertexIndices.push_back(mvi1+indexCounter+1);
       f.vertexIndices.push_back(mvi2+indexCounter+1);
-      if (mesh->texCoords.size() > 0)
-      {
-        f.textureIndices.push_back(mvi0+textureIndexCounter+1);
-        f.textureIndices.push_back(mvi1+textureIndexCounter+1);
-        f.textureIndices.push_back(mvi2+textureIndexCounter+1);
-      }
-      if (mesh->vertexNormals.size() > 0)
-      {
-        f.normalIndices.push_back(mvi0+normalIndexCounter+1);
-        f.normalIndices.push_back(mvi1+normalIndexCounter+1);
-        f.normalIndices.push_back(mvi2+normalIndexCounter+1);
-      }
+      //if (mesh->texCoords.size() > 0)
+      //{
+        //f.textureIndices.push_back(mvi0+textureIndexCounter+1);
+        //f.textureIndices.push_back(mvi1+textureIndexCounter+1);
+        //f.textureIndices.push_back(mvi2+textureIndexCounter+1);
+      //}
+      //if (mesh->vertexNormals.size() > 0)
+      //{
+        //f.normalIndices.push_back(mvi0+normalIndexCounter+1);
+        //f.normalIndices.push_back(mvi1+normalIndexCounter+1);
+        //f.normalIndices.push_back(mvi2+normalIndexCounter+1);
+      //}
       group.faces.push_back(f);
     }
     objScene.groups.push_back(group);
@@ -1502,6 +1508,7 @@ void EmbreeManager::exportOBJ(EScene* scene)
 
 void EmbreeManager::addTexture(int handle, int target, int level, int internalFormat, int width, int height, int border, int format, int type, void* data)
 {
+  return;
   if(!initialized)
     return;
   if (border != 0)

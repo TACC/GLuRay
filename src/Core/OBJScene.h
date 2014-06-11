@@ -154,31 +154,53 @@ std::ostream& operator<<(std::ostream& lh, const OBJScene& rh)
   //{
   //lh << *itr << std::endl;
   //}
-  lh << "mtllib fiu.mtl" << std::endl;
+  //lh << "mtllib fiu.mtl" << std::endl;
   printf("outputting vertices\n");
   fflush(stdout);
   lh << "# " << rh.vertices.size() << " Vertices (x,y,z,[w])" << std::endl;
+  {
+    std::stringstream ss;
+    int counter =0;
   for (std::vector<OBJVertex>::const_iterator itr = rh.vertices.begin(); itr != rh.vertices.end(); itr++)
   {
-    lh << *itr << std::endl;
+      if (++counter >= 999999)
+      {
+        lh << ss.str();
+        ss.str("");
+        counter = 0;
+      }
+    ss << *itr << std::endl;
+  }
+  lh << ss.str();
   }
   printf("outputting texture coords\n");
   fflush(stdout);
   lh << "# " << rh.texCoords.size() << " Texture coordinates (u,v,[w])" << std::endl;
+  {
+  std::stringstream ss;
   for (std::vector<OBJTexCoord>::const_iterator itr = rh.texCoords.begin(); itr != rh.texCoords.end(); itr++)
   {
-    lh << *itr << std::endl;
+    ss << *itr << std::endl;
+  }
+  lh << ss.str();
   }
   printf("outputting normals\n");
   fflush(stdout);
   lh << "# " << rh.normals.size() << " Normals (x,y,z).  May not be normalized" << std::endl;
+  {
+  std::stringstream ss;
   for (std::vector<OBJNormal>::const_iterator itr = rh.normals.begin(); itr != rh.normals.end(); itr++)
   {
-    lh << *itr << std::endl;
+    ss << *itr << std::endl;
+  }
+  lh << ss.str();
   }
   printf("outputting groups\n");
   fflush(stdout);
   lh << "# " << rh.groups.size() << " Groups " << std::endl;
+  {
+  std::stringstream ss;
+  int counter =0;
   //for (std::vector<OBJGroup>::const_iterator itr = rh.groups.begin(); itr != rh.groups.end(); itr++)
   {
     //lh << *itr << std::endl;
@@ -186,12 +208,22 @@ std::ostream& operator<<(std::ostream& lh, const OBJScene& rh)
   //lh << rh.groups[0];
   for (std::vector<OBJGroup>::const_iterator itr = rh.groups.begin(); itr != rh.groups.end(); itr++)
   {
-    lh << *itr << std::endl;
+      if (++counter >= 999999)
+      {
+        lh << ss.str();
+        ss.str("");
+        counter = 0;
+      }
+    ss << *itr << std::endl;
+  }
+  lh << ss.str();
   }
   for (size_t gi = 0; gi < rh.groups.size(); gi++)
   {
     //lh << rh.groups[gi] << std::endl;
   }
+  printf("obj export completed\n");
+  fflush(stdout);
 
 
   return lh;
