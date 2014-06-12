@@ -18530,7 +18530,7 @@ next_glTexImage1D(target, level, internalformat, width, border, format, type, pi
   __sgPrintError();
   dt->read_flag_write_msg("carson: opengl call made: ");    dt->read_flag_write_msg(dt->format_function_call(833, args));
 GLUNLOCK();
-  gr_TexImage1D(target, level, internalformat, width, border, format, type, pixels);
+  gr_texImage1D(target, level, internalformat, width, border, format, type, pixels);
 }
 
 void glTexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, const GLvoid * pixels) {

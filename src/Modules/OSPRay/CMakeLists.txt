@@ -13,15 +13,15 @@ INCLUDE_DIRECTORIES(${EMBREE_DIR} ${EMBREE_DIR}/embree
 INCLUDE(${EMBREE_DIR}/cmake/build_icc.cmake)
 #INCLUDE(${IVL_DIR}/runtime/cmake/ivl.cmake)
 
-SET(EMBREE_SOURCES "")
+SET(OSPRAY_SOURCES "")
 
-SET(EMBREE_SOURCES ${EMBREE_SOURCES}
- EmbreeManager.cc
- EmbreeManager.h
- ERenderable.cc
- ERenderable.h
- EScene.cc
- EScene.h
+SET(OSPRAY_SOURCES ${EMBREE_SOURCES}
+ OSPRayManager.cc
+ OSPRayManager.h
+ ORenderable.cc
+ ORenderable.h
+ OScene.cc
+ OScene.h
   )
 
 #FIND_LIBRARY(LIB_RIVL_HOST rivl_host ${RIVL_DIR}/bin)
@@ -54,8 +54,8 @@ SET(EMBREE_LIBS
     #MESSAGE(FATAL_ERROR "Manually Set Embree libraries")
     #ENDIF(EMBREE_LIBS)
 
-ADD_LIBRARY (GLuRay_EMBREE STATIC ${EMBREE_SOURCES})
+ADD_LIBRARY (GLuRay_OSPRAY STATIC ${OSPRAY_SOURCES})
 
-TARGET_LINK_LIBRARIES(GLuRay_EMBREE ${EMBREE_LIBS})
+TARGET_LINK_LIBRARIES(GLuRay_OSPRAY ${EMBREE_LIBS})
 
 
