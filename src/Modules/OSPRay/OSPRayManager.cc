@@ -1,3 +1,10 @@
+//
+// ospray includes
+//
+#include <common/math/affinespace.h>
+#include <common/math/vec3.h>
+
+
 
 #include <UseMPI.h>
 #ifdef USE_MPI
@@ -8,14 +15,14 @@
 #endif
 
 #include "defines.h"
-#include "EmbreeManager.h"
+#include "OSPRayManager.h"
 //#include <X11/Xlib.h>
 //#include <X11/Xutil.h>
 
 //#include "../gl_functions.h"
-#include "CDTimer.h" ljlkj
-#include "EScene.h"
-#include "ERenderable.h"
+#include "CDTimer.h" 
+#include "OScene.h"
+#include "ORenderable.h"
 #include "common.h"
 #include <Modules/Manta/AccelWork.h>
 #include <OBJScene.h>
@@ -38,6 +45,10 @@
 #include <Model/Primitives/Parallelogram.h>
 #include <Model/Primitives/Cube.h>
 #include <Model/Primitives/Disk.h>
+
+
+
+
 
 
 #include <stdio.h>
@@ -69,7 +80,26 @@
 
 //#include "../gl_function_table.h"
 
-using namespace embree;
+//
+// ospray
+//
+#include "../../apps/util/glut3D/glut3D.h"
+// mini scene graph for loading the model
+#include "../../apps/util/miniSG/miniSG.h"
+#include "ospray/common/ospcommon.h"
+
+// using namespace embree;
+
+
+
+//
+//  OSPRay vars
+//
+
+OSPModel model;
+OSPFrameBuffer framebuffer;
+OSPRenderer    renderer;
+OSPCamera      camera;
 
 //ostream& operator<<(ostream& out, GLMaterial& m)
 //{
@@ -115,67 +145,70 @@ using namespace embree;
   //}
 //}
 
-EmbreeManager* EmbreeManager::_singleton = NULL;
+   OSPRayManager* OSPRayManager::_singleton = NULL;
 
-EmbreeManager* EmbreeManager::singleton()
-{
-  if (!_singleton)
-    _singleton = new EmbreeManager();
-  return _singleton;
-}
+   OSPRayManager* OSPRayManager::singleton()
+   {
+    if (!_singleton)
+      _singleton = new OSPRayManager();
+    return _singleton;
+  }
 
 
-  EmbreeManager::EmbreeManager()
-:RenderManager(), current_scene(NULL), next_scene(NULL),
-  _nid_counter(0), _depth(false), _width(512), _height(512), _frameNumber(0), _realFrameNumber(0)
-{
-  rendered = false;
-  _camera = NULL;
-  g_current_material = NULL;
-  _renderer = NULL;
-  _tonemapper = NULL;
-  _frameBuffer = NULL;
-  _backplate = NULL;
-  _render_scene = NULL;
+  OSPRayManager::OSPRayManager()
+  :RenderManager(), current_scene(NULL), next_scene(NULL),
+  _nid_counter(0), _depth(false), _width(0), _height(0), _frameNumber(0), _realFrameNumber(0)
+  {
+    printf("%s::%s\n",typeid(*this).name(),__FUNCTION__);
+  // rendered = false;
+  // _camera = NULL;
+  // g_current_material = NULL;
+  // _renderer = NULL;
+  // _tonemapper = NULL;
+  // _frameBuffer = NULL;
+  // _backplate = NULL;
+  // _render_scene = NULL;
 
-  _scene = "default";
-  //_scene = "twolevel";
-  //_accel = "default";
-  _accel = "bvh4";
-  _builder = "default";
-  _traverser = "default";
-  _resetAccumulation = true;
-  _format = "RGB8";
+  // _scene = "default";
+  // //_scene = "twolevel";
+  // //_accel = "default";
+  // _accel = "bvh4";
+  // _builder = "default";
+  // _traverser = "default";
+  // _resetAccumulation = true;
+  _format = "RGBA8";
 
-  _gVoid = new EGeometryGeneratorVoid();
-  _gTriangle = new EGeometryGeneratorTriangles();
-  _gTriangleStrip = new EGeometryGeneratorTriangleStrip();
-  _gQuads = new EGeometryGeneratorQuads();
-  _gQuadStrip = new EGeometryGeneratorQuadStrip();
-  _gLines = new EGeometryGeneratorLines();
-  _gLineStrip= new EGeometryGeneratorLineStrip();
+    _gVoid = new OGeometryGeneratorVoid();
+    _gTriangle = new OGeometryGeneratorTriangles();
+    _gTriangleStrip = new OGeometryGeneratorTriangleStrip();
+    _gQuads = new OGeometryGeneratorQuads();
+    _gQuadStrip = new OGeometryGeneratorQuadStrip();
+    _gLines = new OGeometryGeneratorLines();
+    _gLineStrip= new OGeometryGeneratorLineStrip();
 
-  _objScene = new OBJScene();
 
-  _xDisplay = NULL;
-  _xWin = new Window;
-}
+  // _objScene = new OBJScene();
 
-EmbreeManager::~EmbreeManager()
-{
-    _renderer = null;
-    _tonemapper = null;
-    _frameBuffer = null;
-    _backplate = null;
-    _render_scene = null;
-    rtClearTextureCache();
-    rtClearImageCache();
-    delete g_device;
-    g_device = NULL;
-}
+  // _xDisplay = NULL;
+  // _xWin = new Window;
+  }
 
-void EmbreeManager::updateLights()
-{
+  OSPRayManager::~OSPRayManager()
+  {
+    // _renderer = null;
+    // _tonemapper = null;
+    // _frameBuffer = null;
+    // _backplate = null;
+    // _render_scene = null;
+    // rtClearTextureCache();
+    // rtClearImageCache();
+    // delete g_device;
+    // g_device = NULL;
+  }
+
+  void OSPRayManager::updateLights()
+  {
+#if 0
   embreeMutex.lock();
   _lights.resize(0);
   AffineSpace3f transform(one);
@@ -307,17 +340,35 @@ void EmbreeManager::updateLights()
           /*_lights.push_back(g_device->rtNewLightPrimitive(directionalLight2, NULL, copyToArray(transform)));*/
   embreeMutex.unlock();
   //cerr << "setuplights done\n";
+  #endif
 }
 
-Renderable* EmbreeManager::createRenderable(GeometryGenerator* gen)
+Renderable* OSPRayManager::createRenderable(GeometryGenerator* gen)
 {
-  EGeometryGenerator* mg = dynamic_cast<EGeometryGenerator*>(gen);
+  OGeometryGenerator* mg = dynamic_cast<OGeometryGenerator*>(gen);
   assert(mg);
-  return new ERenderable(mg);
+  return new ORenderable(mg);
 }
 
-void  EmbreeManager::updateMaterial()
+void  OSPRayManager::updateMaterial()
 {
+  if (!initialized)
+    return;
+  GLMaterial m = gl_material;
+  //TODO: DEBUG: hardcoding mat for debugging
+  m.diffuse = Color(RGB(1.0, 0.713726, .21569));
+  //m.diffuse = Color(RGB(0.8, 0.8, 0.8));
+  m.specular = Manta::Color(RGB(.1, .1, .1));
+  m.ambient = Manta::Color(RGB(0, 0, 0));
+  m.shiny = 100;
+
+o_current_material = ospNewMaterial(renderer,"OBJMaterial");
+Assert(o_current_material);
+        ospSet3fv(o_current_material,"Kd",&m.diffuse[0]);
+      ospSet3fv(o_current_material,"Ks",&m.specular[0]);
+      ospSet1f(o_current_material,"Ns",m.shiny);
+      ospSet1f(o_current_material,"d", current_color.a);
+  #if 0
   if (!initialized)
     return;
   embreeMutex.lock();
@@ -497,35 +548,117 @@ void  EmbreeManager::updateMaterial()
   }
 #endif
   embreeMutex.unlock();
+  #endif
 }
 
-void EmbreeManager::useShadows(bool st)
+void OSPRayManager::useShadows(bool st)
 {
 }
 
-void EmbreeManager::setSize(int w, int h)
+void OSPRayManager::setSize(int w, int h)
 {
+
+  #if 1
   if (initialized && (w != params.width || h != params.height))
   {
-    embreeMutex.lock();
+    // embreeMutex.lock();
     params.width = w;
     params.height = h;
     _width = w; _height = h;
-    _frameBuffer = g_device->rtNewFrameBuffer(_format.c_str(),w,h,2/*num buffers*/);
-    _resetAccumulation = true;
-    embreeMutex.unlock();
+    // _frameBuffer = g_device->rtNewFrameBuffer(_format.c_str(),w,h,2/*num buffers*/);
+    // _resetAccumulation = true;
+    // embreeMutex.unlock();
     updateCamera();
+    ospray::vec2i newSize(w,h);
+    if (framebuffer) ospFreeFrameBuffer(framebuffer);
+    framebuffer = ospNewFrameBuffer(newSize,OSP_RGBA_I8);
   }
+  #endif
 }
 
-struct networkSetupInfo
-{
-  std::string hostname;
-  unsigned int port;
-};
+// struct networkSetupInfo
+// {
+//   std::string hostname;
+//   unsigned int port;
+// };
 
-void EmbreeManager::init()
+void createMaterial(OSPGeometry ospMesh,
+                      OSPRenderer renderer,
+                      ospray::miniSG::Material *mat)
+  {
+    OSPMaterial ospMat = ospNewMaterial(renderer,"OBJMaterial");
+    if (!ospMat)  {
+      cout << "given renderer does not know material type 'OBJMaterial'" << endl;
+      return;
+    }
+
+    if (!mat) {
+      cout << "WARNING: mesh does not have a material! (assigning default)" << endl;
+      ospSet3f(ospMat,"Kd",1.f,0.f,0.f);
+    } else {
+      ospSet3fv(ospMat,"Kd",&mat->Kd.x);
+      ospSet3fv(ospMat,"Ks",&mat->Ks.x);
+      ospSet1f(ospMat,"Ns",mat->Ns);
+      ospSet1f(ospMat,"d", mat->d);
+    }
+
+    ospCommit(ospMat);
+    ospSetMaterial(ospMesh,ospMat);
+    ospRelease(ospMat);
+  }
+
+void OSPRayManager::init()
 {
+  if (initialized)
+    return;
+  initialized=true;
+  printf("%s::%s\n",typeid(*this).name(),__FUNCTION__);
+  int ac =1;
+  const char* av[] = {"gluray"};
+  ospInit(&ac, av);
+
+  setSize(params.width,params.height);
+
+  model = ospNewModel();
+  camera = ospNewCamera("perspective");
+      // Assert(camera != NULL && "could not create camera");
+      // ospSet3f(camera,"pos",-1,1,-1);
+      // ospSet3f(camera,"dir",+1,-1,+1);
+      // ospCommit(camera);
+
+  renderer = ospNewRenderer("raycast_eyelight");
+  if (!renderer)
+    throw std::runtime_error("could not create renderer ");
+  Assert(renderer != NULL && "could not create renderer");
+
+  PRINT(renderer);
+  PRINT(model);
+  ospSetParam(renderer,"world",model);
+  ospSetParam(renderer,"model",model);
+  ospSetParam(renderer,"camera",camera);
+  ospCommit(camera);
+  ospCommit(renderer);
+
+  updateBackground();
+  updateCamera();
+  updateMaterial();
+  if (!current_scene)
+    current_scene = new OScene();
+  if (!next_scene)
+    next_scene = new OScene();
+
+
+
+
+
+
+
+
+
+
+  // ospray::glut3D::initGLUT(&ac,av);
+
+  #if 0
   if (initialized)
     return;
 
@@ -613,7 +746,7 @@ void EmbreeManager::init()
     }
 
 
-    _renderer = g_device->rtNewRenderer("pathtracer");
+    _dere( = g_device->rtNewRenderer("pathtracer");
     g_device->rtSetInt1(_renderer, "sampler.spp", params.num_samples);
     g_device->rtCommit(_renderer);
 
@@ -626,7 +759,7 @@ void EmbreeManager::init()
     _backplate = NULL;
   }
   catch (const std::exception& e) {
-    std::cout << "Error: EmbreeManager: " << e.what() << std::endl;
+    std::cout << "Error: OSPRayManager: " << e.what() << std::endl;
     return;
   }
   catch (...) {
@@ -696,11 +829,13 @@ void EmbreeManager::init()
   //}
   cout << "initialization done\n";
   initialized = true;
+  #endif
 }
 
 //TODO: updating pixelsampler mid flight crashes manta
-void EmbreeManager::setNumSamples(int,int,int samples)
+void OSPRayManager::setNumSamples(int,int,int samples)
 {
+  #if 0
   cout << "setting samples\n";
   params.num_samples = samples;
   stringstream s;
@@ -717,27 +852,30 @@ void EmbreeManager::setNumSamples(int,int,int samples)
   //rtrt->setPixelSampler(ps);
   //  assert(0);
   cout << "set num samples to: " << samples << endl;
+  #endif
 }
 
-void EmbreeManager::setNumThreads(int t)
+void OSPRayManager::setNumThreads(int t)
 {
 }
 
 
 
-size_t EmbreeManager::generateNID()
+size_t OSPRayManager::generateNID()
 {
-  return ++_nid_counter;
+  return 0;
+  // return ++_nid_counter;
 }
 
-Renderable* EmbreeManager::getRenderable(size_t nid)
+Renderable* OSPRayManager::getRenderable(size_t nid)
 {
   return _map_renderables[nid];
 }
 
-void* EmbreeManager::renderLoop(void* t)
+void* OSPRayManager::renderLoop(void* t)
 {
-  EmbreeManager* em = dynamic_cast<EmbreeManager*>((EmbreeManager*)t);
+  #if 0
+  OSPRayManager* em = dynamic_cast<OSPRayManager*>((OSPRayManager*)t);
   assert(em);
   while (true)
   {
@@ -754,10 +892,12 @@ void* EmbreeManager::renderLoop(void* t)
   //bool accum = (!em->_resetAccumulation && em->_accumulate);
   //g_device->rtRenderFrame(em->_renderer,em->_camera,em->_render_scene,em->_tonemapper,em->_frameBuffer,accum);
   //em->displayFrame();
+  #endif
 }
 
-void EmbreeManager::internalRender()
+void OSPRayManager::internalRender()
 {
+  #if 0
   if (!initialized)
     return;
   //if (!rendered)
@@ -768,11 +908,213 @@ void EmbreeManager::internalRender()
   //printf("render frame\n");
   g_device->rtRenderFrame(_renderer,_camera,_render_scene,_tonemapper,_frameBuffer,accum);
   embreeMutex.unlock();
+  #endif
 }
 
 
-void EmbreeManager::render()
+void OSPRayManager::render()
 {
+  if (!initialized)
+    return;
+  if (next_scene->instances.size() == 0)
+    return;
+  _frameNumber++;
+  //if (rendered && params.accumulate)
+  //displayFrame();
+  rendered = true;
+  // std::vector<Handle<Device::RTPrimitive> > prims;
+  // AffineSpace3f transform(one);
+
+  // if (lights_dirty)
+    // updateLights();
+  // for(std::vector<embree::Handle<embree::Device::RTPrimitive> >::iterator itr = _lights.begin(); itr != _lights.end(); itr++)
+    // prims.push_back(*itr);
+
+  // if (++_frameNumber == params.export_obj)
+    // exportOBJ(next_scene);
+  // next_scene->instances.resize(0);
+  // return; //TODO: DEBUG take out
+
+  // embreeMutex.lock();
+  //printf("adding %d instances to scene\n", next_scene->instances.size());
+  for(vector<GRInstance>::iterator itr = next_scene->instances.begin(); itr != next_scene->instances.end(); itr++)
+  {
+    Manta::AffineTransform mt = itr->transform;
+    Renderable* ren = itr->renderable;
+    ORenderable* er = dynamic_cast<ORenderable*>(ren);
+    if (er->isBuilt())
+    {
+      // AffineSpace3f et(LinearSpace3f(mt(0,0), mt(0,1), mt(0,2), mt(1,0), mt(1,1), mt(1,2), mt(2,0),mt(2,1),mt(2,2)), Vector3f(mt(0,3),mt(1,3),mt(2,3)));
+      //AffineSpace3f et(LinearSpace3f(mt(0,0), mt(1,0), mt(2,0), mt(0,1), mt(1,1), mt(2,1), mt(0,2),mt(1,2),mt(2,2)), Vector3f(mt(3,0),mt(3,1),mt(3,2)));
+      // prims.push_back(g_device->rtNewShapePrimitive(er->_data->d_mesh, er->_data->d_material, copyToArray(et)));
+      OSPGeometry inst = ospNewInstance(er->_data->ospModel,
+        ospray::affine3f(embree::LinearSpace3<embree::Vec3fa>(mt(0,0), mt(0,1), mt(0,2), mt(1,0), mt(1,1), mt(1,2), mt(2,0),mt(2,1),mt(2,2)), embree::Vec3fa(mt(0,3),mt(1,3),mt(2,3))));
+      ospAddGeometry(model,inst);
+    }
+  }
+
+//
+  // test scene
+  //
+  #if 0
+ospray::miniSG::Model* msgModel = new ospray::miniSG::Model;;
+ ospray::miniSG::importOBJ(*msgModel,"/scratch/01336/carson/data/bunny.obj");
+ cout << "msgView: done parsing. found model with" << endl;
+    cout << "  - num materials: " << msgModel->material.size() << endl;
+    cout << "  - num meshes   : " << msgModel->mesh.size() << " ";
+    int numUniqueTris = 0;
+    int numInstancedTris = 0;
+    for (int i=0;i<msgModel->mesh.size();i++) {
+      if (i < 10)
+        cout << "[" << msgModel->mesh[i]->size() << "]";
+      else
+        if (i == 10) cout << "...";
+      numUniqueTris += msgModel->mesh[i]->size();
+    }
+    cout << endl;
+    cout << "  - num instances: " << msgModel->instance.size() << " ";
+    for (int i=0;i<msgModel->instance.size();i++) {
+      if (i < 10)
+        cout << "[" << msgModel->mesh[msgModel->instance[i].meshID]->size() << "]";
+      else
+        if (i == 10) cout << "...";
+      numInstancedTris += msgModel->mesh[msgModel->instance[i].meshID]->size();
+    }
+    cout << endl;
+    cout << "  - num unique triangles   : " << numUniqueTris << endl;
+    cout << "  - num instanced triangles: " << numInstancedTris << endl;
+
+    if (msgModel->material.empty()) {
+      cout << "msgView: adding default material" << endl;
+      msgModel->material.push_back(new ospray::miniSG::Material);
+    }
+
+        for (int i=0;i<msgModel->mesh.size();i++) {
+      //      printf("Mesh %i/%li\n",i,msgModel->mesh.size());
+      ospray::Ref<ospray::miniSG::Mesh> msgMesh = msgModel->mesh[i];
+
+      // create ospray mesh
+      OSPGeometry ospMesh = ospNewTriangleMesh();
+
+      // add position array to mesh
+      OSPData position = ospNewData(msgMesh->position.size(),OSP_vec3fa,
+                                    &msgMesh->position[0],OSP_DATA_SHARED_BUFFER);
+      ospSetData(ospMesh,"position",position);
+
+      // add triangle index array to mesh
+      OSPData index = ospNewData(msgMesh->triangle.size(),OSP_vec3i,
+                                 &msgMesh->triangle[0],OSP_DATA_SHARED_BUFFER);
+      ospSetData(ospMesh,"index",index);
+
+      createMaterial(ospMesh, NULL, msgMesh->material.ptr);
+
+        ospAddGeometry(model,ospMesh);
+      }
+
+ospray::glut3D::Glut3DWidget::ViewPort viewPort;
+    // void Glut3DWidget::setWorldBounds(const box3f &worldBounds)
+    // {
+ospray::box3f worldBounds = msgModel->getBBox();
+      ospray::vec3f center = embree::center(worldBounds);
+      ospray::vec3f diag   = worldBounds.size();
+      diag         = max(diag,ospray::vec3f(0.3f*length(diag)));
+      ospray::vec3f from   = center - .75f*ospray::vec3f(-.6*diag.x,-1.2*diag.y,.8*diag.z);
+      ospray::vec3f dir    = center - from;
+      ospray::vec3f up     = viewPort.up;
+
+      // if (!viewPortFromCmdLine) {
+        viewPort.at    = center;
+        viewPort.from  = from;
+        viewPort.up    = up;
+
+        if (length(up) < 1e-3f)
+          up = ospray::vec3f(0,0,1.f);
+
+        viewPort.frame.l.vy = normalize(dir);
+        viewPort.frame.l.vx = normalize(cross(viewPort.frame.l.vy,up));
+        viewPort.frame.l.vz = normalize(cross(viewPort.frame.l.vx,viewPort.frame.l.vy));
+        viewPort.frame.p    = from;
+        viewPort.snapUp();
+        viewPort.modified = true;
+      // }
+    // }
+                Assert2(camera,"ospray camera is null");
+        ospSetVec3f(camera,"pos",viewPort.from);
+        ospSetVec3f(camera,"dir",viewPort.at-viewPort.from);
+        ospSetVec3f(camera,"up",viewPort.up);
+        ospSetf(camera,"aspect",viewPort.aspect);
+        ospCommit(camera);
+
+#endif
+
+  ospCommit(model);
+  next_scene->instances.resize(0);
+  // printf("render\n");
+
+
+
+  ospRenderFrame(framebuffer,renderer);
+
+  uint32* data = (uint32 *) ospMapFrameBuffer(framebuffer);
+        if (_format == "RGB_FLOAT32")
+    glDrawPixels(_width,_height,GL_RGB,GL_FLOAT,data);
+  else if (_format == "RGBA8")
+  glDrawPixels(_width,_height,GL_RGBA,GL_UNSIGNED_BYTE,data);
+  else if (_format == "RGB8")
+    glDrawPixels(_width,_height,GL_RGB,GL_UNSIGNED_BYTE,data);
+  else
+    throw std::runtime_error("unkown format: "+_format);
+
+  ospUnmapFrameBuffer(data,framebuffer);
+
+  // if (params.write_to_file != "")
+  {
+      char* rgba_data = (char*)data;
+      DEBUG("writing image\n");
+      string filename = params.write_to_file;
+      // if (params.write_to_file == "generated")
+      {
+        char cfilename[256];
+#if USE_MPI
+        sprintf(cfilename, "render_%04d_%dx%d_%d.rgb", _realFrameNumber, _width, _height, _rank);
+#else
+        sprintf(cfilename, "render_%04d_%dx%d.rgb", _realFrameNumber, _width, _height);
+#endif
+        filename = string(cfilename);
+      }
+
+      printf("writing filename: %s\n", filename.c_str());
+
+      //unsigned char* test = new unsigned char[xres*yres*3];
+      //glReadPixels(0,0,xres,yres,GL_RGB, GL_UNSIGNED_BYTE, test);
+      FILE* pFile = fopen(filename.c_str(), "w");
+      assert(pFile);
+      if (_format == "RGBA8")
+      {
+        fwrite((void*)&rgba_data[0], 1, _width*_height*4, pFile);
+        fclose(pFile);
+        stringstream s("");
+        //TODO: this fudge factor on teh sizes makes no sense... I'm assuming it's because they have row padding in the data but it doesn't show up in drawpixels... perplexing.  It can also crash just a hack for now
+        s  << "convert -flip -size " << _width << "x" << _height << " -depth 8 rgba:" << filename << " " << filename << ".png && rm " << filename ;
+        /*printf("calling system call \"%s\"\n", s.str().c_str());*/
+        system(s.str().c_str());
+        //delete []test;
+
+      }
+      else
+      {
+        fwrite(data, 1, _width*_height*3, pFile);
+        fclose(pFile);
+        stringstream s("");
+        //TODO: this fudge factor on teh sizes makes no sense... I'm assuming it's because they have row padding in the data but it doesn't show up in drawpixels... perplexing.  It can also crash just a hack for now
+        s << "convert -flip -size " << _width << "x" << _height << " -depth 8 rgb:" << filename << " " << filename << ".png && rm " << filename;
+        system(s.str().c_str());
+      }
+      //delete []test;
+    _realFrameNumber++;
+  }
+
+  #if 0
   if (!initialized)
     return;
   if (next_scene->instances.size() == 0)
@@ -873,19 +1215,21 @@ void EmbreeManager::render()
   /*init();*/
 
 
+#endif
 }
 Display* dis2;
 Window win2;
 
 
-void EmbreeManager::displayFrame()
+void OSPRayManager::displayFrame()
 {
+  #if 0
   if (!rendering)
     return;
   if (_rank > 0)
     return;
   lock(0);
-  LOGSTARTC("EmbreeManager::displayFrame", 0.1,0.5,0.0);
+  LOGSTARTC("OSPRayManager::displayFrame", 0.1,0.5,0.0);
 
   DEBUG("copying image\n");
   static CDTimer displayTimer;
@@ -1096,16 +1440,34 @@ void EmbreeManager::displayFrame()
   DEBUG("draw pixels done \n");
   displayTimer.stop();
   //printf("rank: %d display time: %f\n", _rank, displayTimer.getDelta());
-  LOGSTOP("EmbreeManager::displayFrame");
+  LOGSTOP("OSPRayManager::displayFrame");
   unlock(0);
   embreeMutex.unlock();
+  #endif
 }
 
-void EmbreeManager::syncInstances()
+void OSPRayManager::syncInstances()
 {}
 
-void EmbreeManager::updateCamera()
+void OSPRayManager::updateCamera()
 {
+  GLuRayRenderParameters& p = params;
+  float angle = p.camera_vfov;
+  float aspectRatio = float(_width)/float(_height);
+  ospSetf(camera,"aspect",aspectRatio);
+  ospSetf(camera,"fovy",angle);
+  printf("fovy %f fovh %f\n", p.camera_vfov, p.camera_hfov);
+  Assert(camera != NULL && "could not create camera");
+  ospSet3f(camera,"pos",p.camera_eye.x(), p.camera_eye.y(), p.camera_eye.z());
+  ospSet3f(camera,"up",p.camera_up.x(), p.camera_up.y(), p.camera_up.z());
+  ospSet3f(camera,"dir",p.camera_dir.x(),p.camera_dir.y(),p.camera_dir.z());
+      // ospCommit(camera);
+      // embree::Vector3f camPos = embree::Vector3f(p.camera_eye.x(), p.camera_eye.y(), p.camera_eye.z());
+  // Manta::Vector lookat = (p.camera_eye + p.camera_dir);
+  // embree::Vector3f camLookAt = embree::Vector3f(lookat.x(), lookat.y(), lookat.z());
+  // embree::Vector3f camUp = embree::Vector3f(p.camera_up.x(), p.camera_up.y(), p.camera_up.z());
+  ospCommit(camera);
+  #if 0
   embreeMutex.lock();
   GLuRayRenderParameters& p = params;
   float angle = p.camera_vfov;
@@ -1143,9 +1505,10 @@ void EmbreeManager::updateCamera()
     g_device->rtCommit(_camera);
   }
   embreeMutex.unlock();
+  #endif
 }
 
-void EmbreeManager::updateBackground()
+void OSPRayManager::updateBackground()
 {
 #if 0
   //  cout << "updateBackground\n";
@@ -1169,17 +1532,69 @@ void EmbreeManager::updateBackground()
 #endif
 }
 
-void EmbreeManager::addInstance(Renderable* ren)
+void OSPRayManager::addInstance(Renderable* ren)
 {
-  if (!rendering)
-    return;
+  #if 1
   if (!ren->isBuilt())
     return;
   next_scene->instances.push_back(GRInstance(ren, current_transform));
+  #endif
 }
 
-void EmbreeManager::addRenderable(Renderable* ren)
+void OSPRayManager::addRenderable(Renderable* ren)
 {
+  ORenderable* oren = dynamic_cast<ORenderable*>(ren);
+  if (!oren)
+    return;
+  oren->setBuilt(true);
+      // msgModel = new miniSG::Model;
+      // msgModel->material.push_back(new miniSG::Material);
+  // OSPMaterial ospMat = ospNewMaterial(renderer,"OBJMaterial");
+  float Kd[] = {1.f,1.f,1.f};
+  float Ks[] = {1,1,1};
+
+  std::vector<ospray::vec3fa> vertices;
+  std::vector<ospray::vec3i> triangles;
+
+  Manta::Mesh* mesh = oren->_data->mesh;
+  size_t numTriangles = mesh->vertex_indices.size()/3;
+  size_t numNormals = mesh->vertexNormals.size();
+  size_t numTexCoords = mesh->texCoords.size();
+  size_t numPositions = mesh->vertices.size();
+  printf("addrenderable called mesh indices/3 vertices normals texcoords: %d %d %d %d \n", mesh->vertex_indices.size()/3, mesh->vertices.size(), mesh->vertexNormals.size(),
+    mesh->texCoords.size());
+
+  vertices.resize(numPositions);
+  for(size_t i = 0; i < numPositions; i++)
+    vertices[i] = ospray::vec3fa(mesh->vertices[i].x(), mesh->vertices[i].y(), mesh->vertices[i].z());
+  
+
+      // embree::Vec3i* vertex_indices = (embree::Vec3i*)alignedMalloc(sizeof(embree::Vec3i)*numTriangles);
+  triangles.resize(numTriangles);
+  for(size_t i = 0, mi = 0; i < numTriangles; i++, mi+=3)
+  {
+    triangles[i] = embree::Vec3i(mesh->vertex_indices[mi+0], mesh->vertex_indices[mi+1], mesh->vertex_indices[mi+2]);
+  }
+
+  OSPGeometry ospMesh = oren->_data->ospMesh = ospNewTriangleMesh();
+  OSPData position = ospNewData(vertices.size(),OSP_vec3fa,
+    &vertices[0],OSP_DATA_SHARED_BUFFER);
+  ospSetData(ospMesh,"position",position);
+
+  OSPData index = ospNewData(triangles.size(),OSP_vec3i,
+   &triangles[0],OSP_DATA_SHARED_BUFFER);
+  ospSetData(ospMesh,"index",index);
+  ospCommit(o_current_material);
+  ospSetMaterial(ospMesh,o_current_material);
+  ospRelease(o_current_material);
+
+  oren->_data->ospModel = ospNewModel();
+  ospAddGeometry(oren->_data->ospModel,ospMesh);
+  ospCommit(oren->_data->ospModel);
+        // instanceModels.push_back(model_i);
+
+
+  #if 0
   //TODO: memory leaks appear to be happening entirely because of the geometry sent down to embree.  Commenting them out fixes memory usage... need to debug embree geom clearing.
   ERenderable* er = dynamic_cast<ERenderable*>(ren);
   if (!er)
@@ -1329,10 +1744,12 @@ void EmbreeManager::addRenderable(Renderable* ren)
   _newRenderables.push_back(mr);
   printf("rank: %d %s: size: %d done\n", _rank, __FUNCTION__, mr->getNumPrims());
 #endif
+#endif
 }
 
-void EmbreeManager::deleteRenderable(Renderable* ren)
+void OSPRayManager::deleteRenderable(Renderable* ren)
 {
+  #if 0
   //TODO: DELETE RENDERABLES
   ERenderable* er = dynamic_cast<ERenderable*>(ren);
   // printf("deleting renderable of size: %d\n", er->_data->mesh->vertex_indices.size()/3);
@@ -1343,171 +1760,14 @@ void EmbreeManager::deleteRenderable(Renderable* ren)
   /*er->_data->mesh->vertexNormals.resize(0);*/
   delete er->_data->mesh;  //embree handles clearing the data... not sure how to get it to not do that with rtclear yet
   embreeMutex.unlock();
-}
-
-Handle<Device::RTImage> createRandomImage(Device *device, size_t width, size_t height)
-{
-  if (1)//random<bool>())
-  {
-    char* data = new char[3 * width * height];
-    for (size_t y=0; y < height; y++) {
-      for (size_t x=0; x < width; x++) {
-        size_t ofs = y * width + x;
-        data[3 * ofs + 0] = 255;//char(x * y);
-        data[3 * ofs + 1] = 0;//char(y * x);
-        data[3 * ofs + 2] = 0;//char(x + y);
-      }
-    }
-    Handle<Device::RTImage> image = device->rtNewImage("RGB8", width, height, data);
-    delete[] data;
-    return(image);
-  }
-  else {
-    Col3f* data = new Col3f[3 * width * height];
-    for (size_t y=0; y < height; y++) {
-      for (size_t x=0; x < width; x++) {
-        size_t ofs = y * width + x;
-        data[ofs].r = char(x * y) / 255.0f;
-        data[ofs].g = char(y * x) / 255.0f;
-        data[ofs].b = char(x + y) / 255.0f;
-      }
-    }
-    Handle<Device::RTImage> image = device->rtNewImage("RGB_FLOAT32", width, height, data);
-    delete[] data;
-    return(image);
-  }
+  #endif
 }
 
 
-void EmbreeManager::exportOBJ(EScene* scene)
+
+void OSPRayManager::addTexture(int handle, int target, int level, int internalFormat, int width, int height, int border, int format, int type, void* data)
 {
-  ofstream out("output.obj");
-  /*if (out)*/
-  /*{*/
-  /*out << *_objScene;*/
-  /*out.close();*/
-  /*}*/
-  /*return;*/
-
-  OBJScene objScene;
-  size_t indexCounter = 0;
-  size_t normalIndexCounter = 0;
-  size_t textureIndexCounter = 0;
-
-  for(vector<GRInstance>::iterator itr = scene->instances.begin(); itr != scene->instances.end(); itr++)
-  {
-    Manta::AffineTransform mt = itr->transform;
-    Renderable* ren = itr->renderable;
-    ERenderable* er = dynamic_cast<ERenderable*>(ren);
-    if (!er)
-    {
-      printf("exportOBJ ERROR - wrong instance type\n");
-      continue;
-    }
-    Manta::Mesh* mesh = er->_data->mesh;
-    printf("objexport called mesh size: %d\n", mesh->vertex_indices.size()/3);
-    printf("objexport called mesh vertices: %d\n", mesh->vertices.size());
-    printf("objexport called mesh vertexNormals: %d\n", mesh->vertexNormals.size());
-    printf("objexport called mesh texcoords: %d\n", mesh->texCoords.size());
-    fflush(stdout);
-    /*if (mesh->vertex_indices.size()/3 < 100)  //TODO: HACK: this is a hack for the DNS videos*/
-    /*continue;*/
-    /*AffineSpace3f et(LinearSpace3f(mt(0,0), mt(0,1), mt(0,2), mt(1,0), mt(1,1), mt(1,2), mt(2,0),mt(2,1),mt(2,2)), Vector3f(mt(0,3),mt(1,3),mt(2,3)));*/
-    //AffineSpace3f et(LinearSpace3f(mt(0,0), mt(1,0), mt(2,0), mt(0,1), mt(1,1), mt(2,1), mt(0,2),mt(1,2),mt(2,2)), Vector3f(mt(3,0),mt(3,1),mt(3,2)));
-    /*prims.push_back(g_device->rtNewShapePrimitive(er->_data->d_mesh, er->_data->d_material, copyToArray(et)));*/
-    for(size_t vi = 0; vi < mesh->vertices.size(); vi++)
-    {
-      OBJVertex v;
-      Vector mv = mesh->vertices[vi];
-      /*printf("premult %f %f %f\n", mv[0], mv[1], mv[2]);*/
-      mv = mt.multiply_vector(mv);
-      /*printf("postmult %f %f %f\n", mv[0], mv[1], mv[2]);*/
-      v.x = mv[0]+mt(0,3);
-      v.y = mv[1]+mt(1,3);
-      v.z = mv[2]+mt(2,3);
-      objScene.vertices.push_back(v);
-    }
-    //for(size_t ni = 0; ni < mesh->vertexNormals.size(); ni++)
-    //{
-      //OBJNormal v;
-      //Vector mv = mesh->vertexNormals[ni];
-      //[>printf("premult %f %f %f\n", mv[0], mv[1], mv[2]);<]
-      //[>mv = mt.multiply_vector(mv);<]
-      //[>printf("postmult %f %f %f\n", mv[0], mv[1], mv[2]);<]
-      //v.x = mv[0];
-      //v.y = mv[1];
-      //v.z = mv[2];
-      //objScene.normals.push_back(v);
-    //}
-    //for(size_t ni = 0; ni < mesh->texCoords.size(); ni++)
-    //{
-      //OBJTexCoord v;
-      //Vector mv = mesh->texCoords[ni];
-      //[>printf("premult %f %f %f\n", mv[0], mv[1], mv[2]);<]
-      //[>mv = mt.multiply_vector(mv);<]
-      //[>printf("postmult %f %f %f\n", mv[0], mv[1], mv[2]);<]
-      //v.u = mv[0];
-      //v.v = mv[1];
-      //v.w = mv[2];
-      //objScene.texCoords.push_back(v);
-    //}
-    std::stringstream name;
-    name << "Group" << itr - scene->instances.begin()+1;
-    OBJGroup group(name.str());
-    OBJMaterial mat(name.str()+"Mat");
-    group.material = mat.name;
-    GLMaterial glMat = er->glMaterial;
-    mat.Kd = Vector(glMat.diffuse[0], glMat.diffuse[1], glMat.diffuse[2]);
-    mat.Ka = Vector(glMat.ambient[0], glMat.ambient[1], glMat.ambient[2]);
-    mat.Ks = Vector(glMat.specular[0], glMat.specular[1], glMat.specular[2]);
-    mat.Ns = glMat.shiny;
-    objScene.materials.push_back(mat);
-    for(size_t vi = 0; vi < mesh->vertex_indices.size(); vi++)
-    {
-      if ( (vi + 2) >= mesh->vertex_indices.size())
-        break;
-      OBJFace f;
-      size_t mvi0 = mesh->vertex_indices[vi++];
-      size_t mvi1 = mesh->vertex_indices[vi++];
-      size_t mvi2 = mesh->vertex_indices[vi];
-      /*printf("adding vertex indices: %d\n", mesh->vertex_indices[vi]);*/
-      f.vertexIndices.push_back(mvi0+indexCounter+1);
-      f.vertexIndices.push_back(mvi1+indexCounter+1);
-      f.vertexIndices.push_back(mvi2+indexCounter+1);
-      //if (mesh->texCoords.size() > 0)
-      //{
-        //f.textureIndices.push_back(mvi0+textureIndexCounter+1);
-        //f.textureIndices.push_back(mvi1+textureIndexCounter+1);
-        //f.textureIndices.push_back(mvi2+textureIndexCounter+1);
-      //}
-      //if (mesh->vertexNormals.size() > 0)
-      //{
-        //f.normalIndices.push_back(mvi0+normalIndexCounter+1);
-        //f.normalIndices.push_back(mvi1+normalIndexCounter+1);
-        //f.normalIndices.push_back(mvi2+normalIndexCounter+1);
-      //}
-      group.faces.push_back(f);
-    }
-    objScene.groups.push_back(group);
-    indexCounter += mesh->vertices.size();
-    textureIndexCounter += mesh->texCoords.size();
-    normalIndexCounter += mesh->vertexNormals.size();
-  }
-
-  /*ofstream out("output.obj");*/
-  printf("outputting scene\n");
-  fflush(stdout);
-  if (out)
-  {
-    out << objScene;
-    out.close();
-  }
-  printf("done outputting scene\n");
-  fflush(stdout);
-}
-
-void EmbreeManager::addTexture(int handle, int target, int level, int internalFormat, int width, int height, int border, int format, int type, void* data)
-{
+  #if 0
   return;
   if(!initialized)
     return;
@@ -1558,53 +1818,54 @@ void EmbreeManager::addTexture(int handle, int target, int level, int internalFo
   /*_textures[handle] = NULL;*/
   /*Handle<Device::RTTexture>* tex = new Handle<Device::RTTexture>();*/
   printf("add texture id %d\n", handle);
+  #endif
 }
 
-void EmbreeManager::deleteTexture(int handle)
+void OSPRayManager::deleteTexture(int handle)
 {
 
 }
 
-GeometryGenerator* EmbreeManager::getGeometryGenerator(int type)
+GeometryGenerator* OSPRayManager::getGeometryGenerator(int type)
 {
   switch(type)
   {
     case GL_TRIANGLES:
-      {
-        return _gTriangle;
-      }
+    {
+      return _gTriangle;
+    }
     case GL_TRIANGLE_STRIP:
-      {
-        return _gTriangleStrip;
-      }
+    {
+      return _gTriangleStrip;
+    }
     case GL_QUADS:
-      {
-        return _gQuads;
-      }
+    {
+      return _gQuads;
+    }
     case GL_QUAD_STRIP:
-      {
-        return _gQuadStrip;
-      }
+    {
+      return _gQuadStrip;
+    }
     case GL_LINES:
-      {
+    {
         //			gen = rm->GLines;
         //break;
-      }
+    }
     case GL_LINE_STRIP:
-      {
+    {
         //			gen = rm->GLineStrip;
         //break;
-      }
+    }
     case GL_POLYGON:
-      {
+    {
         //this is temporary for visit, need to support other than quads
         //break;
-      }
+    }
     default:
-      {
-        return _gVoid;
-      }
+    {
+      return _gVoid;
+    }
   }
 }
 
-RenderManager* createEmbreeManager(){ return EmbreeManager::singleton(); }
+RenderManager* createOSPRayManager(){ return OSPRayManager::singleton(); }

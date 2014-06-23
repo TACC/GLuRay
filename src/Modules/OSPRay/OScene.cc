@@ -1,6 +1,6 @@
 
-#include "EScene.h"
-#include "RIVLManager.h"
+#include "OScene.h"
+// #include "RIVLManager.h"
 #include "GLuRayRenderParameters.h"
 
 using namespace std;
@@ -8,13 +8,13 @@ using namespace Manta;
 
 
 
-  EScene::EScene()
+  OScene::OScene()
 {
  // camera =  MantaManager::singleton()->getCamera();
 
   build();
 }
-void EScene::build()
+void OScene::build()
 {
 #if 0
   GLuRayRenderParameters& p = MantaManager::singleton()->params;
@@ -61,7 +61,7 @@ void EScene::build()
 #endif
 }
 
-EScene::~EScene()
+OScene::~OScene()
 {
 
 }

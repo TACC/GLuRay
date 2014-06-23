@@ -1,5 +1,10 @@
-#ifndef EMBREEMANAGER_H
-#define EMBREEMANAGER_H
+#ifndef OSPRAYMANAGER_H
+#define OSPRAYMANAGER_H
+ //
+//ospray
+//
+#include "ospray/ospray.h"
+
 #include <queue>
 #include <stack>
 #include "defines.h"
@@ -8,34 +13,39 @@
 #include "GLuRayRenderParameters.h"
 //#include "ERenderable.h"
 
+
+
 /*
  *Embreee
  */
-#include "sys/platform.h"
-#include "sys/ref.h"
-#include "lexers/streamfilters.h"
-#include "lexers/parsestream.h"
-//#include "../tutorials/glutdisplay.h"
-#include "../tutorial_host/tutorials_host.h"
+// #include "sys/platform.h"
+// #include "sys/ref.h"
+// #include "lexers/streamfilters.h"
+// #include "lexers/parsestream.h"
+// //#include "../tutorials/glutdisplay.h"
+// #include "../tutorial_host/tutorials_host.h"
 
-#include "sys/filename.h"
-#include "image/image.h"
-#include "device/loaders/loaders.h"
-//#include "glutdisplay.h"
-#include "regression.h"
-#include "math/affinespace.h"
-#include "math/color.h"
-#include "math/vec2.h"
-#include "math/vec3.h"
-#include "math/vec4.h"
-#include "device/handle.h"
+// #include "sys/filename.h"
+// #include "image/image.h"
+// #include "device/loaders/loaders.h"
+// //#include "glutdisplay.h"
+// #include "regression.h"
+// #include "math/affinespace.h"
+// #include "math/color.h"
+// #include "math/vec2.h"
+// #include "math/vec3.h"
+// #include "math/vec4.h"
+// #include "device/handle.h"
 
-#include "sys/platform.h"
-#include "sys/ref.h"
-#include "camera.h"
+// #include "sys/platform.h"
+// #include "sys/ref.h"
+// #include "camera.h"
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
+
+
+
 
 /*
  *
@@ -43,10 +53,10 @@
 
 using namespace Manta;
 
-class EScene;
-class ERenderable;
-class EGeometryGenerator;
-class OBJScene;
+class OScene;
+class ORenderable;
+class OGeometryGenerator;
+// class OBJScene;
 class Scene;
 //class Display;
 //class Window;
@@ -58,12 +68,12 @@ class Renderer;
 class Camera;
 }*/
 
-class EmbreeManager : public RenderManager
+class OSPRayManager : public RenderManager
 {
   public:
 
-    EmbreeManager() ;
-    ~EmbreeManager();
+    OSPRayManager() ;
+    ~OSPRayManager();
 
 /*
  *Inherited functions
@@ -107,70 +117,72 @@ class EmbreeManager : public RenderManager
     static void* renderLoop(void* t);
     void internalRender();
 
-    void exportOBJ(EScene* scene);
+    // void exportOBJ(EScene* scene);
 
     //
     //  Variables
     //
 
-    EGeometryGenerator* _gVoid, *_gTriangle, *_gTriangleStrip, *_gQuads, *_gQuadStrip, *_gLines, *_gLineStrip;
-    //  static void* clientLoop(void* t);
-    EScene *current_scene;
-    EScene *next_scene;
-    queue<EScene*> scene_queue;
+    OGeometryGenerator* _gVoid, *_gTriangle, *_gTriangleStrip, *_gQuads, *_gQuadStrip, *_gLines, *_gLineStrip;
+    // //  static void* clientLoop(void* t);
+    OScene *current_scene;
+    OScene *next_scene;
+    // queue<EScene*> scene_queue;
     map<int, Renderable*> _map_renderables;
-    vector<Renderable*> _newRenderables; //new renderables added to be synced over mpi
+    // vector<Renderable*> _newRenderables; //new renderables added to be synced over mpi
 
-    SyncDisplay* sync_display;
-    Mutex accel_mutex, general_mutex, params_mutex;
-    vector<float> depth_data;
-    vector<float> rgba_data;
-    vector<char> rgb_data;
-    bool frame_lag;
-    int _rank;
-    int _numProcs;
-    void relaunchCallback(int,int);
+    // SyncDisplay* sync_display;
+    // Mutex accel_mutex, general_mutex, params_mutex;
+    // vector<float> depth_data;
+    // vector<float> rgba_data;
+    // vector<char> rgb_data;
+    // bool frame_lag;
+    // int _rank;
+    // int _numProcs;
+    // void relaunchCallback(int,int);
     size_t _nid_counter;
     bool _depth;
     int _width, _height;
     std::string _format;
-    bool _resetAccumulation;
+    // bool _resetAccumulation;
     bool rendered;
     int _frameNumber;
     int _realFrameNumber;  //corrected by env param
+    OSPMaterial o_current_material;
 
-    embree::Handle<embree::Device::RTCamera> _camera;
-    embree::Handle<embree::Device::RTMaterial> g_current_material;
-    embree::Handle<embree::Device::RTRenderer> _renderer;
-    embree::Handle<embree::Device::RTToneMapper> _tonemapper;
-    embree::Handle<embree::Device::RTFrameBuffer> _frameBuffer;
-    embree::Handle<embree::Device::RTImage> _backplate;
-    embree::Handle<embree::Device::RTScene> _render_scene;
+    // embree::Handle<embree::Device::RTCamera> _camera;
+    // embree::Handle<embree::Device::RTMaterial> g_current_material;
+    // embree::Handle<embree::Device::RTRenderer> _renderer;
+    // embree::Handle<embree::Device::RTToneMapper> _tonemapper;
+    // embree::Handle<embree::Device::RTFrameBuffer> _frameBuffer;
+    // embree::Handle<embree::Device::RTImage> _backplate;
+    // embree::Handle<embree::Device::RTScene> _render_scene;
 
-    std::string _scene;
-    std::string _accel;
-    std::string _builder;
-    std::string _traverser;
+    // std::string _scene;
+    // std::string _accel;
+    // std::string _builder;
+    // std::string _traverser;
 
-    //rivl::vec2ui*       windowSize;
-    //rivl::FrameBuffer *fb;
-    //rivl::Renderer    *renderer;
-    //rivl::Camera      *camera;
-    Mutex embreeMutex;
+    // //rivl::vec2ui*       windowSize;
+    // //rivl::FrameBuffer *fb;
+    // //rivl::Renderer    *renderer;
+    // //rivl::Camera      *camera;
+    // Mutex embreeMutex;
 
-    embree::Vector3f _camPos;
-    std::vector<embree::Handle<embree::Device::RTPrimitive> > _lights;
-    std::map<int, embree::Handle<embree::Device::RTTexture>* > _textures;
+    // embree::Vector3f _camPos;
+    // std::vector<embree::Handle<embree::Device::RTPrimitive> > _lights;
+    // std::map<int, embree::Handle<embree::Device::RTTexture>* > _textures;
 
-    Display* _xDisplay;
-    Window* _xWin;
+    // Display* _xDisplay;
+    // Window* _xWin;
 
-    OBJScene* _objScene;
+    // OBJScene* _objScene;
 
 
-    static EmbreeManager* singleton();
-    static EmbreeManager* _singleton;
+
+    static OSPRayManager* singleton();
+    static OSPRayManager* _singleton;
 };
-RenderManager* createEmbreeManager();
+RenderManager* createOSPRayManager();
 
 #endif

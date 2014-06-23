@@ -308,6 +308,7 @@ void RenderManager::setRenderParametersString(string in, bool need_relaunch)
 
 
 extern RenderManager* createEmbreeManager();
+extern RenderManager* createOSPRayManager();
 extern RenderManager* createRIVLManager();
 
 RenderManager* createRenderManager()
@@ -319,6 +320,9 @@ RenderManager* createRenderManager()
 #ifdef USE_RIVL
   return createRIVLManager();
   //return RIVLManager::singleton();
+#endif
+#ifdef USE_OSPRAY
+  return createOSPRayManager();
 #endif
   return MantaManager::singleton();
 }

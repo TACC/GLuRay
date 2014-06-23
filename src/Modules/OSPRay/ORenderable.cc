@@ -1,43 +1,48 @@
-#include "ERenderable.h"
-#include "RIVLManager.h"
-#include "RScene.h"
+#include "ORenderable.h"
+// #include "RIVLManager.h"
+#include "OScene.h"
+
+//
+//ospray
+//
+// #include "ospray/ospray.h"
+// #include "ospray/common/ospcommon.h"
 
 
-
- ERenderable::ERenderable(EGeometryGenerator* gen)
+ ORenderable::ORenderable(OGeometryGenerator* gen)
   : Renderable(gen)
 {
   _generator = gen;
-  _data = new EData();
+  _data = new OData();
   _data->mesh = new Mesh();
   _data->num_prims = 0;
   gen->setData(_data);
-  _data->d_mesh = 0;
-  _data->d_material = 0;
+  // _data->d_mesh = 0;
+  // _data->d_material = 0;
 }
 
-ERenderable::~ERenderable()
+ORenderable::~ORenderable()
 {
 }
 
-  bool ERenderable::isEmpty() { return _data->num_prims < 1; }  //NOTE: MESH could still be empty...
-  size_t ERenderable::getNumPrims() { return _data->num_prims; }  // NOTE: num prims of groups, MESH could still be empty
+  bool ORenderable::isEmpty() { return _data->num_prims < 1; }  //NOTE: MESH could still be empty...
+  size_t ORenderable::getNumPrims() { return _data->num_prims; }  // NOTE: num prims of groups, MESH could still be empty
 
-EGeometryGeneratorVoid::EGeometryGeneratorVoid()
+OGeometryGeneratorVoid::OGeometryGeneratorVoid()
 {
 }
 
-EGeometryGeneratorVoid::~EGeometryGeneratorVoid()
-{
-}
-
-
-EGeometryGeneratorTriangles::~EGeometryGeneratorTriangles()
+OGeometryGeneratorVoid::~OGeometryGeneratorVoid()
 {
 }
 
 
-void EGeometryGeneratorTriangles::addVertex(Manta::Real x, Manta::Real y, Manta::Real z)
+OGeometryGeneratorTriangles::~OGeometryGeneratorTriangles()
+{
+}
+
+
+void OGeometryGeneratorTriangles::addVertex(Manta::Real x, Manta::Real y, Manta::Real z)
 {
   Mesh* _mesh = _data->mesh;
 
@@ -111,7 +116,7 @@ void EGeometryGeneratorTriangles::addVertex(Manta::Real x, Manta::Real y, Manta:
 }
 }
 
-void EGeometryGeneratorTriangles::addNormal(Manta::Real x, Manta::Real y, Manta::Real z)
+void OGeometryGeneratorTriangles::addNormal(Manta::Real x, Manta::Real y, Manta::Real z)
 {
 #if 1
   Mesh* _mesh = _data->mesh;
@@ -119,7 +124,7 @@ void EGeometryGeneratorTriangles::addNormal(Manta::Real x, Manta::Real y, Manta:
 #endif
 }
 
-void EGeometryGeneratorTriangles::addTextureCoord(Manta::Real u, Manta::Real v, Manta::Real w, Manta::Real z)
+void OGeometryGeneratorTriangles::addTextureCoord(Manta::Real u, Manta::Real v, Manta::Real w, Manta::Real z)
 {
 #if 1
   Mesh* _mesh = _data->mesh;
@@ -128,11 +133,11 @@ void EGeometryGeneratorTriangles::addTextureCoord(Manta::Real u, Manta::Real v, 
 }
 
 
-EGeometryGeneratorTriangleStrip::~EGeometryGeneratorTriangleStrip()
+OGeometryGeneratorTriangleStrip::~OGeometryGeneratorTriangleStrip()
 {
 }
 
-void EGeometryGeneratorTriangleStrip::addTextureCoord(Manta::Real u, Manta::Real v, Manta::Real w, Manta::Real z) {
+void OGeometryGeneratorTriangleStrip::addTextureCoord(Manta::Real u, Manta::Real v, Manta::Real w, Manta::Real z) {
 #if 1
     Mesh* _mesh = _data->mesh;
     _mesh->texCoords.push_back(Manta::Vector(u,v,w));
@@ -140,7 +145,7 @@ void EGeometryGeneratorTriangleStrip::addTextureCoord(Manta::Real u, Manta::Real
 #endif
 }
 
-void EGeometryGeneratorTriangleStrip::addNormal(Manta::Real x, Manta::Real y, Manta::Real z)
+void OGeometryGeneratorTriangleStrip::addNormal(Manta::Real x, Manta::Real y, Manta::Real z)
 {
 #if 1
   Mesh* _mesh = _data->mesh;
@@ -148,7 +153,7 @@ void EGeometryGeneratorTriangleStrip::addNormal(Manta::Real x, Manta::Real y, Ma
 #endif
 }
 
-void EGeometryGeneratorTriangleStrip::addVertex(Manta::Real x, Manta::Real y, Manta::Real z)
+void OGeometryGeneratorTriangleStrip::addVertex(Manta::Real x, Manta::Real y, Manta::Real z)
 {
   Mesh* _mesh = _data->mesh;
   _mesh->vertices.push_back(Vector(x,y,z));
@@ -191,7 +196,7 @@ void EGeometryGeneratorTriangleStrip::addVertex(Manta::Real x, Manta::Real y, Ma
 }
 
 
-void EGeometryGeneratorQuads::addVertex(Manta::Real x, Manta::Real y, Manta::Real z)
+void OGeometryGeneratorQuads::addVertex(Manta::Real x, Manta::Real y, Manta::Real z)
 {
   Mesh* _mesh = _data->mesh;
   _mesh->vertices.push_back(Vector(x,y,z));
@@ -251,7 +256,7 @@ void EGeometryGeneratorQuads::addVertex(Manta::Real x, Manta::Real y, Manta::Rea
   }
 }
 
-void EGeometryGeneratorQuads::addTextureCoord(Manta::Real u, Manta::Real v, Manta::Real w, Manta::Real z)
+void OGeometryGeneratorQuads::addTextureCoord(Manta::Real u, Manta::Real v, Manta::Real w, Manta::Real z)
 {
 #if 0
   Mesh* mesh = _data->mesh;
@@ -260,7 +265,7 @@ void EGeometryGeneratorQuads::addTextureCoord(Manta::Real u, Manta::Real v, Mant
 }
 
 
-void EGeometryGeneratorQuadStrip::addVertex(Manta::Real x, Manta::Real y, Manta::Real z)
+void OGeometryGeneratorQuadStrip::addVertex(Manta::Real x, Manta::Real y, Manta::Real z)
 {
   Mesh* _mesh = _data->mesh;
   _mesh->vertices.push_back(Vector(x,y,z));
@@ -345,7 +350,7 @@ void EGeometryGeneratorQuadStrip::addVertex(Manta::Real x, Manta::Real y, Manta:
 }
 
 
-void EGeometryGeneratorQuadStrip::addTextureCoord(Manta::Real u, Manta::Real v, Manta::Real w, Manta::Real z)
+void OGeometryGeneratorQuadStrip::addTextureCoord(Manta::Real u, Manta::Real v, Manta::Real w, Manta::Real z)
 {
 #if 0
   Mesh* _mesh = _data->mesh;
@@ -353,16 +358,16 @@ void EGeometryGeneratorQuadStrip::addTextureCoord(Manta::Real u, Manta::Real v, 
 #endif
 }
 
-EGeometryGeneratorLines::EGeometryGeneratorLines()
+OGeometryGeneratorLines::OGeometryGeneratorLines()
 {
   radius = 0.03;
 }
 
-EGeometryGeneratorLines::~EGeometryGeneratorLines()
+OGeometryGeneratorLines::~OGeometryGeneratorLines()
 {
 }
 
-void EGeometryGeneratorLines::addVertex(Manta::Real x,Manta::Real y,Manta::Real z)
+void OGeometryGeneratorLines::addVertex(Manta::Real x,Manta::Real y,Manta::Real z)
 {
 #if 0
   Group* group = _data->group;
@@ -377,7 +382,7 @@ void EGeometryGeneratorLines::addVertex(Manta::Real x,Manta::Real y,Manta::Real 
 }
 
 
-void EGeometryGeneratorLineStrip::addVertex(Manta::Real x,Manta::Real y,Manta::Real z)
+void OGeometryGeneratorLineStrip::addVertex(Manta::Real x,Manta::Real y,Manta::Real z)
 {
 #if 0
   Group* group = _data->group;

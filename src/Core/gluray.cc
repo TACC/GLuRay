@@ -92,7 +92,6 @@ void gr_unlock(const int num){}
 #include "CDTimer.h"
 #include "DirtyInstance.h"
 #include "MScene.h"
-#include "MantaManager.h"
 //#include "GLTypes.h"
 #ifdef USE_RIVL
 //#include "RIVLManager.h"
@@ -100,6 +99,11 @@ void gr_unlock(const int num){}
 #ifdef USE_EMBREE
 //#include "EmbreeManager.h"
 #endif
+#ifdef USE_OSPRAY
+//#include "OSPRayManager.h"
+#endif
+#include "MantaManager.h"
+
 #include <iostream>
 #include <vector>
 #include <Interface/MantaInterface.h>

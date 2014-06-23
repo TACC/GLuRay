@@ -1,5 +1,11 @@
-#ifndef ERENDERABLE_H
-#define ERENDERABLE_H
+#ifndef ORENDERABLE_H
+#define ORENDERABLE_H
+
+ 
+#include "ospray/ospray.h"
+#include "ospray/common/ospcommon.h"
+
+
 
 #include <Interface/MantaInterface.h>
 #include <Interface/Scene.h>
@@ -27,28 +33,28 @@
 /*
  *Embreee
  */
-#include "sys/platform.h"
-#include "sys/ref.h"
-#include "lexers/streamfilters.h"
-#include "lexers/parsestream.h"
-//#include "../tutorials/glutdisplay.h"
-#include "../tutorial_host/tutorials_host.h"
+// #include "sys/platform.h"
+// #include "sys/ref.h"
+// #include "lexers/streamfilters.h"
+// #include "lexers/parsestream.h"
+// //#include "../tutorials/glutdisplay.h"
+// #include "../tutorial_host/tutorials_host.h"
 
-#include "sys/filename.h"
-#include "image/image.h"
-#include "device/loaders/loaders.h"
-//#include "glutdisplay.h"
-#include "regression.h"
-#include "math/affinespace.h"
-#include "math/color.h"
-#include "math/vec2.h"
-#include "math/vec3.h"
-#include "math/vec4.h"
+// #include "sys/filename.h"
+// #include "image/image.h"
+// #include "device/loaders/loaders.h"
+// //#include "glutdisplay.h"
+// #include "regression.h"
+// #include "math/affinespace.h"
+// #include "math/color.h"
+// #include "math/vec2.h"
+// #include "math/vec3.h"
+// #include "math/vec4.h"
 
 
-#include "sys/platform.h"
-#include "sys/ref.h"
-#include "camera.h"
+// #include "sys/platform.h"
+// #include "sys/ref.h"
+// #include "camera.h"
 
 /*
  *
@@ -56,38 +62,42 @@
 
 
 
+
 #include <cassert>
 
 using namespace Manta;
 
-struct EData
+struct OData
 {
+  // OData();
  Manta::Mesh* mesh;
 size_t num_prims;
-embree::Handle<embree::Device::RTMaterial> d_material;
-embree::Handle<embree::Device::RTShape> d_mesh;
+OSPGeometry ospMesh;
+OSPModel ospModel;
+// embree::Handle<embree::Device::RTMaterial> d_material;
+// embree::Handle<embree::Device::RTShape> d_mesh;
 };
 
-class EGeometryGenerator : public GeometryGenerator
+class OGeometryGenerator : public GeometryGenerator
 {
 public:
-  EGeometryGenerator() {}
+  OGeometryGenerator() {}
   virtual void addVertex(Manta::Real x, Manta::Real y, Manta::Real z) = 0;
   virtual void addNormal(Manta::Real x, Manta::Real y, Manta::Real z) {}
   virtual void addTextureCoord(Manta::Real u, Manta::Real v, Manta::Real w, Manta::Real z) = 0;
-  void setData(EData* data) { _data = data; }
+  void setData(OData* data) { _data = data; }
 protected:
-  EData* _data;
+  OData* _data;
 };
 
 //instead of sotring the entire display list, keep track of each
 //begin end segment as a seperate item
 //IMPORTANT:: Need to add as to work queue when mrenderable is finished, but only if it's MESH isn't empty!!!!!!
-class ERenderable : public Renderable
+class ORenderable : public Renderable
 {
 public:
-  ERenderable(EGeometryGenerator* gen);
-  virtual ~ERenderable();
+  ORenderable(OGeometryGenerator* gen);
+  virtual ~ORenderable();
   virtual void addVertex(Manta::Real x, Manta::Real y, Manta::Real z)
   {
     _generator->addVertex(x,y,z);
@@ -103,86 +113,86 @@ public:
   virtual void setGenerator(GeometryGenerator* gen)
   {
     _generator = gen;
-    EGeometryGenerator* mgg = dynamic_cast<EGeometryGenerator*>(gen);
+    OGeometryGenerator* mgg = dynamic_cast<OGeometryGenerator*>(gen);
     assert(mgg);
     mgg->setData(_data);
   }
 
   virtual bool isEmpty();  //NOTE: MESH could still be empty...
   virtual size_t getNumPrims() ; // NOTE: num prims of groups, MESH could still be empty
-  EData* _data;
+  OData* _data;
 };
 
-class EGeometryGeneratorVoid: public EGeometryGenerator
+class OGeometryGeneratorVoid: public OGeometryGenerator
 {
 public:
-  EGeometryGeneratorVoid();
-  virtual ~EGeometryGeneratorVoid();
+  OGeometryGeneratorVoid();
+  virtual ~OGeometryGeneratorVoid();
   virtual void addVertex(Manta::Real x, Manta::Real y, Manta::Real z) {}
   virtual void addNormal(Manta::Real x, Manta::Real y, Manta::Real z) {}
   virtual void addTextureCoord(Manta::Real u, Manta::Real v, Manta::Real w, Manta::Real z) {}
 };
 
 
-class EGeometryGeneratorTriangles : public EGeometryGenerator
+class OGeometryGeneratorTriangles : public OGeometryGenerator
 {
 public:
-  EGeometryGeneratorTriangles()
+  OGeometryGeneratorTriangles()
   {}
-  virtual ~EGeometryGeneratorTriangles();
+  virtual ~OGeometryGeneratorTriangles();
   virtual void addVertex(Manta::Real x, Manta::Real y, Manta::Real z);
   virtual void addNormal(Manta::Real x, Manta::Real y, Manta::Real z);
   virtual void addTextureCoord(Manta::Real u, Manta::Real v, Manta::Real w, Manta::Real z);
 };
 
-class EGeometryGeneratorTriangleStrip : public EGeometryGenerator
+class OGeometryGeneratorTriangleStrip : public OGeometryGenerator
 {
 public:
-  EGeometryGeneratorTriangleStrip()
+  OGeometryGeneratorTriangleStrip()
   {}
-  virtual ~EGeometryGeneratorTriangleStrip();
+  virtual ~OGeometryGeneratorTriangleStrip();
   virtual void addVertex(Manta::Real x, Manta::Real y, Manta::Real z);
   virtual void addNormal(Manta::Real x, Manta::Real y, Manta::Real z);
   virtual void addTextureCoord(Manta::Real u, Manta::Real v, Manta::Real w, Manta::Real z);
 };
 
 
-class EGeometryGeneratorQuads : public EGeometryGenerator
+class OGeometryGeneratorQuads : public OGeometryGenerator
 {
 public:
-  EGeometryGeneratorQuads()
+  OGeometryGeneratorQuads()
   {}
   virtual void addVertex(Manta::Real x, Manta::Real y, Manta::Real z);
   virtual void addTextureCoord(Manta::Real u, Manta::Real v, Manta::Real w, Manta::Real z);
 };
 
-class EGeometryGeneratorQuadStrip : public EGeometryGenerator
+class OGeometryGeneratorQuadStrip : public OGeometryGenerator
 {
 public:
-  EGeometryGeneratorQuadStrip()
+  OGeometryGeneratorQuadStrip()
   {}
   virtual void addVertex(Manta::Real x, Manta::Real y, Manta::Real z);
   virtual void addTextureCoord(Manta::Real u, Manta::Real v, Manta::Real w, Manta::Real z);
 };
 
-class EGeometryGeneratorLines : public EGeometryGenerator
+class OGeometryGeneratorLines : public OGeometryGenerator
 {
 public:
-  EGeometryGeneratorLines();
-  virtual  ~EGeometryGeneratorLines();
+  OGeometryGeneratorLines();
+  virtual  ~OGeometryGeneratorLines();
   virtual void addVertex(Manta::Real x,Manta::Real y,Manta::Real z);
   virtual void addTextureCoord(Manta::Real u, Manta::Real v, Manta::Real w, Manta::Real z) {}
   Manta::Real radius;
   Vector last_vertex;
 };
 
-class EGeometryGeneratorLineStrip : public EGeometryGeneratorLines
+class OGeometryGeneratorLineStrip : public OGeometryGeneratorLines
 {
 public:
-  EGeometryGeneratorLineStrip()
-    :EGeometryGeneratorLines()
+  OGeometryGeneratorLineStrip()
+    :OGeometryGeneratorLines()
   {}
-  virtual ~EGeometryGeneratorLineStrip() {}
+  virtual ~OGeometryGeneratorLineStrip() {}
   virtual void addVertex(Manta::Real x,Manta::Real y,Manta::Real z);
   virtual void addTextureCoord(Manta::Real u, Manta::Real v, Manta::Real w, Manta::Real z) {}
 };
