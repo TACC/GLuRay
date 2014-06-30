@@ -1,54 +1,11 @@
-SET(EMBREE_DIR "" CACHE PATH "base Embree directory")
-SET(OSPRAY_DIR "" CACHE PATH "base OSPRay directory")
-SET(OSPRAY_BUILD_DIR "" CACHE PATH "OSPRay build directory")
-#SET(EMBREE_BUILD_DIR "" CACHE PATH "base RIVL directory")
+find_package(OSPRay)
 INCLUDE_DIRECTORIES(
-  ${EMBREE_DIR}
-  ${EMBREE_DIR}/embree
-  ${EMBREE_DIR}/common
-  #${EMBREE_DIR}/examples/common 
-  #${EMBREE_DIR}/examples/renderer
-  #${EMBREE_DIR}/examples/renderer/renderer
-  #${EMBREE_DIR}/examples/tutorials
-  ${OSPRAY_DIR}
-  ${OSPRAY_DIR}/ospray
-  ${OSPRAY_DIR}/ospray/include
+  ${OSPRAY_INCLUDE_DIRS}
   )
-#INCLUDE_DIRECTORIES(${RIVL_DIR}/../host)
-
-SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${OSPRAY_DIR}/cmake ${OSPRAY_DIR})
-# whether to use ICC (vs GCC) for the non-MIC part
-SET(OSPRAY_ICC ON CACHE BOOL "Use Intel Compiler?")
-# whehter to build in MIC/xeon phi support
-SET(OSPRAY_MIC ON CACHE BOOL "Build OSPRay with MIC Support?")
-# whehter to build in MIC/xeon phi support
-SET(OSPRAY_MPI OFF CACHE BOOL "Add MPI Remote/Distributed rendering support?")
-# the arch we're targeting for the non-MIC/non-xeon phi part of ospray
-SET(OSPRAY_XEON_TARGET "AVX" CACHE STRING "Target ISA on host (SSE,AVX,AVX2)")
-
-
-##############################################################
-# modules
-##############################################################
-
-# INCLUDE(${OSPRAY_DIR}/cmake/build_embree.cmake)
-ADD_DEFINITIONS(${OSPRAY_EMBREE_CXX_FLAGS})
-MESSAGE("ospray_dir ${OSPRAY_DIR}")
-SET(OSPRAY_DIR2 ${OSPRAY_DIR})
-INCLUDE(${OSPRAY_DIR}/cmake/ospray.cmake)
-SET(OSPRAY_DIR ${OSPRAY_DIR2})
-MESSAGE("ospray_dir ${OSPRAY_DIR}")
-INCLUDE(${OSPRAY_DIR}/cmake/mpi.cmake)
-#INCLUDE(${OSPRAY_DIR}/cmake/doxygen.cmake)
-
-
-#INCLUDE(${IVL_DIR}/runtime/cmake/ivl.cmake)
-#INCLUDE(${EMBREE_DIR}/cmake/build_icc.cmake)
-#INCLUDE(${IVL_DIR}/runtime/cmake/ivl.cmake)
 
 SET(OSPRAY_SOURCES "")
 
-SET(OSPRAY_SOURCES ${EMBREE_SOURCES}
+SET(OSPRAY_SOURCES 
  OSPRayManager.cc
  OSPRayManager.h
  ORenderable.cc
@@ -57,44 +14,8 @@ SET(OSPRAY_SOURCES ${EMBREE_SOURCES}
  OScene.h
   )
 
-#FIND_LIBRARY(LIB_RIVL_HOST rivl_host ${RIVL_DIR}/bin)
-#SET(LIB_EMBREE_DEVICE LIB_EMBREE_DEVICE-NOTFOUND)
-SET(LIB_OSPRAY_EMBREE LIB_OSPRAY_EMBREE-NOTFOUND)
-#SET(LIB_OSPRAY_LOADERS LIB_EMBREE_LOADERS-NOTFOUND)
-SET(LIB_OSPRAY_SYS LIB_OSPRAY_SYS-NOTFOUND)
-SET(LIB_OSPRAY_GLUT3D LIB_OSPRAY_GLUT3D-NOTFOUND)
-SET(LIB_OSPRAY_MINISG LIB_OSPRAY_MINISG-NOTFOUND)
-#SET(LIB_OSPRAY_LEXERS LIB_EMBREE_LEXERS-NOTFOUND)
-# SET(LIB_EMBREE_DEVICE_SINGLERAY LIB_EMBREE_DEVICE_SINGLERAY-NOTFOUND)
-#FIND_LIBRARY(LIB_EMBREE_DEVICE device ${OSPRAY_BUILD_DIR})
-FIND_LIBRARY(LIB_OSPRAY_EMBREE embree ${OSPRAY_BUILD_DIR})
-#FIND_LIBRARY(LIB_EMBREE_LOADERS loaders ${OSPRAY_BUILD_DIR})
-FIND_LIBRARY(LIB_OSPRAY_SYS sys ${OSPRAY_BUILD_DIR})
-FIND_LIBRARY(LIB_OSPRAY_GLUT3D ospray_glut3d ${OSPRAY_BUILD_DIR})
-FIND_LIBRARY(LIB_OSPRAY_MINISG ospray_minisg ${OSPRAY_BUILD_DIR})
-#FIND_LIBRARY(LIB_EMBREE_LEXERS lexers ${EMBREE_BUILD_DIR})
-# FIND_LIBRARY(LIB_EMBREE_DEVICE_SINGLERAY device_singleray ${EMBREE_BUILD_DIR})
-
-
-SET(OSPRAY_LIBS 
-  #${LIB_EMBREE_DEVICE}
-  ${LIB_OSPRAY_EMBREE}
-  #${LIB_EMBREE_LOADERS}
-  ${LIB_OSPRAY_SYS}
-  ${LIB_OSPRAY_GLUT3D}
-  ${LIB_OSPRAY_MINISG}
-  #${LIB_EMBREE_LEXERS}
-  #${LIB_EMBREE_DEVICE_SINGLERAY}
-  )
-
-#IF (EMBREE_BUILD_DIR) 
-  
-  #ELSE (EMBREE_LIBS) 
-    #MESSAGE(FATAL_ERROR "Manually Set Embree libraries")
-    #ENDIF(EMBREE_LIBS)
-
 ADD_LIBRARY (GLuRay_OSPRay STATIC ${OSPRAY_SOURCES})
 
-TARGET_LINK_LIBRARIES(GLuRay_OSPRay ${OSPRAY_LIBS})
+TARGET_LINK_LIBRARIES(GLuRay_OSPRay ${OSPRAY_LIBRARIES})
 
 

@@ -81,7 +81,7 @@ public:
   virtual void deleteRenderable(Renderable* ren) = 0;
   virtual void addTexture(int handle, int target, int level, int internalFormat, int width, int height, int border, int format, int type, void* data) {}
   virtual void deleteTexture(int handle) {}
-  virtual void addInstance(Renderable* ren) = 0;
+  virtual void addInstance(Renderable* ren);
   Renderable* getCurrentRenderable() { return current_renderable; }
   void setCurrentRenderable(Renderable* r) { current_renderable = r; }
   AffineTransform& getCurrentTransform() { return current_transform; }

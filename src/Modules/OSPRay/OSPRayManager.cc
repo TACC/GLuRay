@@ -20,7 +20,7 @@
 //#include <X11/Xutil.h>
 
 //#include "../gl_functions.h"
-#include "CDTimer.h" 
+#include "CDTimer.h"
 #include "OScene.h"
 #include "ORenderable.h"
 #include "common.h"
@@ -582,30 +582,6 @@ void OSPRayManager::setSize(int w, int h)
 //   unsigned int port;
 // };
 
-void createMaterial(OSPGeometry ospMesh,
-                      OSPRenderer renderer,
-                      ospray::miniSG::Material *mat)
-  {
-    OSPMaterial ospMat = ospNewMaterial(renderer,"OBJMaterial");
-    if (!ospMat)  {
-      cout << "given renderer does not know material type 'OBJMaterial'" << endl;
-      return;
-    }
-
-    if (!mat) {
-      cout << "WARNING: mesh does not have a material! (assigning default)" << endl;
-      ospSet3f(ospMat,"Kd",1.f,0.f,0.f);
-    } else {
-      ospSet3fv(ospMat,"Kd",&mat->Kd.x);
-      ospSet3fv(ospMat,"Ks",&mat->Ks.x);
-      ospSet1f(ospMat,"Ns",mat->Ns);
-      ospSet1f(ospMat,"d", mat->d);
-    }
-
-    ospCommit(ospMat);
-    ospSetMaterial(ospMesh,ospMat);
-    ospRelease(ospMat);
-  }
 
 void OSPRayManager::init()
 {
@@ -627,6 +603,8 @@ void OSPRayManager::init()
       // ospCommit(camera);
 
   renderer = ospNewRenderer("raycast_eyelight");
+  // renderer = ospNewRenderer("ao16");
+  // renderer = ospNewRenderer("obj");
   if (!renderer)
     throw std::runtime_error("could not create renderer ");
   Assert(renderer != NULL && "could not create renderer");
@@ -648,7 +626,19 @@ void OSPRayManager::init()
     next_scene = new OScene();
 
 
-
+    //TODO: Need to figure out where we're going to read lighting data from
+    //begin light test
+    std::vector<OSPLight> pointLights;
+    cout << "msgView: Adding a hard coded directional light as the sun." << endl;
+    OSPLight ospLight = ospNewLight(renderer, "DirectionalLight");
+    ospSetString(ospLight, "name", "sun" );
+    ospSet3f(ospLight, "color", 1, 1, 1);
+    ospSet3f(ospLight, "direction", 0, -1, 0);
+    ospCommit(ospLight);
+    pointLights.push_back(ospLight);
+    OSPData pointLightArray = ospNewData(pointLights.size(), OSP_OBJECT, &pointLights[0], 0);
+    ospSetData(renderer, "directionalLights", pointLightArray);
+    //end light test
 
 
 
@@ -918,10 +908,16 @@ void OSPRayManager::render()
     return;
   if (next_scene->instances.size() == 0)
     return;
+    model = ospNewModel();
+      ospSetParam(renderer,"world",model);
+  ospSetParam(renderer,"model",model);
   _frameNumber++;
   //if (rendered && params.accumulate)
   //displayFrame();
   rendered = true;
+  // ospRelease(model);
+  // model = ospNewModel();  //TODO: DEBUG: this should be taken out
+  // ospCommit(model);
   // std::vector<Handle<Device::RTPrimitive> > prims;
   // AffineSpace3f transform(one);
 
@@ -937,6 +933,7 @@ void OSPRayManager::render()
 
   // embreeMutex.lock();
   //printf("adding %d instances to scene\n", next_scene->instances.size());
+  vector<OSPGeometry> instances;
   for(vector<GRInstance>::iterator itr = next_scene->instances.begin(); itr != next_scene->instances.end(); itr++)
   {
     Manta::AffineTransform mt = itr->transform;
@@ -948,10 +945,12 @@ void OSPRayManager::render()
       //AffineSpace3f et(LinearSpace3f(mt(0,0), mt(1,0), mt(2,0), mt(0,1), mt(1,1), mt(2,1), mt(0,2),mt(1,2),mt(2,2)), Vector3f(mt(3,0),mt(3,1),mt(3,2)));
       // prims.push_back(g_device->rtNewShapePrimitive(er->_data->d_mesh, er->_data->d_material, copyToArray(et)));
       OSPGeometry inst = ospNewInstance(er->_data->ospModel,
-        ospray::affine3f(embree::LinearSpace3<embree::Vec3fa>(mt(0,0), mt(0,1), mt(0,2), mt(1,0), mt(1,1), mt(1,2), mt(2,0),mt(2,1),mt(2,2)), embree::Vec3fa(mt(0,3),mt(1,3),mt(2,3))));
+        ospray::affine3f(embree::LinearSpace3f(mt(0,0), mt(0,1), mt(0,2), mt(1,0), mt(1,1), mt(1,2), mt(2,0),mt(2,1),mt(2,2)), embree::Vec3fa(mt(0,3),mt(1,3),mt(2,3))));
       ospAddGeometry(model,inst);
+      instances.push_back(inst);
     }
   }
+  next_scene->instances.resize(0);
 
 //
   // test scene
@@ -1048,7 +1047,7 @@ ospray::box3f worldBounds = msgModel->getBBox();
 #endif
 
   ospCommit(model);
-  next_scene->instances.resize(0);
+
   // printf("render\n");
 
 
@@ -1067,7 +1066,18 @@ ospray::box3f worldBounds = msgModel->getBBox();
 
   ospUnmapFrameBuffer(data,framebuffer);
 
-  // if (params.write_to_file != "")
+
+  for(vector<OSPGeometry>::iterator itr = instances.begin(); itr != instances.end(); itr++)
+  {
+
+      // AffineSpace3f et(LinearSpace3f(mt(0,0), mt(0,1), mt(0,2), mt(1,0), mt(1,1), mt(1,2), mt(2,0),mt(2,1),mt(2,2)), Vector3f(mt(0,3),mt(1,3),mt(2,3)));
+      //AffineSpace3f et(LinearSpace3f(mt(0,0), mt(1,0), mt(2,0), mt(0,1), mt(1,1), mt(2,1), mt(0,2),mt(1,2),mt(2,2)), Vector3f(mt(3,0),mt(3,1),mt(3,2)));
+      // prims.push_back(g_device->rtNewShapePrimitive(er->_data->d_mesh, er->_data->d_material, copyToArray(et)));
+      // OSPGeometry inst = *itr;
+      // ospRemoveGeometry(model,inst);
+  }
+
+  if (params.write_to_file != "")
   {
       char* rgba_data = (char*)data;
       DEBUG("writing image\n");
@@ -1456,7 +1466,7 @@ void OSPRayManager::updateCamera()
   float aspectRatio = float(_width)/float(_height);
   ospSetf(camera,"aspect",aspectRatio);
   ospSetf(camera,"fovy",angle);
-  printf("fovy %f fovh %f\n", p.camera_vfov, p.camera_hfov);
+  // printf("fovy %f fovh %f\n", p.camera_vfov, p.camera_hfov);
   Assert(camera != NULL && "could not create camera");
   ospSet3f(camera,"pos",p.camera_eye.x(), p.camera_eye.y(), p.camera_eye.z());
   ospSet3f(camera,"up",p.camera_up.x(), p.camera_up.y(), p.camera_up.z());
@@ -1534,11 +1544,12 @@ void OSPRayManager::updateBackground()
 
 void OSPRayManager::addInstance(Renderable* ren)
 {
-  #if 1
   if (!ren->isBuilt())
+  {
+    std::cerr << "addInstance: renderable not build by rendermanager\n";
     return;
+  }
   next_scene->instances.push_back(GRInstance(ren, current_transform));
-  #endif
 }
 
 void OSPRayManager::addRenderable(Renderable* ren)
@@ -1554,10 +1565,29 @@ void OSPRayManager::addRenderable(Renderable* ren)
   float Ks[] = {1,1,1};
 
   std::vector<ospray::vec3fa> vertices;
+  std::vector<ospray::vec3fa> normals;
   std::vector<ospray::vec3i> triangles;
 
   Manta::Mesh* mesh = oren->_data->mesh;
+  assert(mesh);
   size_t numTriangles = mesh->vertex_indices.size()/3;
+  //
+  // hack! building normals is actually supported in the geometry generator
+  //
+  if (!mesh->vertexNormals.size())
+  {
+    for(int i =0; i < numTriangles;i++)
+  {
+    Manta::Vector v1 = mesh->vertices[mesh->vertex_indices[i*3] ];
+    Manta::Vector v2 = mesh->vertices[mesh->vertex_indices[i*3+1] ];
+    Manta::Vector v3 = mesh->vertices[mesh->vertex_indices[i*3+2] ];
+    Manta::Vector n = Manta::Cross(v2-v1,v3-v1);
+    n.normalize();
+    mesh->vertexNormals.push_back(n);
+    mesh->vertexNormals.push_back(n);
+    mesh->vertexNormals.push_back(n);
+  }
+}
   size_t numNormals = mesh->vertexNormals.size();
   size_t numTexCoords = mesh->texCoords.size();
   size_t numPositions = mesh->vertices.size();
@@ -1567,7 +1597,10 @@ void OSPRayManager::addRenderable(Renderable* ren)
   vertices.resize(numPositions);
   for(size_t i = 0; i < numPositions; i++)
     vertices[i] = ospray::vec3fa(mesh->vertices[i].x(), mesh->vertices[i].y(), mesh->vertices[i].z());
-  
+  normals.resize(numNormals);
+  for(size_t i = 0; i < numNormals; i++)
+    normals[i] = ospray::vec3fa(mesh->vertexNormals[i].x(), mesh->vertexNormals[i].y(), mesh->vertexNormals[i].z());
+
 
       // embree::Vec3i* vertex_indices = (embree::Vec3i*)alignedMalloc(sizeof(embree::Vec3i)*numTriangles);
   triangles.resize(numTriangles);
@@ -1580,6 +1613,11 @@ void OSPRayManager::addRenderable(Renderable* ren)
   OSPData position = ospNewData(vertices.size(),OSP_vec3fa,
     &vertices[0],OSP_DATA_SHARED_BUFFER);
   ospSetData(ospMesh,"position",position);
+
+  OSPData normal = ospNewData(normals.size(),OSP_vec3fa,
+    &normals[0],OSP_DATA_SHARED_BUFFER);
+  ospSetData(ospMesh,"vertex.normal",normal);
+
 
   OSPData index = ospNewData(triangles.size(),OSP_vec3i,
    &triangles[0],OSP_DATA_SHARED_BUFFER);

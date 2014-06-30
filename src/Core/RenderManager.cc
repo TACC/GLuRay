@@ -306,6 +306,15 @@ void RenderManager::setRenderParametersString(string in, bool need_relaunch)
   }
 }
 
+void RenderManager::addInstance(Renderable* ren)
+{
+  // if (!ren->isBuilt())
+  // {
+  //   std::cerr << "addInstance: renderable not build by rendermanager\n";
+  //   return;
+  // }
+  // next_scene->instances.push_back(GRInstance(ren, current_transform));
+}
 
 extern RenderManager* createEmbreeManager();
 extern RenderManager* createOSPRayManager();

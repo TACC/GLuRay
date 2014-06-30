@@ -44,7 +44,10 @@ OGeometryGeneratorTriangles::~OGeometryGeneratorTriangles()
 
 void OGeometryGeneratorTriangles::addVertex(Manta::Real x, Manta::Real y, Manta::Real z)
 {
+  return;
+  assert(_data);
   Mesh* _mesh = _data->mesh;
+  // assert(mesh);
 
   bool use_computed_normal = false; //TODO: make config option
   _mesh->vertices.push_back(Vector(x,y,z));
@@ -70,12 +73,12 @@ void OGeometryGeneratorTriangles::addVertex(Manta::Real x, Manta::Real y, Manta:
     _mesh->vertex_indices.push_back(base+2);
 
     if (use_computed_normal){
-      Vector n = Cross((_mesh->vertices[base+1]-_mesh->vertices[base]),(_mesh->vertices[base+2]-_mesh->vertices[base]));
-      n.normalize();
-      _mesh->vertexNormals.push_back(n);
-      _mesh->normal_indices.push_back(_mesh->vertexNormals.size()-1);
-      _mesh->normal_indices.push_back(_mesh->vertexNormals.size()-1);
-      _mesh->normal_indices.push_back(_mesh->vertexNormals.size()-1);
+      // Vector n = Cross((_mesh->vertices[base+1]-_mesh->vertices[base]),(_mesh->vertices[base+2]-_mesh->vertices[base]));
+      // n.normalize();
+      // _mesh->vertexNormals.push_back(n);
+      // _mesh->normal_indices.push_back(_mesh->vertexNormals.size()-1);
+      // _mesh->normal_indices.push_back(_mesh->vertexNormals.size()-1);
+      // _mesh->normal_indices.push_back(_mesh->vertexNormals.size()-1);
     }
     else {
       if (_mesh->vertexNormals.size() >= 3)
@@ -155,7 +158,10 @@ void OGeometryGeneratorTriangleStrip::addNormal(Manta::Real x, Manta::Real y, Ma
 
 void OGeometryGeneratorTriangleStrip::addVertex(Manta::Real x, Manta::Real y, Manta::Real z)
 {
+  // assert(_data);
   Mesh* _mesh = _data->mesh;
+  // assert(mesh);
+  // printf("addvertex: %f %f %f\n",x,y,z);
   _mesh->vertices.push_back(Vector(x,y,z));
   size_t num_verts = _mesh->vertices.size();
   //   _mesh->materials.push_back(MantaManager::singleton()->current_material);
@@ -198,6 +204,7 @@ void OGeometryGeneratorTriangleStrip::addVertex(Manta::Real x, Manta::Real y, Ma
 
 void OGeometryGeneratorQuads::addVertex(Manta::Real x, Manta::Real y, Manta::Real z)
 {
+  // assert(_data);
   Mesh* _mesh = _data->mesh;
   _mesh->vertices.push_back(Vector(x,y,z));
   size_t num_verts = _mesh->vertices.size();
@@ -267,6 +274,7 @@ void OGeometryGeneratorQuads::addTextureCoord(Manta::Real u, Manta::Real v, Mant
 
 void OGeometryGeneratorQuadStrip::addVertex(Manta::Real x, Manta::Real y, Manta::Real z)
 {
+  // assert(_data);
   Mesh* _mesh = _data->mesh;
   _mesh->vertices.push_back(Vector(x,y,z));
   size_t num_verts = _mesh->vertices.size();

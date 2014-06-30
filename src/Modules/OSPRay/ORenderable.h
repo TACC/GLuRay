@@ -81,7 +81,7 @@ OSPModel ospModel;
 class OGeometryGenerator : public GeometryGenerator
 {
 public:
-  OGeometryGenerator() {}
+  OGeometryGenerator() : _data(NULL) {}
   virtual void addVertex(Manta::Real x, Manta::Real y, Manta::Real z) = 0;
   virtual void addNormal(Manta::Real x, Manta::Real y, Manta::Real z) {}
   virtual void addTextureCoord(Manta::Real u, Manta::Real v, Manta::Real w, Manta::Real z) = 0;
