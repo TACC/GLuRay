@@ -589,9 +589,12 @@ void OSPRayManager::init()
     return;
   initialized=true;
   printf("%s::%s\n",typeid(*this).name(),__FUNCTION__);
-  int ac =1;
-  const char* av[] = {"gluray"};
-  ospInit(&ac, av);
+  {
+    int ac =1;
+    const char* av[] = {"gluray\0","\0"};
+    ospInit(&ac, av);
+  }
+  // const char* av[] = {"gluray","--osp:debug"};
 
   setSize(params.width,params.height);
 
