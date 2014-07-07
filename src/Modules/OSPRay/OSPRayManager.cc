@@ -85,7 +85,7 @@
 //
 #include "../../apps/util/glut3D/glut3D.h"
 // mini scene graph for loading the model
-#include "../../apps/util/miniSG/miniSG.h"
+// #include "../../apps/util/miniSG/miniSG.h"
 #include "ospray/common/ospcommon.h"
 
 // using namespace embree;
@@ -368,6 +368,7 @@ Assert(o_current_material);
       ospSet3fv(o_current_material,"Ks",&m.specular[0]);
       ospSet1f(o_current_material,"Ns",m.shiny);
       ospSet1f(o_current_material,"d", current_color.a);
+      ospCommit(o_current_material);
   #if 0
   if (!initialized)
     return;
@@ -629,19 +630,7 @@ void OSPRayManager::init()
     next_scene = new OScene();
 
 
-    //TODO: Need to figure out where we're going to read lighting data from
-    //begin light test
-    std::vector<OSPLight> pointLights;
-    cout << "msgView: Adding a hard coded directional light as the sun." << endl;
-    OSPLight ospLight = ospNewLight(renderer, "DirectionalLight");
-    ospSetString(ospLight, "name", "sun" );
-    ospSet3f(ospLight, "color", 1, 1, 1);
-    ospSet3f(ospLight, "direction", 0, -1, 0);
-    ospCommit(ospLight);
-    pointLights.push_back(ospLight);
-    OSPData pointLightArray = ospNewData(pointLights.size(), OSP_OBJECT, &pointLights[0], 0);
-    ospSetData(renderer, "directionalLights", pointLightArray);
-    //end light test
+
 
 
 
@@ -1049,7 +1038,23 @@ ospray::box3f worldBounds = msgModel->getBBox();
 
 #endif
 
+
+
   ospCommit(model);
+
+              //TODO: Need to figure out where we're going to read lighting data from
+    //begin light test
+    std::vector<OSPLight> pointLights;
+    cout << "msgView: Adding a hard coded directional light as the sun." << endl;
+    OSPLight ospLight = ospNewLight(renderer, "DirectionalLight");
+    ospSetString(ospLight, "name", "sun" );
+    ospSet3f(ospLight, "color", 1, 1, 1);
+    ospSet3f(ospLight, "direction", 0, -1, 0);
+    ospCommit(ospLight);
+    pointLights.push_back(ospLight);
+    OSPData pointLightArray = ospNewData(pointLights.size(), OSP_OBJECT, &pointLights[0], 0);
+    ospSetData(renderer, "directionalLights", pointLightArray);
+    //end light test
 
   // printf("render\n");
 
@@ -1625,9 +1630,11 @@ void OSPRayManager::addRenderable(Renderable* ren)
   OSPData index = ospNewData(triangles.size(),OSP_vec3i,
    &triangles[0],OSP_DATA_SHARED_BUFFER);
   ospSetData(ospMesh,"index",index);
-  ospCommit(o_current_material);
+  // ospCommit(o_current_material);
+  updateMaterial();
   ospSetMaterial(ospMesh,o_current_material);
-  ospRelease(o_current_material);
+  // ospRelease(o_current_material);
+  ospCommit(ospMesh);
 
   oren->_data->ospModel = ospNewModel();
   ospAddGeometry(oren->_data->ospModel,ospMesh);
