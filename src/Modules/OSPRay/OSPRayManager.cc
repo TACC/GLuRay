@@ -590,9 +590,16 @@ void OSPRayManager::init()
     return;
   initialized=true;
   printf("%s::%s\n",typeid(*this).name(),__FUNCTION__);
+  if (1)
   {
     int ac =1;
     const char* av[] = {"gluray\0","\0"};
+    ospInit(&ac, av);
+  }
+  else  //coi
+  {
+    int ac =2;
+    const char* av[] = {"gluray\0","--osp:coi","\0"};
     ospInit(&ac, av);
   }
   // const char* av[] = {"gluray","--osp:debug"};
@@ -606,9 +613,9 @@ void OSPRayManager::init()
       // ospSet3f(camera,"dir",+1,-1,+1);
       // ospCommit(camera);
 
-  renderer = ospNewRenderer("raycast_eyelight");
+  // renderer = ospNewRenderer("raycast_eyelight");
   // renderer = ospNewRenderer("ao16");
-  // renderer = ospNewRenderer("obj");
+  renderer = ospNewRenderer("obj");
   if (!renderer)
     throw std::runtime_error("could not create renderer ");
   Assert(renderer != NULL && "could not create renderer");
@@ -900,9 +907,13 @@ void OSPRayManager::render()
     return;
   if (next_scene->instances.size() == 0)
     return;
+  #if 1
     model = ospNewModel();
       ospSetParam(renderer,"world",model);
   ospSetParam(renderer,"model",model);
+
+  ospCommit(renderer);
+  #endif
   _frameNumber++;
   //if (rendered && params.accumulate)
   //displayFrame();
@@ -926,6 +937,7 @@ void OSPRayManager::render()
   // embreeMutex.lock();
   //printf("adding %d instances to scene\n", next_scene->instances.size());
   vector<OSPGeometry> instances;
+  #if 1
   for(vector<GRInstance>::iterator itr = next_scene->instances.begin(); itr != next_scene->instances.end(); itr++)
   {
     Manta::AffineTransform mt = itr->transform;
@@ -942,6 +954,7 @@ void OSPRayManager::render()
       instances.push_back(inst);
     }
   }
+  #endif
   next_scene->instances.resize(0);
 
 //
@@ -1042,10 +1055,11 @@ ospray::box3f worldBounds = msgModel->getBBox();
 
   ospCommit(model);
 
+#if 1
               //TODO: Need to figure out where we're going to read lighting data from
     //begin light test
     std::vector<OSPLight> pointLights;
-    cout << "msgView: Adding a hard coded directional light as the sun." << endl;
+    // cout << "msgView: Adding a hard coded directional light as the sun." << endl;
     OSPLight ospLight = ospNewLight(renderer, "DirectionalLight");
     ospSetString(ospLight, "name", "sun" );
     ospSet3f(ospLight, "color", 1, 1, 1);
@@ -1054,13 +1068,16 @@ ospray::box3f worldBounds = msgModel->getBBox();
     pointLights.push_back(ospLight);
     OSPData pointLightArray = ospNewData(pointLights.size(), OSP_OBJECT, &pointLights[0], 0);
     ospSetData(renderer, "directionalLights", pointLightArray);
+// updateCamera();
+  ospCommit(renderer);
     //end light test
 
   // printf("render\n");
+  #endif
 
 
 
-  ospRenderFrame(framebuffer,renderer);
+   ospRenderFrame(framebuffer,renderer);
 
   uint32* data = (uint32 *) ospMapFrameBuffer(framebuffer);
         if (_format == "RGB_FLOAT32")
@@ -1582,20 +1599,20 @@ void OSPRayManager::addRenderable(Renderable* ren)
   //
   // hack! building normals is actually supported in the geometry generator
   //
-  if (!mesh->vertexNormals.size())
-  {
-    for(int i =0; i < numTriangles;i++)
-  {
-    Manta::Vector v1 = mesh->vertices[mesh->vertex_indices[i*3] ];
-    Manta::Vector v2 = mesh->vertices[mesh->vertex_indices[i*3+1] ];
-    Manta::Vector v3 = mesh->vertices[mesh->vertex_indices[i*3+2] ];
-    Manta::Vector n = Manta::Cross(v2-v1,v3-v1);
-    n.normalize();
-    mesh->vertexNormals.push_back(n);
-    mesh->vertexNormals.push_back(n);
-    mesh->vertexNormals.push_back(n);
-  }
-}
+//   if (!mesh->vertexNormals.size())
+//   {
+//     for(int i =0; i < numTriangles;i++)
+//   {
+//     Manta::Vector v1 = mesh->vertices[mesh->vertex_indices[i*3] ];
+//     Manta::Vector v2 = mesh->vertices[mesh->vertex_indices[i*3+1] ];
+//     Manta::Vector v3 = mesh->vertices[mesh->vertex_indices[i*3+2] ];
+//     Manta::Vector n = Manta::Cross(v2-v1,v3-v1);
+//     n.normalize();
+//     mesh->vertexNormals.push_back(n);
+//     mesh->vertexNormals.push_back(n);
+//     mesh->vertexNormals.push_back(n);
+//   }
+// }
   size_t numNormals = mesh->vertexNormals.size();
   size_t numTexCoords = mesh->texCoords.size();
   size_t numPositions = mesh->vertices.size();
@@ -1619,16 +1636,16 @@ void OSPRayManager::addRenderable(Renderable* ren)
 
   OSPGeometry ospMesh = oren->_data->ospMesh = ospNewTriangleMesh();
   OSPData position = ospNewData(vertices.size(),OSP_vec3fa,
-    &vertices[0],OSP_DATA_SHARED_BUFFER);
+    &vertices[0]);
   ospSetData(ospMesh,"position",position);
 
   OSPData normal = ospNewData(normals.size(),OSP_vec3fa,
-    &normals[0],OSP_DATA_SHARED_BUFFER);
-  ospSetData(ospMesh,"vertex.normal",normal);
+    &normals[0]);
+  // ospSetData(ospMesh,"vertex.normal",normal);
 
 
   OSPData index = ospNewData(triangles.size(),OSP_vec3i,
-   &triangles[0],OSP_DATA_SHARED_BUFFER);
+   &triangles[0]);
   ospSetData(ospMesh,"index",index);
   // ospCommit(o_current_material);
   updateMaterial();
