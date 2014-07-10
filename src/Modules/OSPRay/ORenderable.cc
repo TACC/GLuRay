@@ -44,7 +44,6 @@ OGeometryGeneratorTriangles::~OGeometryGeneratorTriangles()
 
 void OGeometryGeneratorTriangles::addVertex(Manta::Real x, Manta::Real y, Manta::Real z)
 {
-  return;
   assert(_data);
   Mesh* _mesh = _data->mesh;
   // assert(mesh);

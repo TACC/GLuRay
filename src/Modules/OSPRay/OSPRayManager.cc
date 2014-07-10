@@ -560,7 +560,7 @@ void OSPRayManager::setSize(int w, int h)
 {
 
   #if 1
-  if (initialized && (w != params.width || h != params.height))
+  if (initialized && (w != _width || h != _height))
   {
     // embreeMutex.lock();
     params.width = w;
@@ -604,10 +604,11 @@ void OSPRayManager::init()
   }
   // const char* av[] = {"gluray","--osp:debug"};
 
-  setSize(params.width,params.height);
-
   model = ospNewModel();
   camera = ospNewCamera("perspective");
+
+  _width = _height = 0;
+  setSize(params.width,params.height);
       // Assert(camera != NULL && "could not create camera");
       // ospSet3f(camera,"pos",-1,1,-1);
       // ospSet3f(camera,"dir",+1,-1,+1);
@@ -1581,8 +1582,12 @@ void OSPRayManager::addRenderable(Renderable* ren)
 {
   ORenderable* oren = dynamic_cast<ORenderable*>(ren);
   if (!oren)
+  {
+    printf("error: OSPRayManager::addRenderable wrong renderable type\n");
     return;
+  }
   oren->setBuilt(true);
+  // updateMaterial();
       // msgModel = new miniSG::Model;
       // msgModel->material.push_back(new miniSG::Material);
   // OSPMaterial ospMat = ospNewMaterial(renderer,"OBJMaterial");
@@ -1621,7 +1626,10 @@ void OSPRayManager::addRenderable(Renderable* ren)
 
   vertices.resize(numPositions);
   for(size_t i = 0; i < numPositions; i++)
+  {
     vertices[i] = ospray::vec3fa(mesh->vertices[i].x(), mesh->vertices[i].y(), mesh->vertices[i].z());
+    // printf("vert: %f %f %f\n",mesh->vertices[i].x(), mesh->vertices[i].y(), mesh->vertices[i].z());
+  }
   normals.resize(numNormals);
   for(size_t i = 0; i < numNormals; i++)
     normals[i] = ospray::vec3fa(mesh->vertexNormals[i].x(), mesh->vertexNormals[i].y(), mesh->vertexNormals[i].z());
@@ -1632,6 +1640,7 @@ void OSPRayManager::addRenderable(Renderable* ren)
   for(size_t i = 0, mi = 0; i < numTriangles; i++, mi+=3)
   {
     triangles[i] = embree::Vec3i(mesh->vertex_indices[mi+0], mesh->vertex_indices[mi+1], mesh->vertex_indices[mi+2]);
+    // printf("indices: %d %d %d\n",mesh->vertex_indices[mi+0], mesh->vertex_indices[mi+1], mesh->vertex_indices[mi+2]);
   }
 
   OSPGeometry ospMesh = oren->_data->ospMesh = ospNewTriangleMesh();
@@ -1639,18 +1648,18 @@ void OSPRayManager::addRenderable(Renderable* ren)
     &vertices[0]);
   ospSetData(ospMesh,"position",position);
 
-  OSPData normal = ospNewData(normals.size(),OSP_vec3fa,
-    &normals[0]);
+  // OSPData normal = ospNewData(normals.size(),OSP_vec3fa,
+    // &normals[0]);
   // ospSetData(ospMesh,"vertex.normal",normal);
 
 
   OSPData index = ospNewData(triangles.size(),OSP_vec3i,
    &triangles[0]);
   ospSetData(ospMesh,"index",index);
-  // ospCommit(o_current_material);
+  ospCommit(o_current_material);
   updateMaterial();
   ospSetMaterial(ospMesh,o_current_material);
-  // ospRelease(o_current_material);
+  ospRelease(o_current_material);
   ospCommit(ospMesh);
 
   oren->_data->ospModel = ospNewModel();
