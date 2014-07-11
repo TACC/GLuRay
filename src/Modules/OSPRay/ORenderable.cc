@@ -46,7 +46,6 @@ void OGeometryGeneratorTriangles::addVertex(Manta::Real x, Manta::Real y, Manta:
 {
   assert(_data);
   Mesh* _mesh = _data->mesh;
-  assert(mesh);
 
   bool use_computed_normal = false; //TODO: make config option
   _mesh->vertices.push_back(Vector(x,y,z));

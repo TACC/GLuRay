@@ -790,8 +790,8 @@ void EmbreeManager::render()
 
   if (++_frameNumber == params.export_obj)
     exportOBJ(next_scene);
-  next_scene->instances.resize(0);
-  return; //TODO: DEBUG take out
+  //next_scene->instances.resize(0);
+  //return; //TODO: DEBUG take out
 
   embreeMutex.lock();
   //printf("adding %d instances to scene\n", next_scene->instances.size());
