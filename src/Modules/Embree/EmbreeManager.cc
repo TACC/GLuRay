@@ -1221,7 +1221,7 @@ void EmbreeManager::addRenderable(Renderable* ren)
   printf("addrenderable after refit mesh indices/3 vertices normals texcoords: %d %d %d %d \n", mesh->vertex_indices.size()/3, mesh->vertices.size(), mesh->vertexNormals.size(),
       mesh->texCoords.size());
   er->setBuilt(true);
-  return; //TODO DEBUG take this out
+  // return; //TODO DEBUG take this out
 
   /*mesh->vertices.resize(0);*/
   /*mesh->vertex_indices.resize(0);*/
