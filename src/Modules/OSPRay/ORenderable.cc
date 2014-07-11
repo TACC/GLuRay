@@ -46,7 +46,7 @@ void OGeometryGeneratorTriangles::addVertex(Manta::Real x, Manta::Real y, Manta:
 {
   assert(_data);
   Mesh* _mesh = _data->mesh;
-  // assert(mesh);
+  assert(mesh);
 
   bool use_computed_normal = false; //TODO: make config option
   _mesh->vertices.push_back(Vector(x,y,z));
@@ -70,6 +70,7 @@ void OGeometryGeneratorTriangles::addVertex(Manta::Real x, Manta::Real y, Manta:
     _mesh->vertex_indices.push_back(base);
     _mesh->vertex_indices.push_back(base+1);
     _mesh->vertex_indices.push_back(base+2);
+    #if 0
 
     if (use_computed_normal){
       // Vector n = Cross((_mesh->vertices[base+1]-_mesh->vertices[base]),(_mesh->vertices[base+2]-_mesh->vertices[base]));
@@ -115,12 +116,13 @@ void OGeometryGeneratorTriangles::addVertex(Manta::Real x, Manta::Real y, Manta:
     _mesh->texture_indices.push_back(Mesh::kNoTextureIndex);
   }
   _mesh->face_material.push_back(_mesh->materials.size()-1);
+  #endif
 }
 }
 
 void OGeometryGeneratorTriangles::addNormal(Manta::Real x, Manta::Real y, Manta::Real z)
 {
-#if 1
+#if 0
   Mesh* _mesh = _data->mesh;
   _mesh->vertexNormals.push_back(Vector(x,y,z));
 #endif
