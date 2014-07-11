@@ -304,7 +304,15 @@ void gr_init()
   if(GetVar<size_t>("GLURAY_DL_SIZE", dl_size))
     cout << "setting dl_size: " << dl_size << endl;
 
+  printf("setting size\n");
+  GLint viewport[4];
+  glGetIntegerv(GL_VIEWPORT,viewport);
+  rm->setSize(viewport[2],viewport[3]);
+  printf("done setting size\n");
+
   rm->init();
+
+
   //MantaManager::singleton()->init();
   // MantaManager::singleton()->current_bgcolor = Color(RGBColor(1,1,1));
   //  resolution[0] = 512;

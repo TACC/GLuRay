@@ -159,6 +159,7 @@ OSPCamera      camera;
   :RenderManager(), current_scene(NULL), next_scene(NULL),
   _nid_counter(0), _depth(false), _width(0), _height(0), _frameNumber(0), _realFrameNumber(0)
   {
+    initialized=false;
     printf("%s::%s\n",typeid(*this).name(),__FUNCTION__);
   // rendered = false;
   // _camera = NULL;
@@ -559,21 +560,26 @@ void OSPRayManager::useShadows(bool st)
 void OSPRayManager::setSize(int w, int h)
 {
 
+printf("setSize %d %d\n", w,h);
   #if 1
   if (initialized && (w != _width || h != _height))
   {
+printf("setSize 1");
     // embreeMutex.lock();
-    params.width = w;
-    params.height = h;
     _width = w; _height = h;
     // _frameBuffer = g_device->rtNewFrameBuffer(_format.c_str(),w,h,2/*num buffers*/);
     // _resetAccumulation = true;
     // embreeMutex.unlock();
     updateCamera();
     ospray::vec2i newSize(w,h);
-    if (framebuffer) ospFreeFrameBuffer(framebuffer);
+printf("setSize 2");
+    // if (framebuffer) ospFreeFrameBuffer(framebuffer);
+printf("setSize 3");
     framebuffer = ospNewFrameBuffer(newSize,OSP_RGBA_I8);
+printf("setSize 4");
   }
+    // params.width = w;
+    // params.height = h;
   #endif
 }
 

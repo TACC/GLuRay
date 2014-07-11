@@ -10,7 +10,7 @@ class GLuRayRenderParameters
   GLuRayRenderParameters()
     : num_samples(1), num_threads(8), num_ao_samples(0), ao_distance(10.0), ao_intensity(0.1f), env_map(""), shadows(false), num_skyDome_lights(0),
     camera("pinhole"), camera_hfov(85.0), camera_vfov(85.0), focalDistance(2.0), aperture(0.01), reflectivity(0.0), write_to_file(""),
-    width(512), height(512), material("phong"), bgcolor(0,0,0,0), ri(1.5), ri2(1.0), skyDome_size(1.0), skyDome_intensity(0.0), rotate_speed(0), rotate_offset(0), add_plane(false), use_gl_lights(true), accumulate(false), eta(1.5), thickness(0.1)
+    width(256), height(256), material("phong"), bgcolor(0,0,0,0), ri(1.5), ri2(1.0), skyDome_size(1.0), skyDome_intensity(0.0), rotate_speed(0), rotate_offset(0), add_plane(false), use_gl_lights(true), accumulate(false), eta(1.5), thickness(0.1)
       , export_obj(0)
       , keyframe(-1)
   {
