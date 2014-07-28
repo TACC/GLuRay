@@ -8,7 +8,7 @@ GLuRay is an OpenGL interception library which ray traces scene descriptions thr
 //
 // Prerequisites:
 //
-1. Revision 2542 of Manta. Enable DYNBVH_APPROX options in Manta for significantly faster acceleration structure build times. 2. cmake [ccmake recommended]
+1. Revision 2542 of Manta. Enable MANTA_USE_DYNBVH_APPROXIMATE options in Manta for significantly faster acceleration structure build times. 2. cmake [ccmake recommended]
 building:
 mkdir build cd build ccmake ..
 in CMAKE options you will need to set the location of MANTA_SRC and MANTA_BUILD_PREFIX.
@@ -18,9 +18,9 @@ chmod +x gluray
 // Embree support:  
 // 
 
-1.  Currently, Manta is still required and has to be built with USE_SSE disabled in order to build with Embree support.
+1.  Currently, Manta is still required and Manta must be built built with MANTA_SSE disabled in order to build with Embree support.
 2.  In build directory, ccmake .
-3.  Enable USE_EMBREE and then specify the root folder of the Embree install as well as a build folder.
+3.  Enable USE_EMBREE and then specify the root folder of the Embree install as well as the build directory.
 4.  Configure, Generate, and then run "make"
 
 //
