@@ -1,11 +1,8 @@
 #ifndef ORENDERABLE_H
 #define ORENDERABLE_H
 
- 
 #include "ospray/ospray.h"
 #include "ospray/common/ospcommon.h"
-
-
 
 #include <Interface/MantaInterface.h>
 #include <Interface/Scene.h>
@@ -81,7 +78,7 @@ OSPModel ospModel;
 class OGeometryGenerator : public GeometryGenerator
 {
 public:
-  OGeometryGenerator() : _data(NULL) {}
+  OGeometryGenerator() : _data(NULL) {_vertCounter=0;}
   virtual void addVertex(Manta::Real x, Manta::Real y, Manta::Real z) = 0;
   virtual void addNormal(Manta::Real x, Manta::Real y, Manta::Real z) {}
   virtual void addTextureCoord(Manta::Real u, Manta::Real v, Manta::Real w, Manta::Real z) = 0;

@@ -3,6 +3,7 @@
 //
 #include <common/math/affinespace.h>
 #include <common/math/vec3.h>
+#include <common/sys/platform.h>
 
 
 
@@ -357,7 +358,7 @@ void  OSPRayManager::updateMaterial()
     return;
   GLMaterial m = gl_material;
   //TODO: DEBUG: hardcoding mat for debugging
-  m.diffuse = Color(RGB(1.0, 0.713726, .21569));
+  // m.diffuse = Color(RGB(1.0, 0.713726, .21569));
   //m.diffuse = Color(RGB(0.8, 0.8, 0.8));
   m.specular = Manta::Color(RGB(.1, .1, .1));
   m.ambient = Manta::Color(RGB(0, 0, 0));
@@ -642,14 +643,6 @@ void OSPRayManager::init()
     current_scene = new OScene();
   if (!next_scene)
     next_scene = new OScene();
-
-
-
-
-
-
-
-
 
 
   // ospray::glut3D::initGLUT(&ac,av);
@@ -1592,21 +1585,31 @@ void OSPRayManager::addRenderable(Renderable* ren)
     printf("error: OSPRayManager::addRenderable wrong renderable type\n");
     return;
   }
-  oren->setBuilt(true);
   // updateMaterial();
       // msgModel = new miniSG::Model;
       // msgModel->material.push_back(new miniSG::Material);
   // OSPMaterial ospMat = ospNewMaterial(renderer,"OBJMaterial");
-  float Kd[] = {1.f,1.f,1.f};
-  float Ks[] = {1,1,1};
-
-  std::vector<ospray::vec3fa> vertices;
-  std::vector<ospray::vec3fa> normals;
-  std::vector<ospray::vec3i> triangles;
+  // float Kd[] = {1.f,1.f,1.f};
+  // float Ks[] = {1,1,1};
 
   Manta::Mesh* mesh = oren->_data->mesh;
   assert(mesh);
+  size_t numNormals = mesh->vertexNormals.size();
+  size_t numTexCoords = mesh->texCoords.size();
+  size_t numPositions = mesh->vertices.size();
+  printf("addrenderable called mesh indices/3 vertices normals texcoords: %d %d %d %d \n", mesh->vertex_indices.size()/3, mesh->vertices.size(), mesh->vertexNormals.size(),
+    mesh->texCoords.size());
   size_t numTriangles = mesh->vertex_indices.size()/3;
+  // assert(mesh->vertices.size() == numTriangles*3);
+  oren->setBuilt(true);
+
+  // std::vector<ospray::vec3fa> vertices;
+  // std::vector<ospray::vec3fa> normals;
+  // std::vector<ospray::vec3i> triangles;
+  ospray::vec3fa* vertices = (ospray::vec3fa*)embree::alignedMalloc(sizeof(ospray::vec3fa)*numPositions);
+  ospray::vec3i* triangles = (ospray::vec3i*)embree::alignedMalloc(sizeof(ospray::vec3i)*numTriangles);
+
+
   //
   // hack! building normals is actually supported in the geometry generator
   //
@@ -1624,52 +1627,52 @@ void OSPRayManager::addRenderable(Renderable* ren)
 //     mesh->vertexNormals.push_back(n);
 //   }
 // }
-  size_t numNormals = mesh->vertexNormals.size();
-  size_t numTexCoords = mesh->texCoords.size();
-  size_t numPositions = mesh->vertices.size();
-  printf("addrenderable called mesh indices/3 vertices normals texcoords: %d %d %d %d \n", mesh->vertex_indices.size()/3, mesh->vertices.size(), mesh->vertexNormals.size(),
-    mesh->texCoords.size());
 
-  vertices.resize(numPositions);
+
+  // vertices.resize(numPositions);
   for(size_t i = 0; i < numPositions; i++)
   {
-    vertices[i] = ospray::vec3fa(mesh->vertices[i].x(), mesh->vertices[i].y(), mesh->vertices[i].z());
+    vertices[i] = ospray::vec3fa(mesh->vertices[i].x(), mesh->vertices[i].y(),  mesh->vertices[i].z());
+    // vertices[i] = ospray::vec3fa(float(i)*.01,float(i)*.01,float(i)*.01);
     // printf("vert: %f %f %f\n",mesh->vertices[i].x(), mesh->vertices[i].y(), mesh->vertices[i].z());
   }
-  normals.resize(numNormals);
-  for(size_t i = 0; i < numNormals; i++)
-    normals[i] = ospray::vec3fa(mesh->vertexNormals[i].x(), mesh->vertexNormals[i].y(), mesh->vertexNormals[i].z());
+  // normals.resize(numNormals);
+  // for(size_t i = 0; i < numNormals; i++)
+    // normals[i] = ospray::vec3fa(mesh->vertexNormals[i].x(), mesh->vertexNormals[i].y(), mesh->vertexNormals[i].z());
 
 
       // embree::Vec3i* vertex_indices = (embree::Vec3i*)alignedMalloc(sizeof(embree::Vec3i)*numTriangles);
-  triangles.resize(numTriangles);
+  // triangles.resize(numTriangles);
   for(size_t i = 0, mi = 0; i < numTriangles; i++, mi+=3)
   {
     triangles[i] = embree::Vec3i(mesh->vertex_indices[mi+0], mesh->vertex_indices[mi+1], mesh->vertex_indices[mi+2]);
+    // triangles[i] = embree::Vec3i(0,1,2);
     // printf("indices: %d %d %d\n",mesh->vertex_indices[mi+0], mesh->vertex_indices[mi+1], mesh->vertex_indices[mi+2]);
   }
+  // numPositions=3;
+  // numTriangles=1;
 
-  OSPGeometry ospMesh = oren->_data->ospMesh = ospNewTriangleMesh();
-  OSPData position = ospNewData(vertices.size(),OSP_vec3fa,
+  oren->_data->ospMesh = ospNewTriangleMesh();
+  OSPData position = ospNewData(numPositions,OSP_vec3fa,
     &vertices[0]);
-  ospSetData(ospMesh,"position",position);
+  ospSetData(oren->_data->ospMesh,"position",position);
 
   // OSPData normal = ospNewData(normals.size(),OSP_vec3fa,
     // &normals[0]);
   // ospSetData(ospMesh,"vertex.normal",normal);
 
 
-  OSPData index = ospNewData(triangles.size(),OSP_vec3i,
+  OSPData index = ospNewData(numTriangles,OSP_vec3i,
    &triangles[0]);
-  ospSetData(ospMesh,"index",index);
-  ospCommit(o_current_material);
+  ospSetData(oren->_data->ospMesh,"index",index);
+  // ospCommit(o_current_material);
   updateMaterial();
-  ospSetMaterial(ospMesh,o_current_material);
-  ospRelease(o_current_material);
-  ospCommit(ospMesh);
+  ospSetMaterial(oren->_data->ospMesh,o_current_material);
+  // ospRelease(o_current_material);
+  ospCommit(oren->_data->ospMesh);
 
   oren->_data->ospModel = ospNewModel();
-  ospAddGeometry(oren->_data->ospModel,ospMesh);
+  ospAddGeometry(oren->_data->ospModel,oren->_data->ospMesh);
   ospCommit(oren->_data->ospModel);
         // instanceModels.push_back(model_i);
 

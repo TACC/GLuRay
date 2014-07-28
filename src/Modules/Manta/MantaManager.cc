@@ -492,7 +492,8 @@ void MantaManager::setSize(int w, int h)
   {
     params.width = w;
     params.height = h;
-    rtrt->addTransaction("resize",
+    if (initialized)
+      rtrt->addTransaction("resize",
         Manta::Callback::create(rtrt,
           &Manta::MantaInterface::changeResolution,
           channel_id, w, h,
