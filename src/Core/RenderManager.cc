@@ -319,6 +319,7 @@ void RenderManager::addInstance(Renderable* ren)
 extern RenderManager* createEmbreeManager();
 extern RenderManager* createOSPRayManager();
 extern RenderManager* createRIVLManager();
+extern RenderManager* createOptiXManager();
 
 RenderManager* createRenderManager()
 {
@@ -332,6 +333,9 @@ RenderManager* createRenderManager()
 #endif
 #ifdef USE_OSPRAY
   return createOSPRayManager();
+#endif
+#ifdef USE_OPTIX
+  return createOptiXManager();
 #endif
   return MantaManager::singleton();
 }
