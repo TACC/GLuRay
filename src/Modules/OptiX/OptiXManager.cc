@@ -197,6 +197,7 @@ void OptiXManager::internalRender()
 
 void OptiXManager::render()
 {
+  printf("optix render\n");
   if (!initialized)
     return;
   if (next_scene->instances.size() == 0)
