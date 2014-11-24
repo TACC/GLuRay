@@ -1,24 +1,371 @@
-#find_package(OSPRay)
-#INCLUDE_DIRECTORIES(
-  #${OSPRAY_INCLUDE_DIRS}
-  #)
 
-find_package(OptiX)
-INCLUDE_DIRECTORIES( ${optix_INCLUDE} )
+#
+#  Copyright (c) 2008 - 2009 NVIDIA Corporation.  All rights reserved.
+#
+#  NVIDIA Corporation and its licensors retain all intellectual property and proprietary
+#  rights in and to this software, related documentation and any modifications thereto.
+#  Any use, reproduction, disclosure or distribution of this software and related
+#  documentation without an express license agreement from NVIDIA Corporation is strictly
+#  prohibited.
+#
+#  TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, THIS SOFTWARE IS PROVIDED *AS IS*
+#  AND NVIDIA AND ITS SUPPLIERS DISCLAIM ALL WARRANTIES, EITHER EXPRESS OR IMPLIED,
+#  INCLUDING, BUT NOT LIMITED TO, IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#  PARTICULAR PURPOSE.  IN NO EVENT SHALL NVIDIA OR ITS SUPPLIERS BE LIABLE FOR ANY
+#  SPECIAL, INCIDENTAL, INDIRECT, OR CONSEQUENTIAL DAMAGES WHATSOEVER (INCLUDING, WITHOUT
+#  LIMITATION, DAMAGES FOR LOSS OF BUSINESS PROFITS, BUSINESS INTERRUPTION, LOSS OF
+#  BUSINESS INFORMATION, OR ANY OTHER PECUNIARY LOSS) ARISING OUT OF THE USE OF OR
+#  INABILITY TO USE THIS SOFTWARE, EVEN IF NVIDIA HAS BEEN ADVISED OF THE POSSIBILITY OF
+#  SUCH DAMAGES
+#
 
-SET(glrOptix_SRC "")
 
-SET(glrOptix_SRC 
- OptiXManager.cc
- OptiXManager.h
- ORenderable.cc
- ORenderable.h
- OScene.cc
- OScene.h
+# Welcome to the OptiX SDK build.  We have chosen CMake, because it can generate multiple
+# build systems for multiple architectures from a single script.  There are many resources
+# for CMake on-line at http://www.cmake.org and their wiki page,
+# http://www.cmake.org/Wiki/CMake, in addition to the documentation that comes with the
+# distribution.  There is also a book available if you wish to delve more deeply into
+# various topics.
+
+# If you wish to create your own project and use the SDK as a template there are a number
+# of things you should do.
+#
+# 1. You should copy the contents of the SDK to a place of your choice.
+# 
+# 2. You can remove any sample's directory you don't wish to build.  Be careful about
+#    the following directories.
+#
+#    a. CMake - contains helper scripts that make this all work.  You should keep this.
+#
+#    b. sutil - Almost all of the samples make use of this library one way or another, so
+#               you should probably keep it until you have your own frameowrk for your
+#               code.
+#
+#    c. nvcommon - Used by the hybrid samples.  If you don't use one of these samples as a
+#                  template, you can probably delete this directory.
+#
+#    d. simpleAnimation - This directory contains the cow.obj file used as an example for
+#                         many of the samples.  You can move cow.obj anywhere as long as
+#                         you fix all the file paths in the samples you wish to use it in.
+#
+# 3. You should update the list of sub directories that CMake needs to process below (look
+#    for the comment "List of samples found in subdirectories.")
+#
+
+# The basic flow of execution of this file is to do the following.
+#
+# 1. Setup the project and other global settings.  This involves processing some helper
+#    scripts.
+# 
+# 2. Look for external dependencies, such as glut, DirectX, CUDA, and OptiX.
+#
+# 3. Process all the subdirectories' CMakeLists.txt files.  These files create all the
+#    executable and library targets that are used to build the SDK.
+#
+# 4. As a convenience on Windows, copy the OptiX dlls into the build directories, so OptiX
+#    doesn't have to be in the path to run the samples.
+#
+# 5. Set a CMake variable that indicates we have configured for the first time.  This
+#    allows us to override and set varibles' defaults while allowing them to be modified
+#    later.
+
+# If you have any questions, don't feel shy about posting to the OptiX forums:
+# http://developer.nvidia.com/forums/index.php?showforum=43
+
+
+# This sets up the name of our project.  For our purposes the main thing this controls is
+# the name of the VS solution file.
+project(OptiX-Samples)
+
+# This enforces a particular version of CMake that we require to process the script files
+# properly.
+cmake_minimum_required(VERSION 2.8.8 FATAL_ERROR)
+
+# As of CMake 2.6 policies were introduced in order to provide a mechanism for
+# adding backwards compatibility one feature at a time.  We will just specify
+# that all policies will use version 2.6 symantics.
+cmake_policy(VERSION 2.6)
+
+# Add paths to our CMake code to the module path, so they can be found automatically by
+# CMake.
+MESSAGE("CMAKE_SOURCE_DIR" ${CMAKE_SOURCE_DIR})
+set(CMAKE_MODULE_PATH
+  "${CMAKE_SOURCE_DIR}/src/Modules/OptiX/CMake"
+  ${CMAKE_MODULE_PATH}
   )
 
-ADD_LIBRARY (GLuRay_Optix STATIC ${glrOptix_SRC})
+# Set the default build to Release.  Note this doesn't do anything for the VS
+# default build target which defaults to Debug when you first start it.
+IF(NOT CMAKE_BUILD_TYPE)
+  SET(CMAKE_BUILD_TYPE "Release" CACHE STRING
+      "Choose the type of build, options are: Debug Release RelWithDebInfo MinSizeRel."
+      FORCE)
+ENDIF(NOT CMAKE_BUILD_TYPE)
 
-TARGET_LINK_LIBRARIES(GLuRay_Optix ${optix_LIBRARY})
+# Tells CMake to build all the libraries as shared libraries by default.  This can be
+# overrided by individual libraries later.
+set(BUILD_SHARED_LIBS ON)
 
+##########
+# Process our custom setup scripts here.
+
+# Include all CMake Macros.
+include(Macros)
+# Determine information about the compiler
+include (CompilerInfo)
+# Check for specific machine/compiler options.
+include (ConfigCompilerFlags)
+
+# Turn off the warning that NVCC issues when generating PTX from our CUDA samples.  This
+# is a custom extension to the FindCUDA code distributed by CMake.
+OPTION(CUDA_REMOVE_GLOBAL_MEMORY_SPACE_WARNING "Suppress the \"Advisory: Cannot tell what pointer points to, assuming global memory space\" warning nvcc makes." ON)
+
+# Change default nvcc frontend to gcc when using clang -- cuda doesnt currently support clang
+if(USING_CLANG_C)
+  set(CUDA_HOST_COMPILER "gcc" CACHE FILEPATH "Host side compiler used by NVCC")
+endif()
+
+# Find at least a 2.3 version of CUDA.
+find_package(CUDA 2.3 REQUIRED)
+
+# Present the CUDA_64_BIT_DEVICE_CODE on the default set of options.
+mark_as_advanced(CLEAR CUDA_64_BIT_DEVICE_CODE)
+
+# Add some useful default arguments to the nvcc flags.  This is an example of how we use
+# PASSED_FIRST_CONFIGURE.  Once you have configured, this variable is TRUE and following
+# block of code will not be executed leaving you free to edit the values as much as you
+# wish from the GUI or from ccmake.
+if(NOT PASSED_FIRST_CONFIGURE)
+  set(flag "--use_fast_math")
+  list(FIND CUDA_NVCC_FLAGS ${flag} index)
+  if(index EQUAL -1)
+    list(APPEND CUDA_NVCC_FLAGS ${flag})
+    set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS} CACHE LIST "Semi-colon delimit multiple arguments." FORCE)
+  endif()
+
+  if (CUDA_VERSION VERSION_LESS "3.0")
+    set(flag "--keep")
+    list(FIND CUDA_NVCC_FLAGS ${flag} index)
+    if(index EQUAL -1)
+      list(APPEND CUDA_NVCC_FLAGS ${flag})
+      set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS} CACHE LIST "Semi-colon delimit multiple arguments." FORCE)
+    endif()
+  endif()
+
+  if( APPLE )
+    # Undef'ing __BLOCKS__ for OSX builds.  This is due to a name clash between OSX 10.6
+    # C headers and CUDA headers
+    set(flag "-U__BLOCKS__")
+    list(FIND CUDA_NVCC_FLAGS ${flag} index)
+    if(index EQUAL -1)
+      list(APPEND CUDA_NVCC_FLAGS ${flag})
+      set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS} CACHE LIST "Semi-colon delimit multiple arguments." FORCE)
+    endif()
+  endif()
+endif(NOT PASSED_FIRST_CONFIGURE)
+
+# This passes a preprocessor definition to cl.exe when processing CUDA code.
+if(USING_WINDOWS_CL)
+  list(APPEND CUDA_NVCC_FLAGS --compiler-options /D_USE_MATH_DEFINES)
+endif()
+
+# Put all the runtime stuff in the same directory.  By default, CMake puts each targets'
+# output into their own directory.  We want all the targets to be put in the same
+# directory, and we can do this by setting these variables.
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
+
+# Create a flag for mac which will allow apps to add the local cuda toolkit
+# install path to the app's rpath.
+if( APPLE )
+  set( CUDA_TOOLKIT_RPATH_FLAG "-Wl,-rpath,${CUDA_TOOLKIT_ROOT_DIR}/lib" )
+endif()
+
+# Locate the NVRT distribution.  Search the SDK first, then look in the system.
+set(OptiX_INSTALL_DIR "${CMAKE_SOURCE_DIR}/../" CACHE PATH "Path to OptiX installed location.")
+
+# Search for the OptiX libraries and include files.
+find_package(OptiX REQUIRED)
+
+# Add the path to the OptiX headers to our include paths.
+include_directories(
+  "${OptiX_INCLUDE}"
+  )
+
+# Force the perforce plugin off for the SDK.
+set(USE_PERFORCE OFF CACHE BOOL "This is forced off." FORCE)
+
+##################################################################
+# SUtil compilation
+
+set(SAMPLES_PTX_DIR "${CMAKE_BINARY_DIR}/lib/ptx" CACHE PATH "Path to where the samples look for the PTX code.")
+set(SAMPLES_DIR "${CMAKE_CURRENT_SOURCE_DIR}" CACHE PATH "Path to the samples directory.")
+
+set(CUDA_GENERATED_OUTPUT_DIR ${SAMPLES_PTX_DIR})
+
+if (WIN32)
+  string(REPLACE "/" "\\\\" SAMPLES_PTX_DIR ${SAMPLES_PTX_DIR})
+else (WIN32)
+  if ( USING_GNU_C AND NOT APPLE)
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DM_PI=3.14159265358979323846" )
+  endif()
+endif (WIN32)
+
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/sampleConfig.h.in ${CMAKE_CURRENT_BINARY_DIR}/sampleConfig.h @ONLY)
+
+# Path to sutil.h that all the samples need
+include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/sutil
+                     ${OptiX_INCLUDE}/optixu
+                     ${CMAKE_CURRENT_BINARY_DIR}
+                     ${CUDA_INCLUDE_DIRS} )
+
+include(FindSUtilGLUT)
+
+set(SAMPLES_CUDA_DIR ${CMAKE_CURRENT_SOURCE_DIR}/cuda)
+
+#########################################################
+# OPTIX_add_sample_executable
+#
+# Convience function for adding samples to the code.  You can copy the contents of this
+# funtion into your individual project if you wish to customize the behavior.  Note that
+# in CMake, functions have their own scope, whereas macros use the scope of the caller.
+function(OPTIX_add_sample_executable target_name)
+
+  # These calls will group PTX and CUDA files into their own directories in the Visual
+  # Studio projects.
+  source_group("PTX Files"  REGULAR_EXPRESSION ".+\\.ptx$")
+  source_group("CUDA Files" REGULAR_EXPRESSION ".+\\.cu$")
+
+  # Separate the sources from the CMake and CUDA options fed to the macro.  This code
+  # comes from the CUDA_COMPILE_PTX macro found in FindCUDA.cmake.  We are copying the
+  # code here, so that we can use our own name for the target.  target_name is used in the
+  # creation of the output file names, and we want this to be unique for each target in
+  # the SDK.
+  CUDA_GET_SOURCES_AND_OPTIONS(source_files cmake_options options ${ARGN})
+
+  # Create the rules to build the PTX from the CUDA files.
+  CUDA_WRAP_SRCS( ${target_name} PTX generated_files ${source_files} ${cmake_options}
+    OPTIONS ${options} )
+
+  # Here is where we create the rule to make the executable.  We define a target name and
+  # list all the source files used to create the target.  In addition we also pass along
+  # the cmake_options parsed out of the arguments.
+  add_executable(${target_name}
+    ${source_files}
+    ${generated_files}
+    ${cmake_options}
+    )
+
+  # Most of the samples link against the sutil library and the optix library.  Here is the
+  # rule that specifies this linkage.
+  target_link_libraries( ${target_name}
+    sutil
+    optix
+    ${optix_rpath}
+    )
+  if(USING_GNU_CXX)
+    target_link_libraries( ${target_name} m ) # Explicitly link against math library (C samples don't do that by default)
+  endif()
+endfunction()
+
+#########################################################
+#  List of samples found in subdirectories.
+#
+# If you wish to start your own sample, you can copy one of the sample's directories.
+# Just make sure you rename all the occurances of the sample's name in the C code as well
+# and the CMakeLists.txt file.
+# add_subdirectory(ambocc)
+# add_subdirectory(buffersOfBuffers)
+# add_subdirectory(collision)
+add_subdirectory(cook)
+add_subdirectory(grOptix)
+# add_subdirectory(device_exceptions)
+# add_subdirectory(displacement)
+# add_subdirectory(glass)
+# add_subdirectory(heightfield)
+# add_subdirectory(hybridShadows)
+# add_subdirectory(isgReflections)
+# add_subdirectory(isgShadows)
+# add_subdirectory(julia)
+# add_subdirectory(mantascene)
+# add_subdirectory(materials)
+# add_subdirectory(mcmc_sampler)
+# add_subdirectory(mis_sample)
+# add_subdirectory(namespaces)
+# add_subdirectory(ocean)
+# add_subdirectory(path_tracer)
+# add_subdirectory(primitiveIndexOffsets)
+# add_subdirectory(procedural)
+# add_subdirectory(progressivePhotonMap)
+# add_subdirectory(rayDifferentials)
+# add_subdirectory(sample1)
+# add_subdirectory(sample2)
+# add_subdirectory(sample3)
+# add_subdirectory(sample4)
+# add_subdirectory(sample5)
+# add_subdirectory(sample5pp)
+# add_subdirectory(sample6)
+# add_subdirectory(sample7)
+# add_subdirectory(sample8)
+# add_subdirectory(shadeTree)
+# add_subdirectory(simpleAnimation)
+# add_subdirectory(simpleGLTexInterop)
+# add_subdirectory(simplePrime)
+# add_subdirectory(simplePrimepp)
+# add_subdirectory(simplePrimeppMultiGpu)
+# add_subdirectory(simplePrimeppMultiBuffering)
+# add_subdirectory(swimmingShark)
+# add_subdirectory(transparency)
+# add_subdirectory(traversal)
+# add_subdirectory(tutorial)
+# add_subdirectory(whirligig)
+# add_subdirectory(whitted)
+# add_subdirectory(zoneplate)
+
+# Our sutil library.  The rules to build it are found in the subdirectory.
+add_subdirectory(sutil)
+
+# nvcommon library used by isgShadows.  If you don't compile isgShadows, you can comment
+# this out.
+add_subdirectory(nvcommon)
+
+# This copies out dlls into the build directories, so that users no longer need to copy
+# them over in order to run the samples.  This depends on the cook sample being compiled.
+# If you remove this sample from the list of compiled samples, then you should change
+# "cook" found below to the name of one of your other samples.
+if(WIN32)
+  if(CMAKE_SIZEOF_VOID_P EQUAL 8 AND NOT APPLE)
+    set(bit_dest "64")
+  else()
+    set(bit_dest "")
+  endif()
+  foreach(config ${CMAKE_CONFIGURATION_TYPES})
+    get_target_property(loc cook ${config}_LOCATION)
+    if(loc)
+      # A little helper function
+      function(copy_dll lib)
+        get_filename_component(path ${loc} PATH)
+        get_filename_component(name ${lib} NAME)
+        #message("${CMAKE_COMMAND} -E copy_if_different ${lib} ${path}/${name}")
+        execute_process(COMMAND ${CMAKE_COMMAND} -E copy_if_different ${lib} ${path}/${name})
+      endfunction()
+      
+      # Copy the binary directory into the build
+      file(GLOB dlls "${OptiX_INSTALL_DIR}/bin${bit_dest}/*.dll")
+      foreach(file ${dlls})
+        copy_dll("${file}")
+      endforeach()
+    else()
+      message(WARNING "Unable to find location to copy DLLs into the build")
+    endif()
+  endforeach()
+endif(WIN32)
+
+#################################################################
+
+# Now that everything is done, indicate that we have finished configuring at least once.
+# We use this variable to set certain defaults only on the first pass, so that we don't
+# continually set them over and over again.
+set(PASSED_FIRST_CONFIGURE ON CACHE INTERNAL "Already Configured once?")
 

@@ -13,7 +13,15 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 
-
+#include <optix.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <sutil.h>
+// #include <glm.h>
+#include <optixu/optixpp_namespace.h>
+#include <optixu/optixu_aabb_namespace.h>
+#include <optixu/optixu_matrix_namespace.h>
 
 
 /*
@@ -75,6 +83,12 @@
      void displayFrame();
      static void* renderLoop(void* t);
      void internalRender();
+
+//
+     //optix
+//      //
+// void createGeometryInstances( GLMmodel* model );
+// void createLightBuffer( GLMmodel* model );
 
     // void exportOBJ(EScene* scene);
 

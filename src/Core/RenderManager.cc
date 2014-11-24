@@ -44,8 +44,6 @@
 //#endif
 #include "MantaManager.h"
 
-
-
   RenderManager::RenderManager()
 : current_renderable(NULL),
   auto_camera(false), num_threads(8), rendering(false), current_color(1,0.714,0.216,1), print_build_time(true), relaunch(false), client_running(false), current_bgcolor(1,1,1,1), render_once(false), usePerVertexColors(false),
