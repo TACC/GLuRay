@@ -1,0 +1,51 @@
+In order to compile the samples in the SDK you need the following:
+
+1. CUDA Toolkit 2.3, 3.0, 3.1, 3.2, 4.0, 4.1, 4.2, 5.0 or 5.5 (Note you should
+   also install the latest driver module available after installing the
+   toolkit).
+   
+2. CMake 2.8.8 (http://www.cmake.org/cmake/resources/software.html).  CMake
+   2.8.10.2 is also tested on Mac platforms.  You can use the one in MacPorts or
+   the installation from the CMake website.  The CMake website version starting
+   in version 2.8.0 also includes a graphical interface to CMake that is
+   identical to the one found in the Windows version.
+   
+3. C++ compiler.  We have tested gcc and clang on Mac OS X 10.8 with Xcode 4.6.3.
+
+To compile:
+
+Instructions for building.
+1. Create a build directory other than the SDK/ directory.  Using
+   a separate build directory allows multiple builds, differing in
+   flavor, platform, etc.  Also note that the build directory will need to be
+   writable, so  try to pick one outside of the /Developer section of your hard
+   drive.
+2. cd to new directory.
+3. Run
+     $ ccmake <path>
+     or
+     $ env CFLAGS=-m32 CXXFLAGS=-m32 ccmake <path> (for 32 bit builds on OSX
+     10.6, use -m64 on 10.5 for 64 bit builds).
+   where path is the path to the OptiX SDK/ directory.  This will bring up the
+   cmake interface.  On 10.6 and later, the compiler tool chain defaults to 64
+   bit builds, and on 10.5 it defaults to 32 bit builds.  Use the extra
+   environment variables instruct CMake to create a 32 or 64 bit
+   builds. Alternatively, to run cmake in non-GUI mode and automatically create
+   makefiles with the default options run 'cmake <path>' and skip to step 8.
+4. Press 'c' within ccmake to begin configure process.
+5. Adjust any options, such as build flavor, by moving cursor to field and
+   hitting <enter>, changing value, and hitting <enter> again.  One field you
+   may want to change is CMAKE_BUILD_TYPE to select a
+   Debug build (it defaults to Release which is an optimized build).
+   CUDA_64_BIT_DEVICE_CODE will also control the bitness of the generated PTX
+   code.  It defaults to 32 bits (OFF).
+6. Press 'c' again to finish configure.
+7. Press 'g' to generate Makefiles and exit.
+8. Run
+     $ make
+   to build. Or if you wish to compile a specific sample run
+     $ make <sample>  (e.g. 'make cook')
+   To see a complete list of targets to compile run
+     $ make help
+9. Executables should be found in the <build_dir>/bin directory.  All samples
+   will be deposited in this same directory.

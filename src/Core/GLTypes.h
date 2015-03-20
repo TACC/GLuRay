@@ -1,3 +1,4 @@
+
 #ifndef GLTYPES
 #define GLTYPES
 

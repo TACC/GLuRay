@@ -1,3 +1,23 @@
+#/**********************************************************************************
+#*                     Copyright (c) 2013-2015 Carson Brownlee
+#*         Texas Advanced Computing Center, University of Texas at Austin
+#*                       All rights reserved
+#* 
+#*       This library is free software; you can redistribute it and/or
+#* modify it under the terms of the GNU Lesser General Public
+#* License as published by the Free Software Foundation; either
+#* version 2.1 of the License, or (at your option) any later version.
+#* 
+#* This library is distributed in the hope that it will be useful,
+#* but WITHOUT ANY WARRANTY; without even the implied warranty of
+#* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+#* Lesser General Public License for more details.
+#* 
+#* You should have received a copy of the GNU Lesser General Public
+#* License along with this library; if not, write to the Free Software
+#* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+#**********************************************************************************/
+
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6.4)
 
 PROJECT(GLuRay)
@@ -117,7 +137,7 @@ IF(USE_OSPRAY)
 ENDIF(USE_OSPRAY)
 IF (USE_OPTIX)
   SET(CMAKE_DEFINES "${CMAKE_DEFINES}#define USE_OPTIX 1\n")
-  SUBDIRS(src/Modules/OptiX/grOptiX)
+  SUBDIRS(src/Modules/OptiX)
   SET(GLURAY_LIBS ${GLURAY_LIBS} GLuRay_Optix)
 ENDIF()
 IF(USE_GVT)
@@ -207,6 +227,6 @@ SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -D_GNU_SOURCE")
 
 FILE(REMOVE ${PROJECT_BINARY_DIR}/gluray)
 FILE(WRITE ${PROJECT_BINARY_DIR}/gluray
-  "#!/bin/sh\nLD_PRELOAD=\"${PROJECT_BINARY_DIR}/libfakeGL.so\" \${1+\"\$@\"}\n"
+  "#!/bin/sh\nLD_PRELOAD=\${LD_PRELOAD}:\"${PROJECT_BINARY_DIR}/libfakeGL.so\" \${1+\"\$@\"}\n"
   )
 EXECUTE_PROCESS(COMMAND chmod +x ${PROJECT_BINARY_DIR}/gluray)

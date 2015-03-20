@@ -1,0 +1,59 @@
+In order to compile the samples in the SDK you need the following.
+
+1. Visual Studio 2008, 2010 or 2012.
+
+2. CUDA Toolkit 2.3, 3.0, 3.1, 3.2, 4.0, 4.1, 4.2, 5.0 or 5.5.  CUDA 5.5 is
+required for Visual Studio 2012.
+
+3. CMake 2.8.8 minimum (http://www.cmake.org/cmake/resources/software.html).
+For Visual Studio 2012 2.8.10 or 2.8.12 is recommended.  The current version
+as of this writing is 2.8.11.2.  I suggest the executable installer
+(http://www.cmake.org/files/v2.8/cmake-2.8.11.2-win32-x86.exe).
+
+Instructions for building.
+
+1. Start up cmake-gui from the Start Menu.
+
+2. Select the <path>/OptiX SDK 3.5.0/SDK directory from the installation for the
+   source file location.
+
+3. Create a build directory that isn't the same as the source directory.  I
+   would suggest <path>/OptiX SDK 3.5.0/SDK/build.  If you don't have
+   permissions to write into the this directory (writing into the "C:/Program
+   Files" directory can be restricted in some cases), pick a different
+   directory where you do have write permissions.  If you type in the directory
+   (instead of using the "Browse Build..." button), CMake will ask you at the
+   next step to create the directory for you if it doesn't already exist.
+
+4. Press "Configure" button and select the version of Visual Studio you wish to
+   use.  Note that the 64-bit compiles are separate from the 32-bit compiles
+   (e.g. look for "Visual Studio 10 2010" or "Visual Studio 10 2010 Win64").
+   Leave all other options on their default.  Press "OK".  If you wish to have
+   both a 32- and 64-bit build you will need to configure multiple build
+   directories, one for each build type.  This can take a while while source
+   level dependencies for CUDA files are computed.
+
+Note that if you wish to have 64-bit device code generation for a 64-bit build,
+check the box next to CUDA_64_BIT_DEVICE_CODE in the GUI.  The default value is
+OFF which will generate 32-bit device code.
+
+5. Press "Configure" again.  Followed by "Generate".
+
+6. Open the OptiX-Samples.sln solution file in the build directory you created.
+
+7. Select "Build Solution" from the IDE.
+
+8. Right click on one of the sample program targets in the solution explorer and
+   select "Set as start up project".
+
+9. Run the sample.  "q" or "Esc" will close the window.
+
+Note that due to the way dependencies are automatically handled for CUDA
+compilation in Visual Studio, if you build again Visual Studio will likely ask
+you to reload your projects.  Please do so.  Subsequent compiles should not
+result in reloading unless you change the files that are included in a CUDA
+file.
+
+Further instructions regarding the build system can be found in comments in the
+SDK's CMakeLists.txt file.
+

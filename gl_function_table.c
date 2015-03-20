@@ -15493,7 +15493,7 @@ void glNormal3d(GLdouble nx, GLdouble ny, GLdouble nz) {
 next_glNormal3d(nx, ny, nz);
 #endif
   __sgPrintError();
-  dt->read_flag_write_msg("carson: opengl call made: ");    dt->read_flag_write_msg(dt->format_function_call(563, args));
+  //dt->read_flag_write_msg("carson: opengl call made: ");    dt->read_flag_write_msg(dt->format_function_call(563, args));
 GLUNLOCK();
 }
 
@@ -15505,7 +15505,7 @@ void glNormal3dv(const GLdouble * v) {
 next_glNormal3dv(v);
 #endif
   __sgPrintError();
-  dt->read_flag_write_msg("carson: opengl call made: ");    dt->read_flag_write_msg(dt->format_function_call(564, args));
+  //dt->read_flag_write_msg("carson: opengl call made: ");    dt->read_flag_write_msg(dt->format_function_call(564, args));
 GLUNLOCK();
 }
 
@@ -15535,7 +15535,7 @@ void glNormal3fVertex3fSUN(GLfloat nx, GLfloat ny, GLfloat nz, GLfloat x, GLfloa
   GLLOCK();
 next_glNormal3fVertex3fSUN(nx, ny, nz, x, y, z);
   __sgPrintError();
-  dt->read_flag_write_msg("carson: opengl call made: ");    dt->read_flag_write_msg(dt->format_function_call(566, args));
+  //dt->read_flag_write_msg("carson: opengl call made: ");    dt->read_flag_write_msg(dt->format_function_call(566, args));
 GLUNLOCK();
 }
 
@@ -15544,7 +15544,7 @@ void glNormal3fVertex3fvSUN(const GLfloat * n, const GLfloat * v) {
   GLLOCK();
 next_glNormal3fVertex3fvSUN(n, v);
   __sgPrintError();
-  dt->read_flag_write_msg("carson: opengl call made: ");    dt->read_flag_write_msg(dt->format_function_call(567, args));
+  //dt->read_flag_write_msg("carson: opengl call made: ");    dt->read_flag_write_msg(dt->format_function_call(567, args));
 GLUNLOCK();
 }
 
@@ -18065,7 +18065,7 @@ void glTexCoord2fv(const GLfloat * v) {
   GLLOCK();
 next_glTexCoord2fv(v);
   __sgPrintError();
-  dt->read_flag_write_msg("carson: opengl call made: ");    dt->read_flag_write_msg(dt->format_function_call(793, args));
+  //dt->read_flag_write_msg("carson: opengl call made: ");    dt->read_flag_write_msg(dt->format_function_call(793, args));
 GLUNLOCK();
 }
 
@@ -18076,7 +18076,7 @@ void glTexCoord2i(GLint s, GLint t) {
   GLLOCK();
 next_glTexCoord2i(s, t);
   __sgPrintError();
-  dt->read_flag_write_msg("carson: opengl call made: ");    dt->read_flag_write_msg(dt->format_function_call(794, args));
+  //dt->read_flag_write_msg("carson: opengl call made: ");    dt->read_flag_write_msg(dt->format_function_call(794, args));
 GLUNLOCK();
 }
 
@@ -18085,7 +18085,7 @@ void glTexCoord2iv(const GLint * v) {
   GLLOCK();
 next_glTexCoord2iv(v);
   __sgPrintError();
-  dt->read_flag_write_msg("carson: opengl call made: ");    dt->read_flag_write_msg(dt->format_function_call(795, args));
+  //dt->read_flag_write_msg("carson: opengl call made: ");    dt->read_flag_write_msg(dt->format_function_call(795, args));
 GLUNLOCK();
 }
 

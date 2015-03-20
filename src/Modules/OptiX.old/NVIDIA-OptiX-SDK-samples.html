@@ -1,0 +1,1302 @@
+
+<html xmlns:comem3="xalan://com.em3" xmlns:em3="http://www.em3.com/2002/widget">
+
+  <!-- 
+  ******************
+  Borrowed from the CUDA sdk's ReleaseNotes.html
+  ******************  
+  -->
+
+<head>
+	<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>NVIDIA OptiX SDK Code Samples</title>
+	<link type="image/x-icon" href="releaseNotesData/NVSphere.ico" rel="shortcut icon">
+	<script type="text/javascript">
+	<!--
+	function openScreenshot(url)
+	{
+	  var dlgWidth = 556;
+ 	  var dlgHeight = 634;
+	  var dlgLeft = (screen.width - dlgWidth) / 2;
+	  var dlgTop = (screen.height - dlgHeight) / 2;
+
+ 	  var specs = 'toolbar=no,scrollbars=no,location=no,status=no,menubar=no,resizable=no,width=550,height=610,left=' + dlgLeft + ',top=' + dlgTop;
+
+	  newwin = window.open(url, 'ScreenshotWindow', specs);
+	  newwin.focus();
+	}
+	function pageSelectorGoTo()
+	{
+	  window.location = document.forms[1].pageSelector.value
+	}
+	-->
+	</script>
+<style type="text/css">
+body {
+margin-left:0px;
+margin-top:0px;
+font-family:Verdana, Geneva, Arial, Helvetica, Sans Serif;
+font-size: 11px;
+}
+
+td, div { 
+font-family:Verdana, Geneva, Arial, Helvetica, Sans Serif;
+font-size: 11px;
+}
+
+#devTable {
+position:absolute;
+top:0px;
+}
+
+.devGradient {
+vertical-align:top;
+padding:10px;
+
+}
+
+A { 
+text-decoration:none;
+/* color: #008000; */
+/* green color: #76b900; */
+/*font-weight:bold; */
+color: #5B8C00;
+}
+
+A:hover { 
+text-decoration:underline;
+color: #000000;
+}
+
+A:visited { 
+color: #5B8C00;
+}
+
+.bucketText { 
+font-size: 10px;
+}
+A.bucketHeader { 
+font-weight:bold;
+color: #009900;
+text-decoration:none;
+}
+A.bucketHeader:hover { 
+text-decoration:underline;
+}
+A.bucketHeader:visited { 
+color: #005000;
+}
+H1 { 
+font-size:15px;
+color: #000000;
+font-weight:bold;
+}
+H2 { 
+font-size:14px;
+color: #000000;
+font-weight:bold;
+}
+H3 { 
+font-size:14px;
+color: #000080;
+font-weight:bold;
+}
+H4 { 
+font-size:12px;
+color: #000000;
+font-weight:bold;
+}
+H5 { 
+font-size:12px;
+color: #000080;
+font-weight:bold;
+}
+H6 { 
+font-size:10px;
+color: #000000;
+font-weight:bold;
+}
+H6 { 
+font-size:10px;
+color: #000080;
+font-weight:bold;
+}
+
+.search {
+font-size:7pt; 
+color: #FFFFFF;
+} 
+.searchResultsHeader { 
+font-size:10pt;
+font-weight:bold;
+color: #000080;
+}
+.smallText { 
+font-size: 11px;
+}
+.legal{
+font-size:7pt; 
+color: #000000;
+} 
+A.legal{
+text-decoration:none
+color: #000000;
+} 
+A.legal:hover{
+text-decoration:underline
+color: #000000;
+} 
+A.legal:visited{
+color: #000000;
+} 
+
+#mytable 
+{
+BORDER-COLLAPSE: collapse;
+borderColor: #dfdfe7;
+cellSpacing: 0;
+cellPadding: 6;
+borderColorLight: #e9eaed;
+border: 1;
+}
+
+#mytable td {
+FONT-SIZE: 10px; 
+FONT-FAMILY: Verdana, Geneva, Arial, Helvetica, 'Sans Serif';
+borderColor: #dfdfe7;
+background-color: #F4F4F7;
+border-right: 1px solid #dfdfe7;
+border-bottom: 1px solid #dfdfe7;
+padding: 6px 6px 6px 12px; 
+}
+
+#mytable th {
+padding: 6px 6px 6px 12px; 
+FONT-FAMILY: Verdana, Geneva, Arial, Helvetica, 'Sans Serif';
+FONT-WEIGHT: 400; 
+FONT-SIZE: 10px;
+borderColor: #c0c0c0;
+bgColor: #dfdfe7
+}
+.itemName
+{
+    float: left;
+    font-size: 12px;
+    font-weight: bold;
+}
+td.verticalBder
+{
+    padding-top: 0px;
+    padding-left: 0px;
+    padding-right: 0px;
+    padding-bottom: 0px;
+    border-right: 1px solid #aca899
+}
+.anchorImage
+{
+    border: none;
+}
+.itemMinspec
+{
+    border: none;   
+}
+td.itemMinspec
+{
+    padding-top: 0px;
+    padding-left: 5px;
+    padding-bottom: 1px;
+    vertical-align: middle;
+}
+td.screenshot
+{
+    width: 134px;
+    height: 134px;
+    padding-top: 0px;
+    padding-bottom: 3px;
+    padding-left: 0px;
+}
+td.colInfo
+{
+    padding-top: 1px;
+    padding-left: 5px;
+}
+.featuredMonth
+{
+    padding-bottom: 5px;
+    padding-top: 5px;    
+    padding-left: 5px;    
+    background-color: #dfdfe7;
+    color: black;
+    border: solid 1px #d3dae4;
+    font-weight: bold;
+    font-size: 14px;
+}
+.itemGroup
+{
+    font-weight: bold;
+}
+.itemImage
+{
+    border: 2px solid #008000;
+}
+.itemImageNoLink
+{
+    border: 2px solid white;
+}
+.description
+{
+    font-size: 10px;
+}
+.links
+{	
+    font-size: 10px;
+}
+.changeNotification
+{
+    font-size: 9px;
+}
+</style>
+</head>
+
+
+<body>
+<table style="background-color:#ffffff;border-color:#cccccc;border-style:solid;border-top-width:1px;border-left-width:1px;border-right-width:1px;border-bottom-width:1px;" cellspacing="0" cellpadding="0" border="0" width="591" align="center">
+<tr>
+<td valign="top">
+<div style="position:relative;left:13px;top:8px;padding-bottom:20px;width:565px;">
+
+		<!-- 
+		******************
+		      MAIN 
+		******************  
+		-->
+		
+		<h2>NVIDIA OptiX SDK Code Samples</h2>
+
+
+    <p>The NVIDIA OptiX SDK provides a set of sample codes demonstrating a variety of use cases for the OptiX library.
+       Also, provided is a utility library, <b>sutil</b>, which can be used for rapid development of simple OptiX
+       applications.  This code is released free of charge for use in derivative works, whether academic, commercial,
+       or personal.
+       <a href="http://developer.download.nvidia.com/licenses/general_license.txt" name="path">(Full License)</a></p>
+
+    <p>An implementation of the OptiX library is required to run and compile code samples. Please obtain the
+       NVIDIA OptiX library <a href="http://developer.nvidia.com/">here</a>.</p>
+
+    <p>The <a href="http://www.cmake.org/">CMake</a> cross-platform build system is used to configure and build
+       the SDK.  CMake 2.6.3 or higher must be installed.  See platfrom specific build instructions for more details:
+       <ul>
+         <li><a href="INSTALL-LINUX.txt">Linux Install Notes</a></li>
+         <li><a href="INSTALL-MAC.txt">Mac OS X Install Notes</a></li>
+         <li><a href="INSTALL-WIN.txt">Windows Install Notes</a></li>
+       </ul>
+    </p>
+
+           
+              
+		<table width="575" border="0">
+
+
+      <!-- sample1 **********************************************************-->
+      <tr>
+        <td colspan="3" class="separator"><a id="Sample 1"><hr /></a></td>
+      </tr>
+      <tr>
+        <td width="74%" rowspan ="1" align="left" valign="top" class="title">
+          <span class="itemName" name="path">sample1&nbsp;<a href="#sample1"><img src="data/link.jpg" alt="For a direct link to this sample, right-click and copy the URL (shortcut) of this link icon." class="anchorImage" /></a></span><br/>
+          <br/>
+          <span class="description">This sample demonstrates a minimal OptiX API example. A solid green buffer
+            is drawn.  Basic features demonstrated include:
+            <ul>
+              <li>Usage of key RT objects; RTbuffer, RTcontext, and RTprogram.</li>
+              <li>Creation, setting and consumption of RTvariables.</li>
+              <li>Simple ray generation program.</li>
+            </ul>
+        </span></td>
+        <td rowspan ="1" width="5" align="left" valign="top" class="verticalBder">&nbsp;</td>
+        <td rowspan ="1" align="right" valign="top" class="itemMinspec"><a href="data/sample1.png" name="sample1 image" target="_blank"><img src="data/sample1_thumb.png" class="itemMinspec" alt="sample1 image" /></a>
+          <p><span class="links">
+            <br />
+
+            <a href="sample1/" name="path">Browse Files </a>
+          </span>
+          </p>
+        </td>
+      </tr>
+
+
+      <!-- sample2 **********************************************************-->
+      <tr>
+        <td colspan="3" class="separator"><a id="Sample 2"><hr /></a></td>
+      </tr>
+      <tr>
+        <td width="74%" rowspan ="1" align="left" valign="top" class="title">
+          <span class="itemName" name="path">sample2&nbsp;<a href="#sample2"><img src="data/link.jpg" alt="For a direct link to this sample, right-click and copy the URL (shortcut) of this link icon." class="anchorImage" /></a></span><br/>
+          <br/>
+          <span class="description">Simple program which renders six cubes using a Phong material.  New features
+            demonstrated:
+            <ul>
+              <li>Multiple ray types (shadow and radiance).</li>
+              <li>Input buffers of user defined types.</li>
+              <li>Miss program usage.</li>
+              <li>Acceleration structures.</li>
+              <li>Simple scene hierarchy.</li>
+              <li>Phong material program with shadows and reflections.</li>
+            </ul>
+        </span></td>
+        <td rowspan ="1" width="5" align="left" valign="top" class="verticalBder">&nbsp;</td>
+        <td rowspan ="1" align="right" valign="top" class="itemMinspec"><a href="data/sample2.png" name="sample2 image" target="_blank"><img src="data/sample2_thumb.png" class="itemMinspec" alt="sample2 image" /></a>
+          <p><span class="links">
+            <br />
+            <a href="sample2/" name="path">Browse Files </a>
+          </span>
+          </p>
+        </td>
+      </tr>
+
+      
+      <!-- sample3 **********************************************************-->
+      <tr>
+        <td colspan="3" class="separator"><a id="Sample 2"><hr /></a></td>
+      </tr>
+      <tr>
+        <td width="74%" rowspan ="1" align="left" valign="top" class="title">
+          <span class="itemName" name="path">sample3&nbsp;<a href="#sample3"><img src="data/link.jpg" alt="For a direct link to this sample, right-click and copy the URL (shortcut) of this link icon." class="anchorImage" /></a></span><br/>
+          <br/>
+          <span class="description">Command line program that demonstrates the device
+          query functions.
+        </span></td>
+        <td rowspan ="1" width="5" align="left" valign="top"
+        class="verticalBder">&nbsp;</td>
+        <td rowspan ="1" align="right" valigh="top" class="itemMinspec">
+          <p><span class="links">
+            <br />
+            <a href="sample3/" name="path">Browse Files </a>
+          </span>
+          </p>
+        </td>
+      </tr>
+
+
+      <!-- sample4 **********************************************************-->
+      <tr>
+        <td colspan="3" class="separator"><a id="Sample 4"><hr /></a></td>
+      </tr>
+      <tr>
+        <td width="74%" rowspan ="1" align="left" valign="top" class="title">
+          <span class="itemName" name="path">sample4&nbsp;<a href="#sample4"><img src="data/link.jpg" alt="For a direct link to this sample, right-click and copy the URL (shortcut) of this link icon." class="anchorImage" /></a></span><br/>
+          <br/>
+          <span class="description">Similar to sample1 but uses a varying texture to drive the image color.  Features:
+            <ul>
+              <li>Texture samplers.</li>
+            </ul>
+        </span></td>
+        <td rowspan ="1" width="5" align="left" valign="top" class="verticalBder">&nbsp;</td>
+        <td rowspan ="1" align="right" valign="top" class="itemMinspec"><a href="data/sample4.png" name="sample4 image" target="_blank"><img src="data/sample4_thumb.png" class="itemMinspec" alt="sample4 image" /></a>
+          <p><span class="links">
+            <br />
+            <a href="sample4/" name="path">Browse Files </a>
+          </span>
+          </p>
+        </td>
+      </tr>
+
+
+      <!-- sample5 **********************************************************-->
+      <tr>
+        <td colspan="3" class="separator"><a id="Sample 5"><hr /></a></td>
+      </tr>
+      <tr>
+        <td width="74%" rowspan ="1" align="left" valign="top" class="title">
+          <span class="itemName" name="path">sample5 and sample5pp&nbsp;<a href="#sample5"><img src="data/link.jpg" alt="For a direct link to this sample, right-click and copy the URL (shortcut) of this link icon." class="anchorImage" /></a></span><br/>
+          <br/>
+          <span class="description">Introduces the C++ wrapper for the rtapi.  Equivalent programs
+            are given using both the C api (sample5.c) and the C++ wrapper api (sample5pp.cpp). Features:
+            <ul>
+              <li>Usage of the C++ wrapper API.</li>
+            </ul>
+        </span></td>
+        <td rowspan ="1" width="5" align="left" valign="top" class="verticalBder">&nbsp;</td>
+        <td rowspan ="1" align="right" valign="top" class="itemMinspec"><a href="data/sample5.png" name="sample5 image" target="_blank"><img src="data/sample5_thumb.png" class="itemMinspec" alt="sample5 image" /></a>
+          <p><span class="links">
+            <br />
+            <a href="sample5/" name="path">Browse sample5 files </a>
+            <a href="sample5pp/" name="path">Browse sample5pp files </a>
+          </span>
+          </p>
+        </td>
+      </tr>
+
+      <!-- sample6 **********************************************************-->
+      <tr>
+        <td colspan="3" class="separator"><a id="Sample 6"><hr /></a></td>
+      </tr>
+      <tr>
+        <td width="74%" rowspan ="1" align="left" valign="top" class="title">
+          <span class="itemName" name="path">sample6&nbsp;<a href="#sample6"><img src="data/link.jpg" alt="For a direct link to this sample, right-click and copy the URL (shortcut) of this link icon." class="anchorImage" /></a></span><br/>
+          <br/>
+          <span class="description">
+            Loads and renders an OBJ mesh.  Allows user interaction with the scene camera. Features:
+            <ul>
+              <li>Interactive camera (rotate, pan, zoom) via <b>sutil</b>'s GLUTDisplay class.</li>
+              <li>Loading of an external model via <b>sutil</b>'s OBJLoader class.</li>
+              <li>Progressive ambient occlusion shading.</li>
+            </ul>
+        </span></td>
+        <td rowspan ="1" width="6" align="left" valign="top" class="verticalBder">&nbsp;</td>
+        <td rowspan ="1" align="right" valign="top" class="itemMinspec"><a href="data/sample6.png" name="sample6 image" target="_blank"><img src="data/sample6_thumb.png" class="itemMinspec" alt="sample6 image" /></a>
+          <p><span class="links">
+            <br />
+            <a href="sample6/" name="path">Browse Files </a>
+          </span>
+          </p>
+        </td>
+      </tr>
+
+
+      <!-- sample7 **********************************************************-->
+      <tr>
+        <td colspan="3" class="separator"><a id="Sample 6"><hr /></a></td>
+      </tr>
+      <tr>
+        <td width="74%" rowspan ="1" align="left" valign="top" class="title">
+          <span class="itemName" name="path">sample7&nbsp;<a href="#sample7"><img src="data/link.jpg" alt="For a direct link to this sample, right-click and copy the URL (shortcut) of this link icon." class="anchorImage" /></a></span><br/>
+          <br/>
+          <span class="description">
+            Demonstrates various features related to geometry transformation and instancing.  Features:
+            <ul>
+              <li>Multiple transforms referencing the same geometry group.</li>
+              <li>Sharing of acceleration structures between multiple groups.</li>
+            </ul>
+        </span></td>
+        <td rowspan ="1" width="6" align="left" valign="top" class="verticalBder">&nbsp;</td>
+        <td rowspan ="1" align="right" valign="top" class="itemMinspec"><a href="data/sample7.png" name="sample7 image" target="_blank"><img src="data/sample7_thumb.png" class="itemMinspec" alt="sample7 image" /></a>
+          <p><span class="links">
+            <br />
+            <a href="sample7/" name="path">Browse Files </a>
+          </span>
+          </p>
+        </td>
+      </tr>
+
+
+
+      <!-- sample8 **********************************************************-->
+      <tr>
+        <td colspan="3" class="separator"><a id="Sample 6"><hr /></a></td>
+      </tr>
+      <tr>
+        <td width="74%" rowspan ="1" align="left" valign="top" class="title">
+          <span class="itemName" name="path">sample8&nbsp;<a href="#sample8"><img src="data/link.jpg" alt="For a direct link to this sample, right-click and copy the URL (shortcut) of this link icon." class="anchorImage" /></a></span><br/>
+          <br/>
+          <span class="description">
+            Demonstrates use of selector nodes.
+          </span></td>
+        <td rowspan ="1" width="6" align="left" valign="top" class="verticalBder">&nbsp;</td>
+        <td rowspan ="1" align="right" valign="top" class="itemMinspec"><a href="data/sample8.png" name="sample8 image" target="_blank"><img src="data/sample8_thumb.png" class="itemMinspec" alt="sample8 image" /></a>
+          <p><span class="links">
+            <br />
+            <a href="sample8/" name="path">Browse Files </a>
+          </span>
+          </p>
+        </td>
+      </tr>
+
+
+
+      <!-- ambocc **********************************************************-->
+      <tr>
+        <td colspan="3" class="separator"><a id="ambocc"><hr /></a></td>
+      </tr>
+      <tr>
+        <td width="74%" rowspan ="1" align="left" valign="top" class="title">
+          <span class="itemName" name="path">ambocc&nbsp;<a href="#ambocc"><img src="data/link.jpg" alt="For a direct link to this sample, right-click and copy the URL (shortcut) of this link icon." class="anchorImage" /></a></span><br/>
+          <br/>
+          <span class="description">
+            Implementation of a simple ambient occlusion shader.
+        </span></td>
+        <td rowspan ="1" width="6" align="left" valign="top" class="verticalBder">&nbsp;</td>
+        <td rowspan ="1" align="right" valign="top" class="itemMinspec"><a href="data/ambocc.png" name="ambocc image" target="_blank"><img src="data/ambocc_thumb.png" class="itemMinspec" alt="ambocc image" /></a>
+          <p><span class="links">
+            <br />
+            <a href="ambocc/" name="path">Browse Files </a>
+          </span>
+          </p>
+        </td>
+      </tr>
+
+
+      <!-- buffersOfBuffers **********************************************************-->
+      <tr>
+        <td colspan="3" class="separator"><a id="buffersOfBuffers"><hr /></a></td>
+      </tr>
+      <tr>
+        <td width="74%" rowspan ="1" align="left" valign="top" class="title">
+          <span class="itemName" name="path">buffersOfBuffers&nbsp;<a href="#buffersOfBuffers"><img src="data/link.jpg" alt="For a direct link to this sample, right-click and copy the URL (shortcut) of this link icon." class="anchorImage" /></a></span><br/>
+          <br/>
+          <span class="description">
+            Example usage of runtime resized Buffer-of-Buffers. 
+        </span></td>
+        <td rowspan ="1" width="6" align="left" valign="top" class="verticalBder">&nbsp;</td>
+        <td rowspan ="1" align="right" valign="top" class="itemMinspec"><a href="data/buffersOfBuffers.png" name="buffersOfBuffers image" target="_blank"><img src="data/buffersOfBuffers_thumb.png" class="itemMinspec" alt="buffersOfBuffers image" /></a>
+          <p><span class="links">
+            <br />
+            <a href="buffersOfBuffers/" name="path">Browse Files </a>
+          </span>
+          </p>
+        </td>
+      </tr>
+
+
+      <!-- collision **********************************************************-->
+      <tr>
+        <td colspan="3" class="separator"><a id="collision"><hr /></a></td>
+      </tr>
+      <tr>
+        <td width="74%" rowspan ="1" align="left" valign="top" class="title">
+          <span class="itemName" name="path">collision&nbsp;<a href="#collision"><img src="data/link.jpg" alt="For a direct link to this sample, right-click and copy the URL (shortcut) of this link icon." class="anchorImage" /></a></span><br/>
+          <br/>
+          <span class="description">
+            OptiX is intended to be useful for non-rendering applications as well as
+            graphics. This sample shows an OpenGL visualization from a collision detection
+            and line-of-sight engine built on OptiX.
+
+            <br /><br />
+
+            In this example, the engine simulates a number of moving objects, specifiable
+            with –n; tracing rays against a static scene, specifiable with -o. The engine
+            traces a number of collision probe rays, specified with –p, from each object
+            center using a closest hit program, and line-of-sight rays between all pairs
+            of objects using an any-hit program. The lines of sight are visiualized with
+            GL lines and the collision rays are visualized in red or green.
+
+        </span></td>
+        <td rowspan ="1" width="6" align="left" valign="top" class="verticalBder">&nbsp;</td>
+        <td rowspan ="1" align="right" valign="top" class="itemMinspec"><a href="data/collision.png" name="collision image" target="_blank"><img src="data/collision_thumb.png" class="itemMinspec" alt="collision image" /></a>
+          <p><span class="links">
+            <br />
+            <a href="collision/" name="path">Browse Files </a>
+          </span>
+          </p>
+        </td>
+      </tr>
+
+
+      <!-- cook **********************************************************-->
+      <tr>
+        <td colspan="3" class="separator"><a id="cook"><hr /></a></td>
+      </tr>
+      <tr>
+        <td width="74%" rowspan ="1" align="left" valign="top" class="title">
+          <span class="itemName" name="path">cook&nbsp;<a href="#cook"><img src="data/link.jpg" alt="For a direct link to this sample, right-click and copy the URL (shortcut) of this link icon." class="anchorImage" /></a></span><br/>
+          <br/>
+          <span class="description">
+            Implements distributed ray tracing algorithms as described in Cook's 1984 paper
+            <i>Distributed Ray Tracing</i> including; depth of field, motion blur, and soft shadows.
+            Two different scenes can be rendered based on command line flags.
+          </span>
+        </td>
+        <td rowspan ="1" width="6" align="left" valign="top" class="verticalBder">&nbsp;</td>
+        <td rowspan ="1" align="right" valign="top" class="itemMinspec"><a href="data/cook.png" name="cook image" target="_blank"><img src="data/cook_thumb.png" class="itemMinspec" alt="cook image" /></a>
+          <p><span class="links">
+            <br />
+            <a href="cook/" name="path">Browse Files </a>
+          </span>
+          </p>
+        </td>
+      </tr>
+
+      <!-- device_exceptions **********************************************************-->
+      <tr>
+        <td colspan="3" class="separator"><a id="device_exceptions"><hr /></a></td>
+      </tr>
+      <tr>
+        <td width="74%" rowspan ="1" align="left" valign="top" class="title">
+          <span class="itemName" name="path">device_exceptions&nbsp;<a href="#device_exceptions"><img src="data/link.jpg" alt="For a direct link to this sample, right-click and copy the URL (shortcut) of this link icon." class="anchorImage" /></a></span><br/>
+          <br/>
+          <span class="description">
+            Introduced in OptiX 2.0, support for several types of OptiX and user defined
+            device side exceptions has been added.
+            <ul>
+              <li>Stack overflow</li>
+              <li>Buffer index out of bounds</li>
+              <li>Invalid ray</li>
+              <li>Internal error</li>
+              <li>User specified</li>
+            </ul>
+          </span>
+        </td>
+        <td rowspan ="1" width="6" align="left" valign="top" class="verticalBder">&nbsp;</td>
+        <td rowspan ="1" align="right" valign="top" class="itemMinspec"><a href="data/device_exceptions.png" name="device_exceptions image" target="_blank"><img src="data/device_exceptions_thumb.png" class="itemMinspec" alt="device_exceptions image" /></a>
+          <p><span class="links">
+            <br />
+            <a href="device_exceptions/" name="path">Browse Files </a>
+          </span>
+          </p>
+        </td>
+      </tr>
+
+
+      <!-- displacement **********************************************************-->
+      <tr>
+        <td colspan="3" class="separator"><a id="displacement"><hr /></a></td>
+      </tr>
+      <tr>
+        <td width="74%" rowspan ="1" align="left" valign="top" class="title">
+          <span class="itemName" name="path">displacement&nbsp;<a href="#displacement"><img src="data/link.jpg" alt="For a direct link to this sample, right-click and copy the URL (shortcut) of this link icon." class="anchorImage" /></a></span><br/>
+          <br/>
+          <span class="description">
+            Shows how to apply displacement mapping to a triangle mesh.
+          </span>
+        </td>
+        <td rowspan ="1" width="6" align="left" valign="top" class="verticalBder">&nbsp;</td>
+        <td rowspan ="1" align="right" valign="top" class="itemMinspec"><a href="data/displacement.png" name="displacement image" target="_blank"><img src="data/displacement_thumb.png" class="itemMinspec" alt="displacement image" /></a>
+          <p><span class="links">
+            <br />
+            <a href="displacement/" name="path">Browse Files </a>
+          </span>
+          </p>
+        </td>
+      </tr>
+
+
+      <!-- glass **********************************************************-->
+      <tr>
+        <td colspan="3" class="separator"><a id="glass"><hr /></a></td>
+      </tr>
+      <tr>
+        <td width="74%" rowspan ="1" align="left" valign="top" class="title">
+          <span class="itemName" name="path">glass&nbsp;<a href="#glass"><img src="data/link.jpg" alt="For a direct link to this sample, right-click and copy the URL (shortcut) of this link icon." class="anchorImage" /></a></span><br/>
+          <br/>
+          <span class="description">
+            Implementation of a dielectric shader with Fresnel reflectance and refraction as well
+            as a directionally varying miss shader.
+        </span></td>
+        <td rowspan ="1" width="6" align="left" valign="top" class="verticalBder">&nbsp;</td>
+        <td rowspan ="1" align="right" valign="top" class="itemMinspec"><a href="data/glass.png" name="glass image" target="_blank"><img src="data/glass_thumb.png" class="itemMinspec" alt="glass image" /></a>
+          <p><span class="links">
+            <br />
+            <a href="glass/" name="path">Browse Files </a>
+          </span>
+          </p>
+        </td>
+      </tr>
+
+
+      <!-- heightfield **********************************************************-->
+      <tr>
+        <td colspan="3" class="separator"><a id="heightfield"><hr /></a></td>
+      </tr>
+      <tr>
+        <td width="74%" rowspan ="1" align="left" valign="top" class="title">
+          <span class="itemName" name="path">heightfield&nbsp;<a href="#heightfield"><img src="data/link.jpg" alt="For a direct link to this sample, right-click and copy the URL (shortcut) of this link icon." class="anchorImage" /></a></span><br/>
+          <br/>
+          <span class="description">
+            Renders user input heightfield or sinusoidal displacement of plane if none given. 
+        </span></td>
+        <td rowspan ="1" width="6" align="left" valign="top" class="verticalBder">&nbsp;</td>
+        <td rowspan ="1" align="right" valign="top" class="itemMinspec"><a href="data/heightfield.png" name="heightfield image" target="_blank"><img src="data/heightfield_thumb.png" class="itemMinspec" alt="heightfield image" /></a>
+          <p><span class="links">
+            <br />
+            <a href="heightfield/" name="path">Browse Files </a>
+          </span>
+          </p>
+        </td>
+      </tr>
+
+
+      <!-- hybridShadows **********************************************************-->
+      <tr>
+        <td colspan="3" class="separator"><a id="hybridShadows"><hr /></a></td>
+      </tr>
+      <tr>
+        <td width="74%" rowspan ="1" align="left" valign="top" class="title">
+          <span class="itemName" name="path">hybridShadows&nbsp;<a href="#hybridShadows"><img src="data/link.jpg" alt="For a direct link to this sample, right-click and copy the URL (shortcut) of this link icon." class="anchorImage" /></a></span><br/>
+          <br/>
+          <span class="description">
+            Hybrid shadow algorithm demonstrated. 
+            <ul>
+              <li>Renders world space positions in GL.</li>
+              <li>Passes buffer of first hit positions to <i>OptiX</i> where shadow rays are traced for each hit point.</li>
+              <li>Passes shadow mask back to GL for composite.</li>
+            </ul>
+        </span></td>
+        <td rowspan ="1" width="6" align="left" valign="top" class="verticalBder">&nbsp;</td>
+        <td rowspan ="1" align="right" valign="top" class="itemMinspec"><a href="data/hybridShadows.png" name="hybridShadows image" target="_blank"><img src="data/hybridShadows_thumb.png" class="itemMinspec" alt="hybridShadows image" /></a>
+          <p><span class="links">
+            <br />
+            <a href="hybridShadows/" name="path">Browse Files </a>
+          </span>
+          </p>
+        </td>
+      </tr>
+
+
+      <!-- isgShadows **********************************************************-->
+      <tr>
+        <td colspan="3" class="separator"><a id="isgShadows"><hr /></a></td>
+      </tr>
+      <tr>
+        <td width="74%" rowspan ="1" align="left" valign="top" class="title">
+          <span class="itemName" name="path">isgShadows&nbsp;<a href="#isgShadows"><img src="data/link.jpg" alt="For a direct link to this sample, right-click and copy the URL (shortcut) of this link icon." class="anchorImage" /></a></span><br/>
+          <br/>
+          <span class="description">
+	    Image Space Gathering Soft Shadows.  isgShadows is an extension of the hybridShadows example that implements a smart image space blur to generate phenomenologically compelling soft shadows from the hard shadows generated by <i>OptiX</i>.  See the <a href="http://www.nvidia.com/object/nvidia_research_pub_015.html">paper</a> for more details.
+            <ul>
+              <li>Renders world space positions in GL.</li>
+              <li>Passes buffer of first hit positions to <i>OptiX</i> where shadow rays are traced for each hit point.</li>
+              <li>Passes shadow mask back to GL for blurring and compositing.</li>
+            </ul>
+        </span></td>
+        <td rowspan ="1" width="6" align="left" valign="top" class="verticalBder">&nbsp;</td>
+        <td rowspan ="1" align="right" valign="top" class="itemMinspec"><a href="data/isgShadows.png" name="isgShadows image" target="_blank"><img src="data/isgShadows_thumb.png" class="itemMinspec" alt="isgShadows image" /></a>
+          <p><span class="links">
+            <br />
+            <a href="isgShadows/" name="path">Browse Files </a>
+          </span>
+          </p>
+        </td>
+      </tr>
+
+
+      <!-- isgReflections **********************************************************-->
+      <tr>
+        <td colspan="3" class="separator"><a id="isgReflections"><hr /></a></td>
+      </tr>
+      <tr>
+        <td width="74%" rowspan ="1" align="left" valign="top" class="title">
+          <span class="itemName" name="path">isgReflections&nbsp;<a href="#isgReflections"><img src="data/link.jpg" alt="For a direct link to this sample, right-click and copy the URL (shortcut) of this link icon." class="anchorImage" /></a></span><br/>
+          <br/>
+          <span class="description">
+	    Image Space Gathering Reflections.  isgReflections implements a smart image space
+	    blur to generate phenomenologically compelling glossy reflections from the perfectly
+	    specular reflection generated by <i>OptiX</i>.  See
+	    the <a href="http://www.nvidia.com/object/nvidia_research_pub_015.html">paper</a>
+	    for more details.
+            <ul>
+              <li>Renders world space positions in GL.</li>
+              <li>Passes buffer of first hit positions to <i>OptiX</i> where reflection rays are traced for each hit point.</li>
+              <li>Passes reflection buffer back to GL for blurring and compositing.</li>
+            </ul>
+        </span></td>
+        <td rowspan ="1" width="6" align="left" valign="top" class="verticalBder">&nbsp;</td>
+        <td rowspan ="1" align="right" valign="top" class="itemMinspec"><a href="data/isgReflections.png" name="isgReflections image" target="_blank"><img src="data/isgReflections_thumb.png" class="itemMinspec" alt="isgReflections image" /></a>
+          <p><span class="links">
+            <br />
+            <a href="isgReflections/" name="path">Browse Files </a>
+          </span>
+          </p>
+        </td>
+      </tr>
+
+
+      <!-- julia **********************************************************-->
+      <tr>
+        <td colspan="3" class="separator"><a id="julia"><hr /></a></td>
+      </tr>
+      <tr>
+        <td width="74%" rowspan ="1" align="left" valign="top" class="title">
+          <span class="itemName" name="path">julia&nbsp;<a href="#julia"><img src="data/link.jpg" alt="For a direct link to this sample, right-click and copy the URL (shortcut) of this link icon." class="anchorImage" /></a></span><br/>
+          <br/>
+          <span class="description">
+            Complex procedural geometry demonstration (entire scene consists of only three geometric primitives).
+            Features:
+            <ul>
+              <li> Fully procedural dynamic geometry. </li>
+              <li> Julia set and ground blocks are distance fields, ray traced using ray marching. </li>
+              <li> Distance fields allow a fast approximation to ambient occlusion. </li>
+            </ul>
+          </span></td>
+        <td rowspan ="1" width="6" align="left" valign="top" class="verticalBder">&nbsp;</td>
+        <td rowspan ="1" align="right" valign="top" class="itemMinspec"><a href="data/julia.png" name="julia image" target="_blank"><img src="data/julia_thumb.png" class="itemMinspec" alt="julia image" /></a>
+          <p><span class="links">
+            <br />
+            <a href="julia/" name="path">Browse Files </a>
+          </span>
+          </p>
+        </td>
+      </tr>
+
+      <!-- mantascene **********************************************************-->
+      <tr>
+        <td colspan="3" class="separator"><a id="mantascene"><hr /></a></td>
+      </tr>
+      <tr>
+        <td width="74%" rowspan ="1" align="left" valign="top" class="title">
+          <span class="itemName" name="path">mantascene&nbsp;<a href="#mantascene"><img src="data/link.jpg" alt="For a direct link to this sample, right-click and copy the URL (shortcut) of this link icon." class="anchorImage" /></a></span><br/>
+          <br/>
+          <span class="description">
+            Renders phong shaded sphere on plane with multiple lights.
+        </span></td>
+        <td rowspan ="1" width="6" align="left" valign="top" class="verticalBder">&nbsp;</td>
+        <td rowspan ="1" align="right" valign="top" class="itemMinspec"><a href="data/mantascene.png" name="mantascene image" target="_blank"><img src="data/mantascene_thumb.png" class="itemMinspec" alt="mantascene image" /></a>
+          <p><span class="links">
+            <br />
+            <a href="mantascene/" name="path">Browse Files </a>
+          </span>
+          </p>
+        </td>
+      </tr>
+
+
+      <!-- materials **********************************************************-->
+      <tr>
+        <td colspan="3" class="separator"><a id="materials"><hr /></a></td>
+      </tr>
+      <tr>
+        <td width="74%" rowspan ="1" align="left" valign="top" class="title">
+          <span class="itemName" name="path">materials&nbsp;<a href="#materials"><img src="data/link.jpg" alt="For a direct link to this sample, right-click and copy the URL (shortcut) of this link icon." class="anchorImage" /></a></span><br/>
+          <br/>
+          <span class="description">
+            Demonstrates a progression of materials shaders from simple to complex.
+        </span></td>
+        <td rowspan ="1" width="6" align="left" valign="top" class="verticalBder">&nbsp;</td>
+        <td rowspan ="1" align="right" valign="top" class="itemMinspec"><a href="data/materials.png" name="materials image" target="_blank"><img src="data/materials_thumb.png" class="itemMinspec" alt="materials image" /></a>
+          <p><span class="links">
+            <br />
+            <a href="materials/" name="path">Browse Files </a>
+          </span>
+          </p>
+        </td>
+      </tr>
+
+
+      <!-- mcmc_sampler **********************************************************-->
+      <tr>
+        <td colspan="3" class="separator"><a id="mcmc_sampler"><hr /></a></td>
+      </tr>
+      <tr>
+        <td width="74%" rowspan ="1" align="left" valign="top" class="title">
+          <span class="itemName" name="path">mcmc_sampler&nbsp;<a href="#mcmc_sampler"><img src="data/link.jpg" alt="For a direct link to this sample, right-click and copy the URL (shortcut) of this link icon." class="anchorImage" /></a></span><br/>
+          <br/>
+          <span class="description">
+            Implementation of a Markov chain Monte Carlo rendering algorithm.
+        </span></td>
+        <td rowspan ="1" width="6" align="left" valign="top" class="verticalBder">&nbsp;</td>
+        <td rowspan ="1" align="right" valign="top" class="itemMinspec"><a href="data/mcmc_sampler.png" name="mcmc_sampler image" target="_blank"><img src="data/mcmc_sampler_thumb.png" class="itemMinspec" alt="mcmc_sampler image" /></a>
+          <p><span class="links">
+            <br />
+            <a href="mcmc_sampler/" name="path">Browse Files </a>
+          </span>
+          </p>
+        </td>
+      </tr>
+	  
+      <!-- mis_sample *********************************************************-->
+      <tr>
+        <td colspan="3" class="separator"><a id="mis_sample"><hr /></a></td>
+      </tr>
+      <tr>
+        <td width="74%" rowspan ="1" align="left" valign="top" class="title">
+          <span class="itemName" name="path">mis_sample&nbsp;<a href="#mis_sample"><img src="data/link.jpg" alt="For a direct link to this sample, right-click and copy the URL (shortcut) of this link icon." class="anchorImage" /></a></span><br/>
+          <br/>
+          <span class="description">
+            Demonstrates multiple importance sampling.  
+        </span></td>
+        <td rowspan ="1" width="6" align="left" valign="top" class="verticalBder">&nbsp;</td>
+        <td rowspan ="1" align="right" valign="top" class="itemMinspec"><a href="data/mis_sample.png" name="mis_sample image" target="_blank"><img src="data/mis_sample_thumb.png" class="itemMinspec" alt="mis_sample image" /></a>
+          <p><span class="links">
+            <br />
+            <a href="mis_sample/" name="path">Browse Files </a>
+          </span>
+          </p>
+        </td>
+      </tr>
+
+      <!-- ocean_sample *********************************************************-->
+      <tr>
+        <td colspan="3" class="separator"><a id="ocean_sample"><hr /></a></td>
+      </tr>
+      <tr>
+        <td width="74%" rowspan ="1" align="left" valign="top" class="title">
+          <span class="itemName" name="path">ocean_sample&nbsp;<a href="#ocean_sample"><img src="data/link.jpg" alt="For a direct link to this sample, right-click and copy the URL (shortcut) of this link icon." class="anchorImage" /></a></span><br/>
+          <br/>
+          <span class="description">
+            Demonstrates CUDA-OptiX interop.  Leverages the CUDA Toolkit <i>cufft</i> library to create ocean surface heightfield data which are rendered by OptiX.  
+        </span></td>
+        <td rowspan ="1" width="6" align="left" valign="top" class="verticalBder">&nbsp;</td>
+        <td rowspan ="1" align="right" valign="top" class="itemMinspec"><a href="data/ocean.png" name="ocean_sample image" target="_blank"><img src="data/ocean_thumb.png" class="itemMinspec" alt="ocean_sample image" /></a>
+          <p><span class="links">
+            <br />
+            <a href="ocean_sample/" name="path">Browse Files </a>
+          </span>
+          </p>
+        </td>
+      </tr>
+
+      <!-- namespaces **********************************************************-->
+      <tr>
+        <td colspan="3" class="separator"><a id="Sample 1"><hr /></a></td>
+      </tr>
+      <tr>
+        <td width="74%" rowspan ="1" align="left" valign="top" class="title">
+          <span class="itemName" name="path">namespaces&nbsp;<a href="#namespaces"><img src="data/link.jpg" alt="For a direct link to this sample, right-click and copy the URL (shortcut) of this link icon." class="anchorImage" /></a></span><br/>
+          <br/>
+          <span class="description">This is a version of sample1 that demonstrates how to
+          use namespaces within your OptiX programs.
+        </span></td>
+        <td rowspan ="1" width="5" align="left" valign="top" class="verticalBder">&nbsp;</td>
+        <td rowspan ="1" align="right" valign="top" class="itemMinspec"><a href="data/sample1.png" name="namespaces image" target="_blank"><img src="data/sample1_thumb.png" class="itemMinspec" alt="namespaces image" /></a>
+          <p><span class="links">
+            <br />
+
+            <a href="namespaces/" name="path">Browse Files </a>
+          </span>
+          </p>
+        </td>
+      </tr>
+
+
+      <!-- path_tracer *********************************************************-->
+      <tr>
+        <td colspan="3" class="separator"><a id="path_tracer"><hr /></a></td>
+      </tr>
+      <tr>
+        <td width="74%" rowspan ="1" align="left" valign="top" class="title">
+          <span class="itemName" name="path">path_tracer&nbsp;<a href="#path_tracer"><img src="data/link.jpg" alt="For a direct link to this sample, right-click and copy the URL (shortcut) of this link icon." class="anchorImage" /></a></span><br/>
+          <br/>
+          <span class="description">
+            Implements Kajiya-style path tracing.  It progressively refines the image and
+            allows for interactive camera movement.
+        </span></td>
+        <td rowspan ="1" width="6" align="left" valign="top" class="verticalBder">&nbsp;</td>
+        <td rowspan ="1" align="right" valign="top" class="itemMinspec"><a href="data/path_tracer.png" name="path_tracer image" target="_blank"><img src="data/path_tracer_thumb.png" class="itemMinspec" alt="path_tracer image" /></a>
+          <p><span class="links">
+            <br />
+            <a href="path_tracer/" name="path">Browse Files </a>
+          </span>
+          </p>
+        </td>
+      </tr>
+
+
+      <!-- procedural **********************************************************-->
+      <tr>
+        <td colspan="3" class="separator"><a id="procedural"><hr /></a></td>
+      </tr>
+      <tr>
+        <td width="74%" rowspan ="1" align="left" valign="top" class="title">
+          <span class="itemName" name="path">procedural&nbsp;<a href="#procedural"><img src="data/link.jpg" alt="For a direct link to this sample, right-click and copy the URL (shortcut) of this link icon." class="anchorImage" /></a></span><br/>
+          <br/>
+          <span class="description">
+            Demonstrates a number of user tweakable procedural 3D textures.
+        </span></td>
+        <td rowspan ="1" width="6" align="left" valign="top" class="verticalBder">&nbsp;</td>
+        <td rowspan ="1" align="right" valign="top" class="itemMinspec"><a href="data/procedural.png" name="procedural image" target="_blank"><img src="data/procedural_thumb.png" class="itemMinspec" alt="procedural image" /></a>
+          <p><span class="links">
+            <br />
+            <a href="procedural/" name="path">Browse Files </a>
+          </span>
+          </p>
+        </td>
+      </tr>
+
+      <!-- progressivePhotonMap **********************************************************-->
+      <tr>
+        <td colspan="3" class="separator"><a id="progressivePhotonMap"><hr /></a></td>
+      </tr>
+      <tr>
+        <td width="74%" rowspan ="1" align="left" valign="top" class="title">
+          <span class="itemName" name="path">progressivePhotonMap&nbsp;<a href="#progressivePhotonMap"><img src="data/link.jpg" alt="For a direct link to this sample, right-click and copy the URL (shortcut) of this link icon." class="anchorImage" /></a></span><br/>
+          <br/>
+          <span class="description">
+            Implementation of the progressive photon mapping algorithm featuring interactive control of camera and
+            light positions.
+          </span></td>
+        <td rowspan ="1" width="6" align="left" valign="top" class="verticalBder">&nbsp;</td>
+        <td rowspan ="1" align="right" valign="top" class="itemMinspec"><a href="data/progressivePhotonMap.png" name="progressivePhotonMap image" target="_blank"><img src="data/progressivePhotonMap_thumb.png" class="itemMinspec" alt="progressivePhotonMap image" /></a>
+          <p><span class="links">
+            <br />
+            <a href="progressivePhotonMap/" name="path">Browse Files </a>
+          </span>
+          </p>
+        </td>
+      </tr>
+
+      <!-- RayDifferentials **********************************************************-->
+      <tr>
+        <td colspan="3" class="separator"><a id="rayDifferentials"><hr /></a></td>
+      </tr>
+      <tr>
+        <td width="74%" rowspan ="1" align="left" valign="top" class="title">
+          <span class="itemName" name="path">rayDifferentials&nbsp;<a href="#rayDifferentials"><img src="data/link.jpg" alt="For a direct link to this sample, right-click and copy the URL (shortcut) of this link icon." class="anchorImage" /></a></span><br/>
+          <br/>
+          <span class="description">
+            Implements trilinear texture filtering using bindless texture IDs.
+          </span></td>
+        <td rowspan ="1" width="6" align="left" valign="top" class="verticalBder">&nbsp;</td>
+        <td rowspan ="1" align="right" valign="top" class="itemMinspec"><a href="data/rayDifferentials.png" name="rayDifferentials image" target="_blank"><img src="data/rayDifferentials_thumb.png" class="itemMinspec" alt="rayDifferentials image" /></a>
+          <p><span class="links">
+            <br />
+            <a href="rayDifferentials/" name="path">Browse Files </a>
+          </span>
+          </p>
+        </td>
+      </tr>
+
+      <!-- shadeTree **********************************************************-->
+      <tr>
+        <td colspan="3" class="separator"><a id="shadeTree"><hr /></a></td>
+      </tr>
+      <tr>
+        <td width="74%" rowspan ="1" align="left" valign="top" class="title">
+          <span class="itemName" name="path">shadeTree&nbsp;<a href="#shadeTree"><img src="data/link.jpg" alt="For a direct link to this sample, right-click and copy the URL (shortcut) of this link icon." class="anchorImage" /></a></span><br/>
+          <br/>
+          <span class="description">
+            Demonstrates the use of callable programs to create shade trees.  Each sphere
+            is a unique combination of the result of several callable programs.
+        </span></td>
+        <td rowspan ="1" width="6" align="left" valign="top" class="verticalBder">&nbsp;</td>
+        <td rowspan ="1" align="right" valign="top" class="itemMinspec"><a href="data/shadeTree.png" name="shadeTree image" target="_blank"><img src="data/shadeTree_thumb.png" class="itemMinspec" alt="shadeTree image" /></a>
+          <p><span class="links">
+            <br />
+            <a href="shadeTree/" name="path">Browse Files </a>
+          </span>
+          </p>
+        </td>
+      </tr>
+
+      <!-- simpleAnimation **********************************************************-->
+      <tr>
+        <td colspan="3" class="separator"><a id="simpleAnimation"><hr /></a></td>
+      </tr>
+      <tr>
+        <td width="74%" rowspan ="1" align="left" valign="top" class="title">
+          <span class="itemName" name="path">simpleAnimation&nbsp;<a href="#simpleAnimation"><img src="data/link.jpg" alt="For a direct link to this sample, right-click and copy the URL (shortcut) of this link icon." class="anchorImage" /></a></span><br/>
+          <br/>
+          <span class="description">
+            Demonstrates a time-varying non-affine transformation of a triangle mesh.  The acceleration
+            structure is updated every frame.
+        </span></td>
+        <td rowspan ="1" width="6" align="left" valign="top" class="verticalBder">&nbsp;</td>
+        <td rowspan ="1" align="right" valign="top" class="itemMinspec"><a href="data/simpleAnimation.png" name="simpleAnimation image" target="_blank"><img src="data/simpleAnimation_thumb.png" class="itemMinspec" alt="simpleAnimation image" /></a>
+          <p><span class="links">
+            <br />
+            <a href="simpleAnimation/" name="path">Browse Files </a>
+          </span>
+          </p>
+        </td>
+      </tr>
+
+      <!-- simpleGLTexInterop **********************************************************-->
+      <tr>
+        <td colspan="3" class="separator"><a id="A2"><hr /></a></td>
+      </tr>
+      <tr>
+        <td width="74%" rowspan ="1" align="left" valign="top" class="title">
+          <span class="itemName" name="path">simpleGLTexInterop&nbsp;<a href="#simpleGLTexInterop"><img src="data/link.jpg" alt="For a direct link to this sample, right-click and copy the URL (shortcut) of this link icon." class="anchorImage" /></a></span><br/>
+          <br/>
+          <span class="description">
+            Demonstrates how to use an OpenGL texture in OptiX. Features:
+            <ul>
+              <li>Optix OpenGL texture interop functionality.</li>
+            </ul>
+        </span></td>
+        <td rowspan ="1" width="6" align="left" valign="top" class="verticalBder">&nbsp;</td>
+        <td rowspan ="1" align="right" valign="top" class="itemMinspec"><a href="data/simpleGLTexInterop.png" name="simpleGLTexInterop image" target="_blank"><img src="data/simpleGLTexInterop_thumb.png" class="itemMinspec" alt="simpleAnimation image" /></a>
+          <p><span class="links">
+            <br />
+            <a href="simpleGLTexInterop/" name="path">Browse Files </a>
+          </span>
+          </p>
+        </td>
+      </tr>
+
+      <!-- swimmingShark **********************************************************-->
+      <tr>
+        <td colspan="3" class="separator"><a id="swimmingShark"><hr /></a></td>
+      </tr>
+      <tr>
+        <td width="74%" rowspan ="1" align="left" valign="top" class="title">
+          <span class="itemName" name="path">swimmingShark&nbsp;<a href="#swimmingShark"><img src="data/link.jpg" alt="For a direct link to this sample, right-click and copy the URL (shortcut) of this link icon." class="anchorImage" /></a></span><br/>
+          <br/>
+          <span class="description">
+            This example shows BVH refitting. The marine animals are animated, deforming
+            each frame. Since they have the same topology each frame, refitting instead of
+            rebuilding is suitable. There is also a BVH over all the moving animals and
+            over the scene as a whole. Specify the number of species with –f and the
+            number of fish per species with –n.
+
+            <br /><br />
+            Marine life models and textures in this directory copyright Toru Miyazawa,
+            Toucan Corporation.  Used by permission.
+            <br />
+            <a href="http://toucan.web.infoseek.co.jp/3DCG/3ds/FishModelsE.html">http://toucan.web.infoseek.co.jp/3DCG/3ds/FishModelsE.html</a>
+        </span></td>
+        <td rowspan ="1" width="6" align="left" valign="top" class="verticalBder">&nbsp;</td>
+        <td rowspan ="1" align="right" valign="top" class="itemMinspec"><a href="data/swimmingShark.png" name="swimmingShark image" target="_blank"><img src="data/swimmingShark_thumb.png" class="itemMinspec" alt="swimmingShark image" /></a>
+          <p><span class="links">
+            <br />
+            <a href="swimmingShark/" name="path">Browse Files </a>
+          </span>
+          </p>
+        </td>
+      </tr>
+
+
+      <!-- transparency **********************************************************-->
+      <tr>
+        <td colspan="3" class="separator"><a id="transparency"><hr /></a></td>
+      </tr>
+      <tr>
+        <td width="74%" rowspan ="1" align="left" valign="top" class="title">
+          <span class="itemName" name="path">transparency&nbsp;<a href="#transparency"><img src="data/link.jpg" alt="For a direct link to this sample, right-click and copy the URL (shortcut) of this link icon." class="anchorImage" /></a></span><br/>
+          <br/>
+          <span class="description">
+            Implements transparent materials, including transparency-based shadow attenuation.
+        </span></td>
+        <td rowspan ="1" width="6" align="left" valign="top" class="verticalBder">&nbsp;</td>
+        <td rowspan ="1" align="right" valign="top" class="itemMinspec"><a href="data/transparency.png" name="transparency image" target="_blank"><img src="data/transparency_thumb.png" class="itemMinspec" alt="transparency image" /></a>
+          <p><span class="links">
+            <br />
+            <a href="transparency/" name="path">Browse Files </a>
+          </span>
+          </p>
+        </td>
+      </tr>
+
+
+      <!-- traversal **********************************************************-->
+      <tr>
+        <td colspan="3" class="separator"><a id="traversal"><hr /></a></td>
+      </tr>
+      <tr>
+        <td width="74%" rowspan ="1" align="left" valign="top" class="title">
+          <span class="itemName" name="path">traversal&nbsp;<a href="#traversal"><img src="data/link.jpg" alt="For a direct link to this sample, right-click and copy the URL (shortcut) of this link icon." class="anchorImage" /></a></span><br/>
+          <br/>
+          <span class="description">
+            Demonstrates the rtuTraversal API.  The input is a pair of files composed of
+            the rays to trace and the mesh to trace it against.  The output is an image
+            representing the normalized intersection depth, though the API supports
+            additional types of output.
+        </span></td>
+        <td rowspan ="1" width="6" align="left" valign="top" class="verticalBder">&nbsp;</td>
+        <td rowspan ="1" align="right" valign="top" class="itemMinspec"><a href="data/traversal.png" name="traversal image" target="_blank"><img src="data/traversal_thumb.png" class="itemMinspec" alt="traversal image" /></a>
+          <p><span class="links">
+            <br />
+            <a href="traversal/" name="path">Browse Files </a>
+          </span>
+          </p>
+        </td>
+      </tr>
+
+
+      <!-- tutorial **********************************************************-->
+      <tr>
+        <td colspan="3" class="separator"><a id="tutorial"><hr /></a></td>
+      </tr>
+      <tr>
+        <td width="74%" rowspan ="1" align="left" valign="top" class="title">
+          <span class="itemName" name="path">tutorial&nbsp;<a href="#tutorial"><img src="data/link.jpg" alt="For a direct link to this sample, right-click and copy the URL (shortcut) of this link icon." class="anchorImage" /></a></span><br/>
+          <br/>
+          <span class="description">
+            A source code sample, tutorial, that demonstrates how to implement several
+            basic ray tracing effects, from trivially simple to moderately complex.  The
+            sample consists of eleven stages, each stage adding a new effect.  A full
+            tutorial document in PDF can be found in the
+            <a href="../doc/OptiX_Quickstart_Guide_1.0.0.pdf" name="Quick Start
+            Guide">Quick Start Guide</a>.
+        </span></td>
+        <td rowspan ="1" width="6" align="left" valign="top" class="verticalBder">&nbsp;</td>
+        <td rowspan ="1" align="right" valign="top" class="itemMinspec"><a href="data/tutorial.png" name="tutorial image" target="_blank"><img src="data/tutorial_thumb.png" class="itemMinspec" alt="tutorial image" /></a>
+          <p><span class="links">
+            <br />
+            <a href="../doc/OptiX_Quickstart_Guide_1.0.0.pdf" name="Quick Start
+            Guide">Quick Start Guide</a><br />
+            <a href="tutorial/" name="path">Browse Files </a>
+          </span>
+          </p>
+        </td>
+      </tr>
+
+
+      <!-- whirligig **********************************************************-->
+      <tr>
+        <td colspan="3" class="separator"><a id="whirligig"><hr /></a></td>
+      </tr>
+      <tr>
+        <td width="74%" rowspan ="1" align="left" valign="top" class="title">
+          <span class="itemName" name="path">whirligig&nbsp;<a href="#whirligig"><img src="data/link.jpg" alt="For a direct link to this sample, right-click and copy the URL (shortcut) of this link icon." class="anchorImage" /></a></span><br/>
+          <br/>
+          <span class="description">
+            A bunch of spinning glass spheres calculated to blow your mind or at least rob you of your productivity.
+        </span></td>
+        <td rowspan ="1" width="6" align="left" valign="top" class="verticalBder">&nbsp;</td>
+        <td rowspan ="1" align="right" valign="top" class="itemMinspec"><a href="data/whirligig.png" name="whirligig image" target="_blank"><img src="data/whirligig_thumb.png" class="itemMinspec" alt="whirligig image" /></a>
+          <p><span class="links">
+            <br />
+            <a href="whirligig/" name="path">Browse Files </a>
+          </span>
+          </p>
+        </td>
+      </tr>
+      
+      
+      <!-- whitted **********************************************************-->
+      <tr>
+        <td colspan="3" class="separator"><a id="A1"><hr /></a></td>
+      </tr>
+      <tr>
+        <td width="74%" rowspan ="1" align="left" valign="top" class="title">
+          <span class="itemName" name="path">whitted&nbsp;<a href="#whitted"><img src="data/link.jpg" alt="For a direct link to this sample, right-click and copy the URL (shortcut) of this link icon." class="anchorImage" /></a></span><br/>
+          <br/>
+          <span class="description">
+            Recreation of Turner Whitted's classic ray-traced scene.
+        </span></td>
+        <td rowspan ="1" width="6" align="left" valign="top" class="verticalBder">&nbsp;</td>
+        <td rowspan ="1" align="right" valign="top" class="itemMinspec"><a href="data/whitted.png" name="whitted image" target="_blank"><img src="data/whitted_thumb.png" class="itemMinspec" alt="whitted image" /></a>
+          <p><span class="links">
+            <br />
+            <a href="whitted/" name="path">Browse Files </a>
+          </span>
+          </p>
+        </td>
+      </tr>
+
+
+      <!-- zoneplate **********************************************************-->
+      <tr>
+        <td colspan="3" class="separator"><a id="A1"><hr /></a></td>
+      </tr>
+      <tr>
+        <td width="74%" rowspan ="1" align="left" valign="top" class="title">
+          <span class="itemName" name="path">zoneplate&nbsp;<a href="#zoneplate"><img src="data/link.jpg" alt="For a direct link to this sample, right-click and copy the URL (shortcut) of this link icon." class="anchorImage" /></a></span><br/>
+          <br/>
+          <span class="description">
+            Illustration of how to do different types of anti-aliasing.  Samples
+            can be reconstructed into a final image using the following methods:
+            <ul>
+              <li>None</li>
+              <li>Sample Gather</li>
+              <li>Sample Scatter using floating point atomics - SM 2.0+ (e.g. Fermi class
+                device) is required for this
+                feature</li>
+              <li>Adaptive sampling based on a local contrast threshold. SM 2.0+ (e.g. Fermi class
+                device) is required for this
+                feature</li>
+            </ul>
+            It also demonstrates the use of a variety of reconstruction filters including box, triangle, windowed sinc, Mitchell, and gaussian filters.
+        </span></td>
+        <td rowspan ="1" width="6" align="left" valign="top" class="verticalBder">&nbsp;</td>
+        <td rowspan ="1" align="right" valign="top" class="itemMinspec"><a href="data/zoneplate.png" name="zoneplate image" target="_blank"><img src="data/zoneplate_thumb.png" class="itemMinspec" alt="zoneplate image" /></a>
+          <p><span class="links">
+            <br />
+            <a href="zoneplate/" name="path">Browse Files </a>
+          </span>
+          </p>
+        </td>
+      </tr>
+
+
+      <tr>
+        <td colspan="3" class="separator"><a id="dct8x8"><hr /></a></td>
+      </tr>
+
+    </table>
+  </div>
+  <div align="right" style=" color:#999999;">Last Update: 05/25/2010</div>
+</td>
+</tr>
+</table>
+</body>
+</html>

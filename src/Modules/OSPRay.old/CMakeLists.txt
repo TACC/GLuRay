@@ -1,0 +1,21 @@
+find_package(OSPRay)
+INCLUDE_DIRECTORIES(
+  ${OSPRAY_INCLUDE_DIRS}
+  )
+
+SET(OSPRAY_SOURCES "")
+
+SET(OSPRAY_SOURCES 
+ OSPRayManager.cc
+ OSPRayManager.h
+ ORenderable.cc
+ ORenderable.h
+ OScene.cc
+ OScene.h
+  )
+
+ADD_LIBRARY (GLuRay_OSPRay STATIC ${OSPRAY_SOURCES})
+
+TARGET_LINK_LIBRARIES(GLuRay_OSPRay ${OSPRAY_LIBRARIES})
+
+
