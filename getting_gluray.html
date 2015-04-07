@@ -1,0 +1,120 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8">
+  <meta name="description" content="GLuRay: An OpenGL Interceptor using Ray Tracing Backends for Photorealistic Rendering.">
+  <link rel="stylesheet" type="text/css" media="screen" href="./css/stylesheet.css">
+  <title>GLuRay</title>
+  <link rel="icon" type="image/png" href="./images/gears192.png" sizes="192x192">
+  <link rel="SHORTCUT ICON" href="./images/gears32.ico">
+  <style type="text/css"></style></head>
+
+  <body>
+    <div id="header">
+      <div id="header-github">
+        <a id="forkme-banner" href="https://github.com/TACC/GLuRay">View on GitHub</a>
+      </div>
+      <div id="header-title">GLuRay</div>
+      <div id="header-subtitle">An OpenGL Interceptor using Ray Tracing Backends for Photorealistic Rendering</div>
+      <div id="header-navbar">
+        <ul>
+          <li><a href="http://tacc.github.io/GLuRay/index.html">Overview</a></li>
+          <li><a href="http://tacc.github.io/GLuRay/demos.html">Demos</a></li>
+          <li><a href="http://tacc.github.io/GLuRay/gallery.html">Gallery</a></li>
+          <li><a href="http://tacc.github.io/GLuRay/getting_gluray.html">Getting GLuRay</a></li>
+          <li><a href="https://github.com/TACC/GLuRay/wiki">Wiki</a></li>
+          <li><a href="https://github.com/TACC/GLuRay/issues">Bugs/Issues</a></li>
+          <li><a href="http://tacc.github.io/GLuRay/related_projects.html">Related Projects</a></li>
+        </ul>
+      </div>
+      <div id="header-spacing"></div> 
+    </div>
+
+    <div id="content-wrap">
+      <div id="content">
+
+<h1>Getting GLuRay</h1>
+
+<h2>Precompiled Binary Download Packages</h2>
+
+Download links for binary releases will be added soon. Until then, please build GLuRay from source.
+
+<h2>Building GLuRay from Source</h2>
+
+The latest GLuRay sources are always available at
+the <a href="http://github.com/TACC/GLuRay">GLuRay GitHub
+  repository</a>. The default "master" branch should always point to
+the latest tested bugfix release.
+
+<!-- <h3>Prerequisites</h3>
+
+pvOSPRay currently supports both Linux and Mac OSX (a Windows version will soon follow).
+In addition, before you can build pvOSPRay you need the following prerequisites:
+<ul>
+  <li>You can clone the latest vtkOSPRay sources via: <code>git clone https://github.com/TACC/vtkOSPRay.git</code></li>
+  <li>You can clone the latest OSPRay sources via: <code>git clone https://github.com/ospray/ospray.git</code></li>
+  <li>To build OSPRay you require a copy of
+    the <a href="http://ispc.github.io">Intel&reg; SPMD Program Compiler
+      (ISPC)</a>. Please obtain a copy of the latest binary release of ISPC
+    (currently 1.8.0) from
+    the <a href="https://ispc.github.io/downloads.html">ISPC downloads
+      page</a>, and place it right "next to" the checked-out OSPRay sources
+    in your directory tree (e.g., if OSPRay is in ~/Projects/ospray, ISPC
+    should be in ~/Projects/ispc-v1.8.0-linux).</li>
+  <li>Additional packages you need
+    are <a href="http://www.cmake.org">CMake</a>, any form of C++ compiler
+    (we recommend using
+    the <a href="https://software.intel.com/en-us/c-compilers">Intel&reg;
+      C++ compiler (<code>icc</code>)</a>, but also support <code>GCC</code> and <code>clang-cc</code>), and standard
+    Linux development tools. To build the demo viewers, you should also
+    have some version of OpenGL and the GL Utility Toolkit (<code>GLUT</code> or
+    <code>freeglut</code>).</li>
+  <li>OSPRay also heavily
+  uses <a href="http://embree.github.io">Embree</a>; however, OSPRay
+  directly includes its own copy of Embree, so a special installation
+  of Embree is <em>not</em> required.</li>
+</ul>
+
+<h3> Building pvOSPRay</h3>
+
+Note that you will need to download and build vtkOSPRay first. Assuming the above requisites are all fulfilled, building pvOSPRay through CMake is easy:
+<ul>
+  <li>Create a build directory, and go into it
+    <br>
+    <code>
+      user@mymachine[~/Projects]: mkdir pvOSPRay/release
+    </code>
+    <br>
+    <code>
+      user@mymachine[~/Projects]: cd pvOSPRay/release
+    </code>
+    <br>
+    (We do recommend having separate build directories for different configurations such as release, debug, etc).
+  </li>
+
+  <li>Open the CMake configuration dialog
+    <br>
+    <code>user@mymachine[~/Projects]: ccmake ..</code>
+    <br>
+  </li>
+
+  <li>Make sure to properly set build mode, desired Instruction set to build for (SSE, AVX, AVX2), enable the components you need, etc. (though most of these settings should be inherited from your OSPRay build); then type 'c'onfigure and 'g'enerate. When back on the command prompt, build it using
+    <br>
+    <code>
+      user@mymachine[~/Projects]: make
+    </code>
+  </li>
+
+  <li>You should now have <code>libpvOSPRay.so</code> as well as a set of sample viewers. You can test your version of pvOSPRay using any of the examples on the <a href="demos.html">pvOSPRay Demos and Examples</a> page.</li>
+</ul>
+
+ -->
+
+			</div>
+		</div>
+
+    <div id="footer">
+      <a href="http://tacc.github.io/GLuRay/">http://tacc.github.io/GLuRay/</a>
+    </div>
+
+</body></html>
