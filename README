@@ -38,3 +38,4 @@ example configuration files: “-apply -spp 1 -threads 8 -phong -fov 30 -ao 36
 //
 the GUI is located in glurayGUI folder which can be built with Qt. Currently this is disabled and hasn’t been tested with newer versions of GLuRay, you will need to modify defines.h to enable run_client. The client is run by first running the GUI program using GLuRay and then launching GLuRay instances with other programs which will then attach to the GUI.
 GLuRay was written by Carson Brownlee at the University of Utah. It is based on SpyGlassGL and the Manta ray tracer.
+
