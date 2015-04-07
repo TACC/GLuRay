@@ -33,13 +33,14 @@
 <p>NOTE: Embree is setup to use progressive rendering while most applications are event driven.  Be sure to run the path tracer with sufficient samples per pixel to get a decent image.  </p>
 
 
-<h3>building with OptiX support:</h3>
+<!-- <h3>building with OptiX support:</h3>
 <p>
 Please check out the 'optix' branch of GLuRay and build using CMake.
 </p>
 
 <h3>running:</h3>
 <p>./gluray glxgears</p>
+-->
 
 
 <h3>environment variables:</h3>
