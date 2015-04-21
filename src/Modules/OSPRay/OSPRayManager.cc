@@ -1087,6 +1087,16 @@ ospray::box3f worldBounds = msgModel->getBBox();
 
    ospRenderFrame(framebuffer,renderer);
 
+
+  //glPixelStorei(GL_UNPACK_ROW_LENGTH, _width);
+  //glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+  //glPixelStorei(GL_PACK_ALIGNMENT, 1);
+  // glDisable(GL_DEPTH_TEST);
+  // glDisable(GL_SCISSOR_TEST);
+  // glDisable(GL_ALPHA_TEST);
+  glDrawBuffer(GL_FRONT);
+
+   // printf("glDrawPixels %s\n", _format.c_str());
   uint32* data = (uint32 *) ospMapFrameBuffer(framebuffer);
         if (_format == "RGB_FLOAT32")
     glDrawPixels(_width,_height,GL_RGB,GL_FLOAT,data);
@@ -1098,6 +1108,16 @@ ospray::box3f worldBounds = msgModel->getBBox();
     throw std::runtime_error("unkown format: "+_format);
 
   ospUnmapFrameBuffer(data,framebuffer);
+
+  unsigned char testBuffer[256*256*3];
+  for (int i =0;i < 256*256*3; i++)
+  {
+    testBuffer[i] = 0;
+    if (i%3 == 0) testBuffer[i] = 255;
+  }
+  // glDrawPixels(256,256,GL_RGB,GL_UNSIGNED_BYTE,testBuffer);
+  glFinish();
+
 
 
   for(vector<OSPGeometry>::iterator itr = instances.begin(); itr != instances.end(); itr++)

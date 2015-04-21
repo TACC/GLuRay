@@ -143,18 +143,32 @@ void gr_init()
     );
 
   string renderMode = GetVarString("GLURAY_RENDERMODE");
-  if (renderMode == "")
-    renderMode = "GLXSWAPBUFFERS";
+  printf("found string renderMode: %s\n", renderMode.c_str());
   if (renderMode.find("GLXSWAPBUFFERS") != string::npos)
+  {
+    printf("render mode set to GLXSWAPBUFFERS\n");
     GLURAY_RENDER_MODE |= GLURAY_RENDER_GLXSWAPBUFFERS;
+  }
   if (renderMode.find("GLFINISH") != string::npos)
+  {
+    printf("render mode set to GLFINISH\n");
     GLURAY_RENDER_MODE |= GLURAY_RENDER_GLFINISH;
+  }
   if (renderMode.find("GLFLUSH") != string::npos)
+  {
+    printf("render mode set to GLFLUSH\n");
     GLURAY_RENDER_MODE |= GLURAY_RENDER_GLFLUSH;
+  }
   if (renderMode.find("GLREADPIXELS") != string::npos)
+  {
+    printf("render mode set to GLREADPIXELS\n");
     GLURAY_RENDER_MODE |= GLURAY_RENDER_GLREADPIXELS;
+  }
   if (!GLURAY_RENDER_MODE)
+  {
+    printf("render mode set to default GLXSWAPBUFFERS\n");
     GLURAY_RENDER_MODE |= GLURAY_RENDER_GLXSWAPBUFFERS;
+  }
 
 #ifdef USE_RIVL
   //rm = RIVLManager::singleton();
