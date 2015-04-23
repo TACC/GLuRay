@@ -367,10 +367,11 @@ void  OSPRayManager::updateMaterial()
 
 o_current_material = ospNewMaterial(renderer,"OBJMaterial");
 Assert(o_current_material);
-        ospSet3fv(o_current_material,"Kd",&m.diffuse[0]);
-      ospSet3fv(o_current_material,"Ks",&m.specular[0]);
-      ospSet1f(o_current_material,"Ns",m.shiny);
-      ospSet1f(o_current_material,"d", current_color.a);
+ospSet3fv(o_current_material,"Kd",&m.diffuse[0]);
+ospSet3fv(o_current_material,"Ks",&m.specular[0]);
+ospSet1f(o_current_material,"Ns",m.shiny);
+ospSet1f(o_current_material,"d", current_color.a);
+ospCommit(o_current_material);
 
 
 // float diffuse[] = {1,0,0};
@@ -630,9 +631,9 @@ void OSPRayManager::init()
       // ospSet3f(camera,"dir",+1,-1,+1);
       // ospCommit(camera);
 
-  renderer = ospNewRenderer("raycast_eyelight");
+  // renderer = ospNewRenderer("raycast_eyelight");
   // renderer = ospNewRenderer("ao16");
-  // renderer = ospNewRenderer("obj");
+  renderer = ospNewRenderer("obj");
   if (!renderer)
     throw std::runtime_error("could not create renderer ");
   Assert(renderer != NULL && "could not create renderer");
