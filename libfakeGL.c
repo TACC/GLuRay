@@ -84,6 +84,12 @@ typedef struct {
 static char read_flag_write_msg_fifo(char *msg);
 static char read_flag_write_msg_simple(char *msg);
 
+char read_flag_write_msg_simple1(char *msg)
+{
+    fprintf(stderr, msg);
+    return (char)0;
+}
+
 static char* format_function_call_fifo(int, const char *);
 static char* format_function_call_simple(int, const char *);
 
@@ -136,18 +142,32 @@ static void spyglass_init(void)
 
 static void init_fifos(void)
 {
+    printf("init_fifos\n");
     msg_fifo = open(getenv("__SG_FIFO_DATA"), O_WRONLY);
     flag_fifo = open(getenv("__SG_FIFO_CONTROL"), O_RDONLY);
 
     if (msg_fifo == -1 || flag_fifo == -1)
         if (msg_fifo == -1 && flag_fifo == -1)
+        {
+            printf("read simple\n");
+//             sg_dispatch_table sg_dispatch_table_simple1 = {
+//     read_flag_write_msg_simple1,
+//     format_function_call_simple
+// };
+// sg_dispatch_table* table_simplePtr = (sg_dispatch_table*)malloc(sizeof(sg_dispatch_table));
+// memcpy(table_simplePtr, &sg_dispatch_table_simple1,sizeof(sg_dispatch_table));
+// dt = table_simplePtr;
             dt = &sg_dispatch_table_simple;
+        }
         else {
             fprintf(stderr, "E: Can't open fifos\n");
             exit(1);
         }
     else
+    {
+            printf("read fifo\n");
         dt = &sg_dispatch_table_fifo;
+    }
 }
 
 static

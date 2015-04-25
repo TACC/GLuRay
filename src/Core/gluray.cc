@@ -366,10 +366,12 @@ void gr_setColorub(unsigned char r, unsigned char g, unsigned char b, unsigned c
 
 void gr_setBackgroundColor(float r, float g, float b, float a)
 {
+  printf("gr_setBackgroundColor\n");
   GRCHECK();
-  static float oldr, oldg, oldb, olda;
+  static float oldr=-1, oldg=-1, oldb=-1, olda=-1;
   if (r != oldr || g != oldg || b != oldb || a != olda)
   {
+    printf("gr_setBackgroundColor2\n");
     rm->setBGColor(r,g,b,a);
     oldr = r; oldg=g; oldb=b; olda=a;
   }

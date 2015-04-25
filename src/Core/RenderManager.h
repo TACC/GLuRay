@@ -35,12 +35,13 @@ public:
   ~RenderManager() {}
   virtual void setBGColor(float r, float g, float b, float a)
   {
+    printf("setBGColor\n");
     Color color = Color(RGBColor(r,g,b));
-	  if ((params.env_map == "" || params.env_map == "none") && (current_color.color[0] != color[0] || current_color.color[1] != color[1] || current_color.color[2] != color[2] || current_color.a != a))
+	  if ((params.env_map == "" || params.env_map == "none") && (current_bgcolor.color[0] != color[0] || current_bgcolor.color[1] != color[1] || current_bgcolor.color[2] != color[2] || current_bgcolor.a != a))
 	  {
-		current_color.color = color;
-		current_color.a = a;
-		params.bgcolor = current_color;
+		current_bgcolor.color = color;
+		current_bgcolor.a = a;
+		params.bgcolor = current_bgcolor;
 		updateBackground();
 	  }
   }

@@ -366,21 +366,21 @@ void  OSPRayManager::updateMaterial()
   m.shiny = 100;
 
 o_current_material = ospNewMaterial(renderer,"OBJMaterial");
-Assert(o_current_material);
+// Assert(o_current_material);
 ospSet3fv(o_current_material,"Kd",&m.diffuse[0]);
 ospSet3fv(o_current_material,"Ks",&m.specular[0]);
 ospSet1f(o_current_material,"Ns",m.shiny);
 ospSet1f(o_current_material,"d", current_color.a);
-ospCommit(o_current_material);
-
+// ospCommit(o_current_material);
 
 // float diffuse[] = {1,0,0};
 // float specular[] = {1,1,0};
 //         ospSet3fv(o_current_material,"Kd",diffuse);
+//         ospSet3fv(o_current_material,"kd",diffuse);
 //       ospSet3fv(o_current_material,"Ks",specular);
 //       ospSet1f(o_current_material,"Ns",10);
 //       ospSet1f(o_current_material,"d",1.0);
-//       ospCommit(o_current_material);
+      ospCommit(o_current_material);
   #if 0
   if (!initialized)
     return;
@@ -570,6 +570,8 @@ void OSPRayManager::useShadows(bool st)
 
 void OSPRayManager::setSize(int w, int h)
 {
+  if (!initialized)
+    return;
 
 printf("setSize %d %d\n", w,h);
   #if 1
@@ -922,6 +924,7 @@ void OSPRayManager::render()
       ospSetParam(renderer,"world",model);
   ospSetParam(renderer,"model",model);
 
+  updateBackground();
   ospCommit(renderer);
   #endif
   _frameNumber++;
@@ -960,11 +963,13 @@ void OSPRayManager::render()
       // prims.push_back(g_device->rtNewShapePrimitive(er->_data->d_mesh, er->_data->d_material, copyToArray(et)));
       OSPGeometry inst = ospNewInstance(er->_data->ospModel,
         ospray::affine3f(embree::LinearSpace3f(mt(0,0), mt(0,1), mt(0,2), mt(1,0), mt(1,1), mt(1,2), mt(2,0),mt(2,1),mt(2,2)), embree::Vec3fa(mt(0,3),mt(1,3),mt(2,3))));
+      ospCommit(inst);
       ospAddGeometry(model,inst);
       // std::cout << "adding instance with tris: " <<  er->_data->mesh->vertex_indices.size()/3 << std::endl;
       instances.push_back(inst);
     }
   }
+  ospCommit(model);
   #endif
   next_scene->instances.resize(0);
 
@@ -1071,35 +1076,61 @@ ospray::box3f worldBounds = msgModel->getBBox();
     OSPLight ospLight = ospNewLight(renderer, "DirectionalLight");
     ospSetString(ospLight, "name", "sun" );
     ospSet3f(ospLight, "color", 1, 1, 1);
-    ospSet3f(ospLight, "direction", 0, -1, 0);
+    ospSet3f(ospLight, "direction", .3, -.4, -.8);
     ospCommit(ospLight);
     pointLights.push_back(ospLight);
     OSPData pointLightArray = ospNewData(pointLights.size(), OSP_OBJECT, &pointLights[0], 0);
-    ospSetData(renderer, "directionalLights", pointLightArray);
+    // ospSetData(renderer, "directionalLights", pointLightArray);
+    ospSetData(renderer, "lights", pointLightArray);
 // updateCamera();
+
+    //TODO: put in conditional
+  ospSet1i(renderer,"shadowsEnabled", false);
   ospCommit(renderer);
   ospCommit(model);
+
     //end light test
 
-  // printf("render\n");
+  printf("render\n");
   #endif
 
 
+   assert(framebuffer);
 
    ospRenderFrame(framebuffer,renderer);
 
 
-  //glPixelStorei(GL_UNPACK_ROW_LENGTH, _width);
-  //glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-  //glPixelStorei(GL_PACK_ALIGNMENT, 1);
-  // glDisable(GL_DEPTH_TEST);
-  // glDisable(GL_SCISSOR_TEST);
-  // glDisable(GL_ALPHA_TEST);
+
+
+    // glPixelStorei(GL_UNPACK_ROW_LENGTH, mwidth);
+    GLint rmode, dmode;
+    // glGetIntegerv(GL_READ_BUFFER, &rmode);
+    glGetIntegerv(GL_DRAW_BUFFER, &dmode);
+    // glDrawBuffer(rmode);
+    //glDrawBuffer(GL_BACK);
+    //glEnable(GL_DEPTH_TEST);
+    // glDrawPixels(mwidth,mheight, GL_DEPTH_COMPONENT, GL_FLOAT, &depth_data[0]);
+    // glDisable(GL_DEPTH_TEST);
+    // glDrawPixels(mwidth,mheight,GL_RGBA,GL_UNSIGNED_BYTE, &rgba_data[0]);
+    // glEnable(GL_DEPTH_TEST);
+
+  // glPixelStorei(GL_UNPACK_ROW_LENGTH, _width);
+  // glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+  // glPixelStorei(GL_PACK_ALIGNMENT, 1);
+  glDisable(GL_DEPTH_TEST);
+  glDisable(GL_SCISSOR_TEST);
+  glDisable(GL_ALPHA_TEST);
   glDrawBuffer(GL_FRONT);
 
-   // printf("glDrawPixels %s\n", _format.c_str());
-  uint32* data = (uint32 *) ospMapFrameBuffer(framebuffer);
-        if (_format == "RGB_FLOAT32")
+    //glDrawBuffer(GL_FRONT);
+    // glDrawPixels(mwidth,mheight,GL_RGBA,GL_UNSIGNED_BYTE, &rgba_data[0]);
+    //glDrawPixels(mwidth,mheight, GL_DEPTH_COMPONENT, GL_FLOAT, &depth_data[0]);
+
+  // _format = "RGB8";
+  _format = "RGBA8";
+   printf("glDrawPixels %s %d %d\n", _format.c_str(), _width, _height);
+  unsigned char* data = (unsigned char *) ospMapFrameBuffer(framebuffer);
+  if (_format == "RGB_FLOAT32")
     glDrawPixels(_width,_height,GL_RGB,GL_FLOAT,data);
   else if (_format == "RGBA8")
   glDrawPixels(_width,_height,GL_RGBA,GL_UNSIGNED_BYTE,data);
@@ -1110,12 +1141,14 @@ ospray::box3f worldBounds = msgModel->getBBox();
 
   ospUnmapFrameBuffer(data,framebuffer);
 
-  unsigned char testBuffer[256*256*3];
-  for (int i =0;i < 256*256*3; i++)
-  {
-    testBuffer[i] = 0;
-    if (i%3 == 0) testBuffer[i] = 255;
-  }
+  // glDrawBuffer(dmode);
+
+  // unsigned char testBuffer[256*256*3];
+  // for (int i =0;i < 256*256*3; i++)
+  // {
+  //   testBuffer[i] = 0;
+  //   if (i%3 == 0) testBuffer[i] = 255;
+  // }
   // glDrawPixels(256,256,GL_RGB,GL_UNSIGNED_BYTE,testBuffer);
   glFinish();
 
@@ -1287,6 +1320,8 @@ Window win2;
 
 void OSPRayManager::displayFrame()
 {
+  if (!initialized)
+    return;
   #if 0
   if (!rendering)
     return;
@@ -1515,6 +1550,8 @@ void OSPRayManager::syncInstances()
 
 void OSPRayManager::updateCamera()
 {
+  if (!initialized)
+    return;
   GLuRayRenderParameters& p = params;
   float angle = p.camera_vfov;
   float aspectRatio = float(_width)/float(_height);
@@ -1574,6 +1611,12 @@ void OSPRayManager::updateCamera()
 
 void OSPRayManager::updateBackground()
 {
+  if (!initialized)
+    return;
+
+  printf("setting background color: %f %f %f\n", current_bgcolor.color[0], current_bgcolor.color[1], current_bgcolor.color[2]);
+  ospSet3f(renderer,"bgColor",current_bgcolor.color[0], current_bgcolor.color[1], current_bgcolor.color[2]);
+  ospCommit(renderer);
 #if 0
   //  cout << "updateBackground\n";
   current_bgcolor = params.bgcolor;
@@ -1598,6 +1641,8 @@ void OSPRayManager::updateBackground()
 
 void OSPRayManager::addInstance(Renderable* ren)
 {
+  if (!initialized)
+    return;
   if (!ren->isBuilt())
   {
     std::cerr << "addInstance: renderable not build by rendermanager\n";
@@ -1608,6 +1653,8 @@ void OSPRayManager::addInstance(Renderable* ren)
 
 void OSPRayManager::addRenderable(Renderable* ren)
 {
+  if (!initialized)
+    return;
   ORenderable* oren = dynamic_cast<ORenderable*>(ren);
   if (!oren)
   {
@@ -1861,6 +1908,8 @@ void OSPRayManager::addRenderable(Renderable* ren)
 
 void OSPRayManager::deleteRenderable(Renderable* ren)
 {
+  if (!initialized)
+    return;
   #if 0
   //TODO: DELETE RENDERABLES
   ERenderable* er = dynamic_cast<ERenderable*>(ren);
@@ -1879,6 +1928,8 @@ void OSPRayManager::deleteRenderable(Renderable* ren)
 
 void OSPRayManager::addTexture(int handle, int target, int level, int internalFormat, int width, int height, int border, int format, int type, void* data)
 {
+  if (!initialized)
+    return;
   #if 0
   return;
   if(!initialized)
@@ -1935,7 +1986,8 @@ void OSPRayManager::addTexture(int handle, int target, int level, int internalFo
 
 void OSPRayManager::deleteTexture(int handle)
 {
-
+  if (!initialized)
+    return;
 }
 
 GeometryGenerator* OSPRayManager::getGeometryGenerator(int type)
