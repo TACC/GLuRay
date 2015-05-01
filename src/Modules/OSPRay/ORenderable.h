@@ -91,6 +91,8 @@ struct OData
 size_t num_prims;
 OSPGeometry ospMesh;
 OSPModel ospModel;
+OSPMaterial mat;
+GLMaterial glmat;
 // embree::Handle<embree::Device::RTMaterial> d_material;
 // embree::Handle<embree::Device::RTShape> d_mesh;
 };

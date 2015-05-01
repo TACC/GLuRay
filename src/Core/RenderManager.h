@@ -66,6 +66,7 @@ public:
   virtual void pushRenderParameters();
   virtual void popRenderParameters();
 
+  virtual void updateRenderer() = 0;
   virtual void useShadows(bool st) = 0;
   virtual void updateBackground() = 0;
   virtual void updateCamera()=0;
@@ -101,6 +102,7 @@ public:
   std::queue<Work*> accel_work_queue;
   bool kill_accel_threads;
 
+  void initClient();
   static void* clientLoop(void* t);
 
   RGBAColor current_color;

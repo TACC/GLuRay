@@ -3,6 +3,7 @@
 # -------------------------------------------------
 QT += network
 QT           += opengl
+LIBS += -lGLU
 TARGET = glurayGUI
 TEMPLATE = app
 SOURCES += main.cpp \
