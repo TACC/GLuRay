@@ -147,6 +147,24 @@ void* RenderManager::clientLoop(void* t)
   }
 }
 
+// Initialize thread to listen to gui client
+void RenderManager::initClient()
+{
+#if RUN_CLIENT
+  if (!client_running)
+  {
+    client_running = true;
+    pthread_t thread;
+    cout << "run client\n";
+    int err = pthread_create(&thread, 0, clientLoop, this);
+    if (err){
+      printf("ERROR; return code from pthread_create() is %d\n", err);
+      exit(-1);
+    }
+  }
+#endif
+}
+
 void RenderManager::pushRenderParameters()
 {
   render_parameters_stack.push(params);
@@ -158,21 +176,29 @@ void RenderManager::popRenderParameters()
   render_parameters_stack.pop();
 }
 
+// Check new parameters and call relevant update functions
 void RenderManager::setRenderParameters(GLuRayRenderParameters& rp, bool need_relaunch)
 {
   // general_mutex.lock();
-  if (params.num_threads != rp.num_threads)
-    setNumThreads(params.num_threads);
+
+  GLuRayRenderParameters oldp = params;
   params = rp;
 
-  if (dirty_sampleGenerator)
-  {
-    //   rtrt->addOneShotCallback(MantaInterface::Relative, 1,  Callback::create(this, &MantaManager::setNumSamples, rp.num_samples));
-    //   dirty_sampleGenerator = false;
-  }
-  //  setNumSamples(rp.num_samples);
-  //     setColor(current_color.color[0],current_color.color[1],current_color.color[2],current_color.a);
-  //if (lights)
+  if (params.num_threads != oldp.num_threads)
+    setNumThreads(params.num_threads);
+
+  if (params.num_ao_samples != oldp.num_ao_samples || params.ao_distance != oldp.ao_distance || params.ao_intensity != oldp.ao_intensity)
+    updateRenderer();
+
+  if (params.num_samples != oldp.num_samples)
+    setNumSamples(0, 0, params.num_samples);
+
+  if (params.shadows != oldp.shadows)
+    useShadows(params.shadows);
+
+  if (params.material != oldp.material)
+    updateMaterial();
+
   if (initialized)
   {
     updateLights();
@@ -200,11 +226,7 @@ void RenderManager::setRenderParametersString(string in, bool need_relaunch)
       rp.camera_hfov = rp.camera_vfov;
     }
     else if (arg == "-spp")
-    {
-      s >> rp.num_samples ;
-      if (params.num_samples != rp.num_samples)
-        dirty_sampleGenerator = true;
-    }
+      s >> rp.num_samples;
     else if (arg == "-threads")
       s >> rp.num_threads;
     else if (arg == "-ao")

@@ -101,6 +101,7 @@ class OSPRayManager : public RenderManager
 
     GLMaterial& getCurrentMaterial() { return gl_material; }
     virtual void updateMaterial();
+    void updateMaterial(OSPMaterial *matp, const GLMaterial &glmat);
     //virtual void updateScene();
     virtual void render();
     virtual void init();
@@ -125,6 +126,8 @@ class OSPRayManager : public RenderManager
     void useShadows(bool st);
     void updateBackground();
     void updateCamera();
+    void updateRenderer();
+    void reloadRenderer();
 
     /*
      *new functions
@@ -198,6 +201,8 @@ class OSPRayManager : public RenderManager
 
     // OBJScene* _objScene;
 
+    std::string _currentRenderer;
+    std::vector<ORenderable*> renList;
 
 
     static OSPRayManager* singleton();

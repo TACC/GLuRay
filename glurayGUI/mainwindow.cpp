@@ -150,7 +150,7 @@ std::string MainWindow::packSettings()
   if (ui->aoCB->isChecked())
     s << "-ao " << ui->aoSB->value() << " " << ui->ao_distanceSB->value() << " 0.7 ";
   else
-    s << "-ao 0 0 0";
+    s << "-ao 0 0 0 ";
   if (ui->envCB->isChecked())
     s << "-env " << ui->envTB->text().toStdString() << " ";
   if (ui->shadowsCB->isChecked())

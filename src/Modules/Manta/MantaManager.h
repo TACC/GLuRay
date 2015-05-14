@@ -106,6 +106,7 @@ class MantaManager : public RenderManager
     void updateBackground();
     void updateCamera();
     void setCameraCallback(int,int);
+    void updateRenderer();
 
 
     bool kill_accel_threads;

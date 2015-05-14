@@ -56,7 +56,6 @@
 #include <cassert>
 #include <float.h>
 #include <stack>
-#include <algorithm>
 
 #include <netdb.h>
 #include <sys/types.h>
@@ -194,6 +193,9 @@ OSPCamera      camera;
 
   // _xDisplay = NULL;
   // _xWin = new Window;
+    _currentRenderer = "obj";
+    renList.clear();
+    o_current_material = 0;
   }
 
   OSPRayManager::~OSPRayManager()
@@ -353,34 +355,35 @@ Renderable* OSPRayManager::createRenderable(GeometryGenerator* gen)
   return new ORenderable(mg);
 }
 
-void  OSPRayManager::updateMaterial()
+void OSPRayManager::updateMaterial()
+{
+  updateMaterial(&o_current_material, gl_material);
+}
+
+void OSPRayManager::updateMaterial(OSPMaterial *matp, const GLMaterial &glmat)
 {
   if (!initialized)
     return;
-  GLMaterial m = gl_material;
-  //TODO: DEBUG: hardcoding mat for debugging
-  // m.diffuse = Color(RGB(1.0, 0.713726, .21569));
-  //m.diffuse = Color(RGB(0.8, 0.8, 0.8));
+
+  GLMaterial m = glmat;
+  //m.diffuse = Color(RGB(1.0, 0.713726, .21569)); // hardcode mat for debugging
   m.specular = Manta::Color(RGB(.1, .1, .1));
   m.ambient = Manta::Color(RGB(0, 0, 0));
   m.shiny = 100;
 
-o_current_material = ospNewMaterial(renderer,"OBJMaterial");
-// Assert(o_current_material);
-ospSet3fv(o_current_material,"Kd",&m.diffuse[0]);
-ospSet3fv(o_current_material,"Ks",&m.specular[0]);
-ospSet1f(o_current_material,"Ns",m.shiny);
-ospSet1f(o_current_material,"d", current_color.a);
-// ospCommit(o_current_material);
+  Assert(matp);
+  OSPMaterial mat = *matp;
+  if(!mat)
+    mat = ospNewMaterial(renderer, "OBJMaterial");
+  Assert(mat);
 
-// float diffuse[] = {1,0,0};
-// float specular[] = {1,1,0};
-//         ospSet3fv(o_current_material,"Kd",diffuse);
-//         ospSet3fv(o_current_material,"kd",diffuse);
-//       ospSet3fv(o_current_material,"Ks",specular);
-//       ospSet1f(o_current_material,"Ns",10);
-//       ospSet1f(o_current_material,"d",1.0);
-      ospCommit(o_current_material);
+  ospSet3fv(mat, "Kd", &m.diffuse[0]);
+  ospSet3fv(mat, "Ks", &m.specular[0]);
+  ospSet1f(mat, "Ns", m.shiny);
+  ospSet1f(mat, "d", current_color.a);
+
+  ospCommit(mat);
+
   #if 0
   if (!initialized)
     return;
@@ -566,6 +569,11 @@ ospSet1f(o_current_material,"d", current_color.a);
 
 void OSPRayManager::useShadows(bool st)
 {
+  if(!initialized)
+    return;
+
+  ospSet1i(renderer, "shadowsEnabled", st);
+  ospCommit(renderer);
 }
 
 void OSPRayManager::setSize(int w, int h)
@@ -650,12 +658,16 @@ void OSPRayManager::init()
 
   updateBackground();
   updateCamera();
-  updateMaterial();
+
+  // material needs to be updated with a geometry
+  // updateMaterial();
+
   if (!current_scene)
     current_scene = new OScene();
   if (!next_scene)
     next_scene = new OScene();
 
+  initClient();
 
   // ospray::glut3D::initGLUT(&ac,av);
 
@@ -833,31 +845,83 @@ void OSPRayManager::init()
   #endif
 }
 
-//TODO: updating pixelsampler mid flight crashes manta
 void OSPRayManager::setNumSamples(int,int,int samples)
 {
-  #if 0
-  cout << "setting samples\n";
-  params.num_samples = samples;
-  stringstream s;
-  if (params.num_samples > 1)
-    s << "regularsample (-numberOfSamples " << params.num_samples << ")";
-  else
-    s << "singlesample";
-  //if(!factory->selectPixelSampler(s.str()))
-  //{}
-  vector<string> args;
-  args.push_back("-numberOfSamples");
-  args.push_back("8");
-  //PixelSampler* ps = new RegularSampler(args);
-  //rtrt->setPixelSampler(ps);
-  //  assert(0);
-  cout << "set num samples to: " << samples << endl;
-  #endif
+    if (!initialized)
+        return;
+
+    cout << "setting samples to: " << samples << endl;
+
+    ospSet1i(renderer, "spp", samples);
+    ospCommit(renderer);
 }
 
 void OSPRayManager::setNumThreads(int t)
 {
+}
+
+void OSPRayManager::reloadRenderer()
+{
+  switch(params.num_ao_samples) {
+    case 0: _currentRenderer = "obj"; break;
+    case 1: _currentRenderer = "ao1"; break;
+    case 2: _currentRenderer = "ao2"; break;
+    case 4: _currentRenderer = "ao4"; break;
+    case 8: _currentRenderer = "ao8"; break;
+    case 16: _currentRenderer = "ao16"; break;
+    default: cout << "invalid samples: " << params.num_ao_samples << ". not reloading osp renderer." << endl;
+             return;
+  }
+
+  cout << "swapping ospray renderer to " << _currentRenderer << endl;
+
+  renderer = ospNewRenderer(_currentRenderer.c_str());
+  if (!renderer)
+    throw std::runtime_error("could not create renderer ");
+  Assert(renderer != NULL && "could not create renderer");
+
+  ospSetObject(renderer,"world",model);
+  ospSetObject(renderer,"model",model);
+  ospSetObject(renderer,"camera",camera);
+  ospCommit(camera);
+
+  ospSet1i(renderer, "spp", params.num_samples);
+
+  updateBackground();
+  updateCamera();
+
+  // create new ospray materials
+  if(o_current_material)
+    ospRelease(o_current_material);
+  o_current_material = ospNewMaterial(renderer, "OBJMaterial");
+  updateMaterial(); // update local material
+
+  // update actor materials
+  for(int i=0; i<renList.size(); i++) {
+    ospRelease(renList[i]->_data->mat); // decrement refcount
+    renList[i]->_data->mat = ospNewMaterial(renderer, "OBJMaterial");
+
+    updateMaterial(&renList[i]->_data->mat, renList[i]->_data->glmat);
+    ospSetMaterial(renList[i]->_data->ospMesh, renList[i]->_data->mat);
+    ospCommit(renList[i]->_data->ospMesh);
+  }
+
+  cout << "updated " << renList.size() << " geometry-material bindings" << endl;
+  ospCommit(renderer);
+}
+
+// Switch to the correct ospray renderer if num_ao_samples has changed
+void OSPRayManager::updateRenderer()
+{
+  if((_currentRenderer == "obj" && params.num_ao_samples != 0)
+      || (_currentRenderer == "ao1" && params.num_ao_samples != 1)
+      || (_currentRenderer == "ao2" && params.num_ao_samples != 2)
+      || (_currentRenderer == "ao4" && params.num_ao_samples != 4)
+      || (_currentRenderer == "ao8" && params.num_ao_samples != 4)
+      || (_currentRenderer == "ao16" && params.num_ao_samples != 16))
+  {
+    reloadRenderer();
+  }
 }
 
 
@@ -923,6 +987,13 @@ void OSPRayManager::render()
     model = ospNewModel();
       ospSetParam(renderer,"world",model);
   ospSetParam(renderer,"model",model);
+
+  if (dirty_renderParams)
+  {
+    cout << "\nosp: render: updating render params\n" << endl;
+    setRenderParametersString(new_renderParamsString, false);
+    dirty_renderParams = false;
+  }
 
   updateBackground();
   ospCommit(renderer);
@@ -1085,13 +1156,13 @@ ospray::box3f worldBounds = msgModel->getBBox();
 // updateCamera();
 
     //TODO: put in conditional
-  ospSet1i(renderer,"shadowsEnabled", false);
+  //ospSet1i(renderer,"shadowsEnabled", false);
   ospCommit(renderer);
   ospCommit(model);
 
     //end light test
 
-  printf("render\n");
+  //printf("render\n");
   #endif
 
 
@@ -1128,7 +1199,7 @@ ospray::box3f worldBounds = msgModel->getBBox();
 
   // _format = "RGB8";
   _format = "RGBA8";
-   printf("glDrawPixels %s %d %d\n", _format.c_str(), _width, _height);
+   //printf("glDrawPixels %s %d %d\n", _format.c_str(), _width, _height);
   unsigned char* data = (unsigned char *) ospMapFrameBuffer(framebuffer);
   if (_format == "RGB_FLOAT32")
     glDrawPixels(_width,_height,GL_RGB,GL_FLOAT,data);
@@ -1614,9 +1685,10 @@ void OSPRayManager::updateBackground()
   if (!initialized)
     return;
 
-  printf("setting background color: %f %f %f\n", current_bgcolor.color[0], current_bgcolor.color[1], current_bgcolor.color[2]);
+  //printf("setting background color: %f %f %f\n", current_bgcolor.color[0], current_bgcolor.color[1], current_bgcolor.color[2]);
   ospSet3f(renderer,"bgColor",current_bgcolor.color[0], current_bgcolor.color[1], current_bgcolor.color[2]);
   ospCommit(renderer);
+
 #if 0
   //  cout << "updateBackground\n";
   current_bgcolor = params.bgcolor;
@@ -1661,6 +1733,9 @@ void OSPRayManager::addRenderable(Renderable* ren)
     printf("error: OSPRayManager::addRenderable wrong renderable type\n");
     return;
   }
+
+  renList.push_back(oren);
+
   // updateMaterial();
       // msgModel = new miniSG::Model;
       // msgModel->material.push_back(new miniSG::Material);
@@ -1685,26 +1760,6 @@ void OSPRayManager::addRenderable(Renderable* ren)
   ospray::vec3fa* vertices = (ospray::vec3fa*)embree::alignedMalloc(sizeof(ospray::vec3fa)*numPositions);
   ospray::vec3i* triangles = (ospray::vec3i*)embree::alignedMalloc(sizeof(ospray::vec3i)*numTriangles);
 
-
-  //
-  // hack! building normals is actually supported in the geometry generator
-  //
-//   if (!mesh->vertexNormals.size())
-//   {
-//     for(int i =0; i < numTriangles;i++)
-//   {
-//     Manta::Vector v1 = mesh->vertices[mesh->vertex_indices[i*3] ];
-//     Manta::Vector v2 = mesh->vertices[mesh->vertex_indices[i*3+1] ];
-//     Manta::Vector v3 = mesh->vertices[mesh->vertex_indices[i*3+2] ];
-//     Manta::Vector n = Manta::Cross(v2-v1,v3-v1);
-//     n.normalize();
-//     mesh->vertexNormals.push_back(n);
-//     mesh->vertexNormals.push_back(n);
-//     mesh->vertexNormals.push_back(n);
-//   }
-// }
-
-
   // vertices.resize(numPositions);
   for(size_t i = 0; i < numPositions; i++)
   {
@@ -1712,6 +1767,7 @@ void OSPRayManager::addRenderable(Renderable* ren)
     // vertices[i] = ospray::vec3fa(float(i)*.01,float(i)*.01,float(i)*.01);
     // printf("vert: %f %f %f\n",mesh->vertices[i].x(), mesh->vertices[i].y(), mesh->vertices[i].z());
   }
+
   // normals.resize(numNormals);
   // for(size_t i = 0; i < numNormals; i++)
     // normals[i] = ospray::vec3fa(mesh->vertexNormals[i].x(), mesh->vertexNormals[i].y(), mesh->vertexNormals[i].z());
@@ -1737,14 +1793,16 @@ void OSPRayManager::addRenderable(Renderable* ren)
     // &normals[0]);
   // ospSetData(ospMesh,"vertex.normal",normal);
 
-
   OSPData index = ospNewData(numTriangles,OSP_INT3,
    &triangles[0]);
   ospSetData(oren->_data->ospMesh,"index",index);
-  // ospCommit(o_current_material);
-  updateMaterial();
-  ospSetMaterial(oren->_data->ospMesh,o_current_material);
-  // ospRelease(o_current_material);
+
+  // create & set material values, bind to mesh
+  oren->_data->glmat = gl_material;
+  oren->_data->mat = ospNewMaterial(renderer, "OBJMaterial");
+  updateMaterial(&oren->_data->mat, oren->_data->glmat);
+
+  ospSetMaterial(oren->_data->ospMesh, oren->_data->mat);
   ospCommit(oren->_data->ospMesh);
 
   oren->_data->ospModel = ospNewModel();
@@ -1910,21 +1968,24 @@ void OSPRayManager::deleteRenderable(Renderable* ren)
 {
   if (!initialized)
     return;
-  #if 0
-  //TODO: DELETE RENDERABLES
-  ERenderable* er = dynamic_cast<ERenderable*>(ren);
-  // printf("deleting renderable of size: %d\n", er->_data->mesh->vertex_indices.size()/3);
-  embreeMutex.lock();
-  /*if (er->isBuilt())*/
-  /*g_device->rtClear(er->_data->d_mesh);*/
-  er->setBuilt(false);
-  /*er->_data->mesh->vertexNormals.resize(0);*/
-  delete er->_data->mesh;  //embree handles clearing the data... not sure how to get it to not do that with rtclear yet
-  embreeMutex.unlock();
-  #endif
+
+  ORenderable* oren = dynamic_cast<ORenderable*>(ren);
+  if (!oren)
+  {
+    cout << "error: OSPRayManager::deleteRenderable: wrong renderable type" << endl;
+    return;
+  }
+
+  ospRemoveGeometry(oren->_data->ospModel, oren->_data->ospMesh);
+  ospRelease(oren->_data->mat);
+
+  for(int i=0; i<renList.size(); i++) {
+    if(renList[i] == ren) {
+      renList.erase(renList.begin() + i);
+      break;
+    }
+  }
 }
-
-
 
 void OSPRayManager::addTexture(int handle, int target, int level, int internalFormat, int width, int height, int border, int format, int type, void* data)
 {

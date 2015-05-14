@@ -571,20 +571,8 @@ void MantaManager::init()
   //   if (scene->world->getVectorOfObjects().empty())
   current_scene->world->add(new Sphere(new Lambertian(Color(RGBColor(current_bgcolor.color[0],current_bgcolor.color[1],current_bgcolor.color[2]))), Vector(0,0,0), Manta::Real(0e-6)));
 
-#if RUN_CLIENT
-  if (!client_running)
-  {
-    client_running = true;
-    pthread_t thread;
-    cout << "run client\n";
-    int err = pthread_create(&thread, 0, clientLoop, this);
-    if (err){
-      printf("ERROR; return code from pthread_create() is %d\n", err);
-      exit(-1);
-    }
-  }
-#endif
-
+  // create client poll thread
+  initClient();
 
   //GetVariables();
   //  cout << "setting up manta\n";
@@ -828,6 +816,10 @@ MantaInterface* MantaManager::getEngine() { return rtrt; }
 //TODO: updating pixelsampler mid flight crashes manta
 void MantaManager::setNumSamples(int,int,int samples)
 {
+  // need to relaunch manta to change samples
+  this->relaunch = true;
+
+#if 0
   cout << "setting samples\n";
   params.num_samples = samples;
   stringstream s;
@@ -844,6 +836,7 @@ void MantaManager::setNumSamples(int,int,int samples)
   //rtrt->setPixelSampler(ps);
   //  assert(0);
   cout << "set num samples to: " << samples << endl;
+#endif
 }
 
 void MantaManager::displayCallback(int proc, int numProcs, bool& changed)
@@ -2086,6 +2079,9 @@ void MantaManager::updateCamera()
   //      Callback::create(this, &MantaManager::setCameraCallback));
 }
 
+void MantaManager::updateRenderer()
+{
+}
 
 void MantaManager::setCameraCallback(int,int)
 {
@@ -2245,4 +2241,3 @@ GeometryGenerator* MantaManager::getGeometryGenerator(int type)
       }
   }
 }
-
