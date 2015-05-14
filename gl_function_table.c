@@ -9570,7 +9570,7 @@ void glClear(GLbitfield mask) {
   /*GLLOCK();
 next_glClear(mask & !GL_COLOR_BUFFER_BIT);*/
   GLLOCK();
-next_glClear(mask);
+// next_glClear(mask);
   //if (mask & GL_DEPTH_BUFFER_BIT)
   //  GLLOCK();
 /*next_glClear(GL_DEPTH_BUFFER_BIT);*/
