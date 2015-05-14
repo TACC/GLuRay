@@ -21,24 +21,25 @@
 #include <CMakeDefines.h>
 
 #include "MScene.h"
-#include "MantaManager.h"
+#include "MantaRenderer.h"
 #include "GLuRayRenderParameters.h"
 
 using namespace std;
 using namespace Manta;
+using namespace glr;
 
 
 
   MScene::MScene(string cam_type, float focal_d, float ap, string env_file)
 : num_elements(0), camera(NULL), created(false), camera_type(cam_type), focal_distance(focal_d), aperture(ap), env_filename(env_file), icounter(0)
 {
-  camera =  MantaManager::singleton()->getCamera();
+  camera =  MantaRenderer::singleton()->getCamera();
 
   build();
 }
 void MScene::build()
 {
-  GLuRayRenderParameters& p = MantaManager::singleton()->params;
+  GLuRayRenderParameters& p = MantaRenderer::singleton()->params;
   as = new DynBVH(DEBUG_MSGS);
   scene = new Scene();
 
@@ -54,7 +55,7 @@ void MScene::build()
   mapping_type = EnvMapBackground::DebevecSphere;
 
   if (env_filename == "")
-    scene->setBackground(new ConstantBackground(MantaManager::singleton()->current_bgcolor.color));
+    scene->setBackground(new ConstantBackground(MantaRenderer::singleton()->current_bgcolor.color));
   else
   {
     ImageTexture<Color>* t = LoadColorImageTexture( env_filename, &std::cerr );
@@ -72,7 +73,7 @@ void MScene::build()
   scene->setObject(as);
 
 
-  LightSet* lights = MantaManager::singleton()->lights;
+  LightSet* lights = MantaRenderer::singleton()->lights;
   //lights->add(new PointLight(Vector(-8,-5,-10), Color(RGBColor(.7,.7,.7))));
   scene->setLights(lights);
   //    scene->getRenderParameters().maxDepth = 5;

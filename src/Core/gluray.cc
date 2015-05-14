@@ -1,8 +1,8 @@
 #if 1
 #include "defines.h"
 
-#define LOGGING_ON
-#include <Core/Util/Logger.h>
+// #define LOGGING_ON
+// #include <Core/Util/Logger.h>
 
 #include <UseMPI.h>
 #ifdef USE_MPI
@@ -30,8 +30,13 @@
 #endif
 #ifdef USE_OSPRAY
 //#include "OSPRayManager.h"
+// #include "OSPRayRenderer.h"
 #endif
-#include "MantaManager.h"
+#ifdef USE_OPTIX
+// #include "Modules/OptiX/OptiXRenderer.h"
+#endif
+#include "RenderManager.h"
+#include "MantaRenderer.h"
 
 #include <iostream>
 #include <vector>
@@ -57,7 +62,8 @@
 
 
 using namespace std;
-using namespace Manta;
+// using namespace Manta;
+using namespace glr;
 
 
 int GLURAY_RENDER_MODE;   //extern in defines
@@ -83,7 +89,7 @@ bool support_immediate = false;  //immediate mode not supported currently, need 
 int DL_NUM = 0;
 unsigned long window_id = 0;
 int num_elements = 0;
-stack<AffineTransform> transform_stack;
+stack<Manta::AffineTransform> transform_stack;
 bool needFOVCalc = true;
 
 
@@ -101,8 +107,8 @@ enum gr_MATERIALS {
   gr_METAL
 };
 
-ThreadGroup* accelThreads;
-Mutex* accelThreadsMutex;
+Manta::ThreadGroup* accelThreads;
+Manta::Mutex* accelThreadsMutex;
 
 int material = gr_PHONG;
 map<std::size_t, vector<Renderable*>* > display_lists;
@@ -117,13 +123,14 @@ vector<float> vert_x;
 vector<float> vert_y;
 vector<float> vert_z;
 
-static void make_stack( ReadContext &context, const vector<string> &args );
+static void make_stack( Manta::ReadContext &context, const vector<string> &args );
 bool initialized = false;
 bool rendering = false;
 
 static int attributeListDbl[] = { GLX_RGBA, GLX_DOUBLEBUFFER, /*In case single buffering is not supported*/ GLX_RED_SIZE, 1, GLX_GREEN_SIZE, 1, GLX_BLUE_SIZE, 1, None };
 
 RenderManager* rm = 0;
+// glr::Renderer* renderer = 0;
 
 void gr_init()
 {
@@ -133,7 +140,7 @@ void gr_init()
   if (initialized)
     return;
 
-  Manta::LogManager::GetSingleton()->SetEnabled(true);
+  // Manta::LogManager::GetSingleton()->SetEnabled(true);
 
   GLURAY_RENDER_MODE = ( 0
     //| GLURAY_RENDER_GLXSWAPBUFFERS
@@ -170,14 +177,22 @@ void gr_init()
     GLURAY_RENDER_MODE |= GLURAY_RENDER_GLXSWAPBUFFERS;
   }
 
+
 #ifdef USE_RIVL
   //rm = RIVLManager::singleton();
 #elif USE_EMBREE
   //rm = EmbreeManager::singleton();
+#elif USE_OPTIX
+  // renderer =  OptiXRenderer::singleton();
+#elif USE_OSPRAY
+  // renderer =  OSPRayRenderer::singleton();
 #else
+  // renderer =  MantaRenderer::singleton();
   //rm = MantaManager::singleton();
 #endif
-  rm = createRenderManager();
+  // rm = createRenderManager();
+
+  rm = new RenderManager();
 
 #if DEBUG_GDB
   /*static bool once = false;
@@ -284,7 +299,7 @@ void gr_init()
 
 
   // cout << "done\n";
-  Thread::setDefaultAbortMode("exit");
+  Manta::Thread::setDefaultAbortMode("exit");
   cout << "done initializing\n";
 }
 
@@ -309,7 +324,7 @@ void gr_addVertex(float x, float y, float z)
     }
     return;
   }
-  Renderable* mr = rm->current_renderable;
+  Renderable* mr = rm->getCurrentRenderable();
   assert(mr);
 
   //split up large structures for parallel builds
@@ -331,7 +346,7 @@ void gr_addVertex(float x, float y, float z)
 
   if (rm->getUsePerVertexColors())
   {
-    RGBAColor c = rm->getCurrentColor();
+    Manta::RGBAColor c = rm->getCurrentColor();
     mr->addTextureCoord(c.color[0], c.color[1], c.color[2], c.a);
   }
   mr->addVertex(x,y,z);
@@ -340,7 +355,7 @@ void gr_addVertex(float x, float y, float z)
 void gr_texCoord(float x, float y, float z)
 {
   GRCHECK();
-  Renderable* mr = rm->current_renderable;
+  Renderable* mr = rm->getCurrentRenderable();
   assert(mr);
   mr->addTextureCoord(x,y,z,1);
 }
@@ -366,12 +381,12 @@ void gr_setColorub(unsigned char r, unsigned char g, unsigned char b, unsigned c
 
 void gr_setBackgroundColor(float r, float g, float b, float a)
 {
-  printf("gr_setBackgroundColor\n");
+  // printf("gr_setBackgroundColor\n");
   GRCHECK();
   static float oldr=-1, oldg=-1, oldb=-1, olda=-1;
   if (r != oldr || g != oldg || b != oldb || a != olda)
   {
-    printf("gr_setBackgroundColor2\n");
+    // printf("gr_setBackgroundColor2\n");
     rm->setBGColor(r,g,b,a);
     oldr = r; oldg=g; oldb=b; olda=a;
   }
@@ -392,7 +407,7 @@ void gr_normal(float x, float y, float z)
 void gr_beginPrimitive(int type)
 {
   GRCHECK();
-  LOGSTARTC("beginPrim", 0,0.3,0.5);
+  // LOGSTARTC("beginPrim", 0,0.3,0.5);
   numadds = 0;
 
   if (!support_immediate && !IN_DL)
@@ -460,7 +475,7 @@ void gr_endPrimitive()
     IN_IMMEDIATE = false;
     //gr_callList(DL_NUM);
   }
-  LOGSTOP("beginPrim");
+  // LOGSTOP("beginPrim");
   //TODO: vapor hack3, no support for immediate
   return;
 
@@ -524,7 +539,7 @@ void gr_render()
     LogManager::GetSingleton()->SetEnabled(false);
     }
     */
-  LOGSTARTC("GLuRay_Render", .5, .5, 0.5);
+  // LOGSTARTC("GLuRay_Render", .5, .5, 0.5);
   static CDTimer timer;
   timer.stop();
   //cout << "time since last render: " << timer.getDelta() << endl;
@@ -535,7 +550,7 @@ void gr_render()
     GLfloat m[16];
     glGetFloatv(GL_PROJECTION_MATRIX, m);
     double fov = 2.0*atan(1.0/m[0])*180.0/M_PI;
-    GLuRayRenderParameters& p = rm->params;
+    GLuRayRenderParameters& p = rm->getRenderParameters();
     p.camera_vfov = p.camera_hfov = fov;
     p.camera_vfov = fov*float(p.height)/float(p.width);
     p.camera_hfov = fov;
@@ -553,7 +568,7 @@ void gr_render()
   //m->displayFrame();
   //displayTimer.stop();
   rendered = true;
-  LOGSTOP("GLuRay_Render");
+  // LOGSTOP("GLuRay_Render");
 }
 
 
@@ -566,7 +581,7 @@ void gr_materialfv(int face, int pname, float* params)
     mat.shiny = params[0];
   else
   {
-    Color c(RGBColor(params[0], params[1], params[2]));
+    Manta::Color c(Manta::RGBColor(params[0], params[1], params[2]));
     switch(pname)
     {
       case GL_SPECULAR:
@@ -632,9 +647,9 @@ void gr_translate(float x, float y, float z)
       }
       }*/
   //   current_transform.translate(Vector(x,y,z));
-  AffineTransform t;
-  t.initWithTranslation(Vector(x,y,z));
-  rm->current_transform = rm->current_transform*t;
+  Manta::AffineTransform t;
+  t.initWithTranslation(Manta::Vector(x,y,z));
+  rm->getCurrentTransform() = rm->getCurrentTransform()*t;
 }
 
 #define DEG_TO_RADIONS 3.14f/180.0f
@@ -645,9 +660,9 @@ void gr_rotate(float angle, float x, float y, float z)
   if (matrix_mode != GL_MODELVIEW)
     return;
   //current_transform.rotate(Vector(x,y,z), angle*DEG_TO_RADIONS);
-  AffineTransform t;
-  t.initWithRotation(Vector(x,y,z), angle*DEG_TO_RADIONS);
-  rm->current_transform =   rm->current_transform*t;
+  Manta::AffineTransform t;
+  t.initWithRotation(Manta::Vector(x,y,z), angle*DEG_TO_RADIONS);
+  rm->getCurrentTransform() =   rm->getCurrentTransform()*t;
 }
 
 
@@ -656,9 +671,9 @@ void gr_scale(float x, float y, float z)
   GRCHECK();
   if (matrix_mode != GL_MODELVIEW)
     return;
-  AffineTransform t;
-  t.initWithScale(Vector(x,y,z));
-  rm->current_transform = rm->current_transform*t;
+  Manta::AffineTransform t;
+  t.initWithScale(Manta::Vector(x,y,z));
+  rm->getCurrentTransform() = rm->getCurrentTransform()*t;
 }
 
 void gr_loadIdentity()
@@ -666,7 +681,7 @@ void gr_loadIdentity()
   GRCHECK();
   if (matrix_mode != GL_MODELVIEW)
     return;
-  rm->current_transform.initWithIdentity();
+  rm->getCurrentTransform().initWithIdentity();
 }
 
 void gr_newList(size_t list, int mode)
@@ -678,12 +693,12 @@ void gr_newList(size_t list, int mode)
   //
   //  setting color before and after display list so we can safely delete all materials...
   //
-  RGBAColor c = rm->current_color;
+  Manta::RGBAColor c = rm->getCurrentColor();
   rm->setColor(c.color[0],c.color[1],c.color[2],c.a);
   rm->updateMaterial();
 
 
-  rm->current_transform.initWithIdentity();
+  rm->getCurrentTransform().initWithIdentity();
   IN_DL = true;
   DL_NUM = list;
   //TODO: check if exists
@@ -712,7 +727,7 @@ void gr_endList()
   //
   //  setting color to safely delete materials
   //
-  RGBAColor c = rm->current_color;
+  Manta::RGBAColor c = rm->getCurrentColor();
   // MantaManager::singleton()->setColor(c.color[0],c.color[1],c.color[2],c.a);
   rm->updateMaterial();
 
@@ -990,7 +1005,7 @@ void gr_drawElements_internal(GLenum mode, GLsizei count, GLenum type, const GLv
   //assert(__vertex_pointer);
   if (!__vertex_pointer)
     return;
-  RGBAColor c = rm->getCurrentColor();
+  Manta::RGBAColor c = rm->getCurrentColor();
   //if (__color_pointer)   //  MantaManager::singleton()->usePerVertexColors = true;
   gr_setColor(c.color[0], c.color[1], c.color[2],  c.a);
   gr_beginPrimitive(mode);
@@ -1017,7 +1032,7 @@ void gr_drawElements_internal(GLenum mode, GLsizei count, GLenum type, const GLv
             if (__color_pointer && rm->getUsePerVertexColors()) //TODO: set this according to glenableclientstate
 
             {
-              rm->current_renderable->addTextureCoord(cdata[2],cdata[1],cdata[0],cdata[3]);
+              rm->getCurrentRenderable()->addTextureCoord(cdata[2],cdata[1],cdata[0],cdata[3]);
             }
             gr_addVertex(data[0],data[1],data[2]);
             data += 3*__vertex_stride;
@@ -1077,14 +1092,14 @@ void gr_pushMatrix()
 void gr_popMatrix()
 {
   GRCHECK();
-  rm->current_transform = transform_stack.top();
+  rm->getCurrentTransform() = transform_stack.top();
   transform_stack.pop();
 }
 
 void gr_makeCurrent(unsigned long winID)
 {
   GRCHECK();
-  rm->window_id = winID;
+  rm->setWindowID(winID);
 }
 
 
@@ -1137,11 +1152,11 @@ void gr_viewport(int x, int y, int width, int height)
 void gr_lookAt(float ex,float ey, float ez, float lx,float ly, float lz, float ux, float uy, float uz)
 {
   GRCHECK();
-  GLuRayRenderParameters& p = rm->params;
-  p.camera_eye = Vector(ex,ey,ez);
-  p.camera_dir = Vector(lx,ly,lz) - Vector(ex,ey,ez);
+  GLuRayRenderParameters& p = rm->getRenderParameters();
+  p.camera_eye = Manta::Vector(ex,ey,ez);
+  p.camera_dir = Manta::Vector(lx,ly,lz) - Manta::Vector(ex,ey,ez);
   p.camera_dir.normalize();
-  p.camera_up = Vector(ux,uy,uz);
+  p.camera_up = Manta::Vector(ux,uy,uz);
   rm->updateCamera();
 }
 
@@ -1158,7 +1173,7 @@ void gr_multMatrixf(const float* m)
     return;
   // cout << "mulitplying matrix\n";
   // cout << "current transform: \n" << current_transform;
-  AffineTransform t;
+  Manta::AffineTransform t;
   t.initWithIdentity();
   for(int row = 0; row < 3; row++) {
     for(int col = 0; col < 4; col++) {
@@ -1166,7 +1181,7 @@ void gr_multMatrixf(const float* m)
     }
   }
   // cout << "\n\n multiplying by: \n" << t;
-  rm->current_transform = rm->current_transform*t;
+  rm->getCurrentTransform() = rm->getCurrentTransform()*t;
   //cout << "\n\n result: \n" << current_transform << endl << endl;
 }
 
@@ -1175,14 +1190,14 @@ void gr_multMatrixd(const double* m)
   GRCHECK();
   if (matrix_mode != GL_MODELVIEW)
     return;
-  AffineTransform t;
+  Manta::AffineTransform t;
   t.initWithIdentity();
   for(int row = 0; row < 3; row++) {
     for(int col = 0; col < 4; col++) {
       t(row,col) = m[col*4+row];
     }
   }
-  rm->current_transform = rm->current_transform*t;
+  rm->getCurrentTransform() = rm->getCurrentTransform()*t;
 }
 
 void gr_loadMatrixf(const float* m)
@@ -1192,7 +1207,7 @@ void gr_loadMatrixf(const float* m)
     return;
   for(int row = 0; row < 3; row++) {
     for(int col = 0; col < 4; col++) {
-      rm->current_transform(row,col) = m[col*4+row];
+      rm->getCurrentTransform()(row,col) = m[col*4+row];
     }
   }
 }
@@ -1205,7 +1220,7 @@ void gr_loadMatrixd(const double* m)
     return;
   for(int row = 0; row < 3; row++) {
     for(int col = 0; col < 4; col++) {
-      rm->current_transform(row,col) = m[col*4+row];
+      rm->getCurrentTransform()(row,col) = m[col*4+row];
     }
   }
 }
@@ -1229,8 +1244,8 @@ void gr_clear(GLbitfield mask)
 void gr_light(int light, int pname, float* params)
 {
   GRCHECK();
-  Vector p(params[0], params[1], params[2]);
-  Color c(RGBColor(params[0], params[1], params[2]));
+  Manta::Vector p(params[0], params[1], params[2]);
+  Manta::Color c(Manta::RGBColor(params[0], params[1], params[2]));
   int num = light - GL_LIGHT0;
   GLLight l = rm->getLight(num);
   l.w = params[3];
@@ -1359,7 +1374,7 @@ void gr_finalize()
   GRCHECK();
   if (frame > 2)
   {
-    LOGSCLOSE();
+    // LOGSCLOSE();
   }
 }
 

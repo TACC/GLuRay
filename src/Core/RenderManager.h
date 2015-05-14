@@ -1,3 +1,24 @@
+/**********************************************************************************
+*                     Copyright (c) 2013-2015 Carson Brownlee
+*         Texas Advanced Computing Center, University of Texas at Austin
+*                       All rights reserved
+* 
+*       This library is free software; you can redistribute it and/or
+* modify it under the terms of the GNU Lesser General Public
+* License as published by the Free Software Foundation; either
+* version 2.1 of the License, or (at your option) any later version.
+* 
+* This library is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+* Lesser General Public License for more details.
+* 
+* You should have received a copy of the GNU Lesser General Public
+* License along with this library; if not, write to the Free Software
+* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+**********************************************************************************/
+
+
 #ifndef RENDERMANAGER_H
 #define RENDERMANAGER_H
 #include "defines.h"
@@ -6,6 +27,7 @@
 #include "GeometryGenerator.h"
 #include "Renderable.h"
 #include "GLTypes.h"
+#include "Renderer.h"
 
 #include <Model/Lights/DirectionalLight.h>
 #include <Interface/LightSet.h>
@@ -24,8 +46,10 @@
 
 #include <queue>
 #include <stack>
-using namespace Manta;
+// using namespace Manta;
 
+namespace glr
+{
 
 //class Scene;
 class RenderManager
@@ -35,69 +59,66 @@ public:
   ~RenderManager() {}
   virtual void setBGColor(float r, float g, float b, float a)
   {
-    printf("setBGColor\n");
-    Color color = Color(RGBColor(r,g,b));
-	  if ((params.env_map == "" || params.env_map == "none") && (current_bgcolor.color[0] != color[0] || current_bgcolor.color[1] != color[1] || current_bgcolor.color[2] != color[2] || current_bgcolor.a != a))
-	  {
-		current_bgcolor.color = color;
-		current_bgcolor.a = a;
-		params.bgcolor = current_bgcolor;
-		updateBackground();
-	  }
+    _renderer->setBGColor(r,g,b,a);
   }
-  virtual void setColor(float r, float g, float b, float a) {current_color = RGBAColor(r,g,b,a);}
-  virtual GLMaterial& getCurrentMaterial() { return gl_material; }
-  virtual void enableGLMaterial(bool st) { use_gl_material = st; }
-  virtual void updateMaterial() = 0;
-  virtual void updateLights() = 0;
+  virtual void setColor(float r, float g, float b, float a) 
+    {_renderer->setColor(r,g,b,a);}
+  virtual GLMaterial& getCurrentMaterial() { return _renderer->getCurrentMaterial(); }
+  virtual void enableGLMaterial(bool st) { _renderer->enableGLMaterial(st); }
+  virtual void updateMaterial() {_renderer->updateMaterial();}
+  virtual void updateLights() {_renderer->updateLights();}
   //virtual void addScene(Scene* scene)=0;
-  virtual void addWork(Work* work) {  accel_work_queue.push(work); }
+  virtual void addWork(Work* work) {  _renderer->addWork(work); }
 
-  virtual void render() = 0;
-  virtual void init() = 0;
+  virtual void render() {_renderer->render();}
+  virtual void init() {_renderer->init();}
 
-  virtual void setNumSamples(int,int,int samples) = 0;
-  virtual void setNumThreads(int t) = 0;
+  virtual void setNumSamples(int samples) {_renderer->setNumSamples(0,1,samples);}
+  virtual void setNumThreads(int t) {_renderer->setNumThreads(t);}
 
-  virtual void setSize(int w, int h)=0;
-  void setNearFar(double near, double far) { _zNear = near; _zFar = far; }
-  virtual void setRenderParametersString(string in, bool need_relaunch = true);
-  virtual void setRenderParameters(GLuRayRenderParameters& rp, bool need_relaunch = true);
-  virtual void pushRenderParameters();
-  virtual void popRenderParameters();
+  virtual void setSize(int w, int h) {_renderer->setSize(w,h);}
+  void setNearFar(double near, double far) { _renderer->setNearFar(near,far);}
+  virtual void setRenderParametersString(string in, bool need_relaunch = true)
+  {_renderer->setRenderParametersString(in,need_relaunch);}
+  virtual void setRenderParameters(GLuRayRenderParameters& rp, bool need_relaunch = true)
+  {_renderer->setRenderParameters(rp,need_relaunch);}
+  GLuRayRenderParameters& getRenderParameters() { return _renderer->params; }
+  virtual void pushRenderParameters() { _renderer->pushRenderParameters();}
+  virtual void popRenderParameters() { _renderer->popRenderParameters();}
 
-  virtual void updateRenderer() = 0;
-  virtual void useShadows(bool st) = 0;
-  virtual void updateBackground() = 0;
-  virtual void updateCamera()=0;
-  virtual void enableLighting(bool st) { use_gl_lights = st; lights_dirty = true; }
-  virtual void enableLight(int light, bool st) { gl_lights[light].enabled = st; lights_dirty = true; }
-  virtual GLLight getLight(int num) { return gl_lights[num]; }
-  virtual void setLight(int num, const GLLight& l ) { gl_lights.at(num) = l; lights_dirty = true; }
-  virtual bool getUsePerVertexColors() {return usePerVertexColors; }
-  virtual void setUsePerVertexColors(bool st) {usePerVertexColors = st;}
-  virtual RGBAColor getCurrentColor() { return current_color; }
-  virtual GeometryGenerator* getGeometryGenerator(int type) = 0;
-  virtual Renderable* createRenderable(GeometryGenerator* gen) = 0;
-  virtual void addRenderable(Renderable* ren) = 0;
-  virtual void deleteRenderable(Renderable* ren) = 0;
-  virtual void addTexture(int handle, int target, int level, int internalFormat, int width, int height, int border, int format, int type, void* data) {}
-  virtual void deleteTexture(int handle) {}
-  virtual void addInstance(Renderable* ren);
-  Renderable* getCurrentRenderable() { return current_renderable; }
-  void setCurrentRenderable(Renderable* r) { current_renderable = r; }
-  AffineTransform& getCurrentTransform() { return current_transform; }
+  virtual void useShadows(bool st) { _renderer->useShadows(st);}
+  virtual void updateBackground() {_renderer->updateBackground();}
+  virtual void updateCamera() {_renderer->updateCamera();}
+  virtual void enableLighting(bool st) {_renderer->enableLighting(st);}
+  virtual void enableLight(int light, bool st) {_renderer->enableLight(light,st);}
+  virtual GLLight getLight(int num) { return _renderer->getLight(num); }
+  virtual void setLight(int num, const GLLight& l ) { _renderer->setLight(num,l); }
+  virtual bool getUsePerVertexColors() {return _renderer->getUsePerVertexColors(); }
+  virtual void setUsePerVertexColors(bool st) {_renderer->setUsePerVertexColors(st);}
+  virtual Manta::RGBAColor getCurrentColor() { return _renderer->getCurrentColor(); }
+  virtual GeometryGenerator* getGeometryGenerator(int type) {return _renderer->getGeometryGenerator(type);}
+  virtual Renderable* createRenderable(GeometryGenerator* gen) {return _renderer->createRenderable(gen);}
+  virtual void addRenderable(Renderable* ren) {_renderer->addRenderable(ren);}
+  virtual void deleteRenderable(Renderable* ren) {_renderer->deleteRenderable(ren);}
+  virtual void addTexture(int handle, int target, int level, int internalFormat, int width, int height, int border, int format, int type, void* data) 
+  {_renderer->addTexture(handle,target,level,internalFormat,width,height,border,format,type,data);}
+  virtual void deleteTexture(int handle) {_renderer->deleteTexture(handle);}
+  virtual void addInstance(Renderable* ren) {_renderer->addInstance(ren);}
+  Renderable* getCurrentRenderable() { return _renderer->getCurrentRenderable(); }
+  void setCurrentRenderable(Renderable* r) { _renderer->setCurrentRenderable(r); }
+  Manta::AffineTransform& getCurrentTransform() { return _renderer->getCurrentTransform(); }
+  void setWindowID(unsigned long id) { window_id = id;}
 
   /*inline*/ void lock(const int mutex)
   {
-    _mutexes[mutex]->lock();
+    _renderer->lock(mutex);
   }
   /*inline*/ void unlock(const int mutex)
   {
-    _mutexes[mutex]->unlock();
+    _renderer->unlock(mutex);
   }
 
-  //protected:
+  protected:
 
   std::queue<Work*> accel_work_queue;
   bool kill_accel_threads;
@@ -105,13 +126,13 @@ public:
   void initClient();
   static void* clientLoop(void* t);
 
-  RGBAColor current_color;
-  Material* current_material;
-  AffineTransform current_transform;
-  stack<AffineTransform> transform_stack;
-  RGBAColor current_bgcolor;
+  Manta::RGBAColor current_color;
+  Manta::Material* current_material;
+  Manta::AffineTransform current_transform;
+  stack<Manta::AffineTransform> transform_stack;
+  Manta::RGBAColor current_bgcolor;
   Renderable* current_renderable;
-  Vector current_normal;
+  Manta::Vector current_normal;
   bool auto_camera;
   int num_threads;
   int window_id;
@@ -136,10 +157,11 @@ public:
   bool dirty_sampleGenerator;
   bool initialized;
   double _zFar, _zNear;
-  vector<Mutex*> _mutexes;
+  vector<Manta::Mutex*> _mutexes;
+  Renderer* _renderer;
 };
 
-RenderManager* createRenderManager();
+}
 
 #endif
 

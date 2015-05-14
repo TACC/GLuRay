@@ -9594,7 +9594,6 @@ GLUNLOCK();
 }
 
 void glClearColor(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha) {
-  printf("glClearColor %f %f %f %f\n", red, green, blue, alpha);
   gr_setBackgroundColor(red, green, blue, alpha);
   sprintf(args, "(%g, %g, %g, %g);\n",
       red,

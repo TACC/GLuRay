@@ -21,7 +21,7 @@
 #include <CMakeDefines.h>
 
 #include "MRenderable.h"
-#include "MantaManager.h"
+#include "MantaRenderer.h"
 #include "MScene.h"
 //#include "Work.h"
 #include <Model/Primitives/KenslerShirleyTriangle.h>
@@ -29,6 +29,9 @@
 #include <Model/Materials/ThinDielectric.h>
 #include <Model/Materials/Lambertian.h>
 #include <Model/Textures/TexCoordTexture.h>
+
+using namespace glr;
+using namespace Manta;
 
 //typedef WaldTriangle TTYPE;  //HAS some problems with texturing!!!
 typedef KenslerShirleyTriangle TTYPE;
@@ -41,7 +44,7 @@ typedef KenslerShirleyTriangle TTYPE;
   as = new DynBVH(DEBUG_MSGS);
   //    material = new Phong(*current_material);
   //material = NULL;
-  //instance = new InstanceRT(as, MantaManager::singleton()->current_transform);
+  //instance = new InstanceRT(as, MantaRenderer::singleton()->current_transform);
   _data = new MData();
   _data->mesh = new Mesh();
   _data->group = new Group();
@@ -57,16 +60,16 @@ typedef KenslerShirleyTriangle TTYPE;
   // hack->setGroup(_data->mesh);
   // _data->group->add(hack);
   //  AccelWork* work = new AccelWork(hack, "wee");
-  //  MantaManager::singleton()->addWork(work);
+  //  MantaRenderer::singleton()->addWork(work);
   //  as->setGroup(_data->group);
-  // PreprocessContext context(MantaManager::singleton()->rtrt, 0, 1, MantaManager::singleton()->lights);
+  // PreprocessContext context(MantaRenderer::singleton()->rtrt, 0, 1, MantaRenderer::singleton()->lights);
   //   as->preprocess(context);
   as->setGroup(_data->mesh);
   //   _data->group->add(as);
   AffineTransform t;
   t.initWithIdentity();
-  instance = new DirtyInstance(as, t);//MantaManager::singleton()->current_transform);
-  //instance = new InstanceRT(as, MantaManager::singleton()->current_transform);
+  instance = new DirtyInstance(as, t);//MantaRenderer::singleton()->current_transform);
+  //instance = new InstanceRT(as, MantaRenderer::singleton()->current_transform);
   _data->num_prims = 0;
   gen->setData(_data);
 }
@@ -97,12 +100,12 @@ void MGeometryGeneratorTriangles::addVertex(Manta::Real x, Manta::Real y, Manta:
 
   bool use_computed_normal = false; //TODO: make config option
   _mesh->vertices.push_back(Vector(x,y,z));
-  // cout << "pushing normal: " << MantaManager::singleton()->current_normal << endl;
+  // cout << "pushing normal: " << MantaRenderer::singleton()->current_normal << endl;
   //if (!use_computed_normal)
-  //  _mesh->vertexNormals.push_back(MantaManager::singleton()->current_normal);
+  //  _mesh->vertexNormals.push_back(MantaRenderer::singleton()->current_normal);
   size_t num_verts = _mesh->vertices.size();
-  if (_mesh->materials.size() == 0 || _mesh->materials.back() != MantaManager::singleton()->current_material)
-    _mesh->materials.push_back(MantaManager::singleton()->current_material);
+  if (_mesh->materials.size() == 0 || _mesh->materials.back() != MantaRenderer::singleton()->current_material)
+    _mesh->materials.push_back(MantaRenderer::singleton()->current_material);
   if (++_vertCounter > 2 && _vertCounter%3 == 0) {
     _data->num_prims++;
     /*static size_t prim_counter = 10000;
@@ -200,9 +203,9 @@ void MGeometryGeneratorTriangleStrip::addVertex(Manta::Real x, Manta::Real y, Ma
   Mesh* _mesh = _data->mesh;
   _mesh->vertices.push_back(Vector(x,y,z));
   size_t num_verts = _mesh->vertices.size();
-  //   _mesh->materials.push_back(MantaManager::singleton()->current_material);
-  if (_mesh->materials.size() == 0 || _mesh->materials.back() != MantaManager::singleton()->current_material)
-    _mesh->materials.push_back(MantaManager::singleton()->current_material);
+  //   _mesh->materials.push_back(MantaRenderer::singleton()->current_material);
+  if (_mesh->materials.size() == 0 || _mesh->materials.back() != MantaRenderer::singleton()->current_material)
+    _mesh->materials.push_back(MantaRenderer::singleton()->current_material);
   if (++_vertCounter > 2) {
     _data->num_prims++;
     TTYPE* prim = new TTYPE();
@@ -244,9 +247,9 @@ void MGeometryGeneratorQuads::addVertex(Manta::Real x, Manta::Real y, Manta::Rea
   _mesh->vertices.push_back(Vector(x,y,z));
   size_t num_verts = _mesh->vertices.size();
   _vertCounter++;
-  // _mesh->materials.push_back(MantaManager::singleton()->current_material);
-  if (_mesh->materials.size() == 0 || _mesh->materials.back() != MantaManager::singleton()->current_material)
-    _mesh->materials.push_back(MantaManager::singleton()->current_material);
+  // _mesh->materials.push_back(MantaRenderer::singleton()->current_material);
+  if (_mesh->materials.size() == 0 || _mesh->materials.back() != MantaRenderer::singleton()->current_material)
+    _mesh->materials.push_back(MantaRenderer::singleton()->current_material);
   if (_vertCounter > 3 && _vertCounter%4 == 0) {
     _data->num_prims++;
     TTYPE* prim = new TTYPE();
@@ -313,9 +316,9 @@ void MGeometryGeneratorQuadStrip::addVertex(Manta::Real x, Manta::Real y, Manta:
   _mesh->vertices.push_back(Vector(x,y,z));
   size_t num_verts = _mesh->vertices.size();
   _vertCounter++;
-  // _mesh->materials.push_back(MantaManager::singleton()->current_material);
-  if (_mesh->materials.size() == 0 || _mesh->materials.back() != MantaManager::singleton()->current_material)
-    _mesh->materials.push_back(MantaManager::singleton()->current_material);
+  // _mesh->materials.push_back(MantaRenderer::singleton()->current_material);
+  if (_mesh->materials.size() == 0 || _mesh->materials.back() != MantaRenderer::singleton()->current_material)
+    _mesh->materials.push_back(MantaRenderer::singleton()->current_material);
   if (_vertCounter > 3 && _vertCounter%2 == 0) {
     _data->num_prims++;
     TTYPE* prim = new TTYPE();
@@ -415,7 +418,7 @@ void MGeometryGeneratorLines::addVertex(Manta::Real x,Manta::Real y,Manta::Real 
   Vector vertex(x,y,z);
   if (_vertCounter > 1 && _vertCounter%2 == 0) {
     _data->num_prims++;
-    group->add(new Cylinder(MantaManager::singleton()->current_material, last_vertex, vertex, radius));
+    group->add(new Cylinder(MantaRenderer::singleton()->current_material, last_vertex, vertex, radius));
   }
   last_vertex = vertex;
 }
@@ -428,7 +431,7 @@ void MGeometryGeneratorLineStrip::addVertex(Manta::Real x,Manta::Real y,Manta::R
   Vector vertex(x,y,z);
   if (_vertCounter > 1) {
     _data->num_prims++;
-    group->add(new Cylinder(MantaManager::singleton()->current_material, last_vertex, vertex, radius));
+    group->add(new Cylinder(MantaRenderer::singleton()->current_material, last_vertex, vertex, radius));
   }
   last_vertex = vertex;
 }

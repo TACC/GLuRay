@@ -45,13 +45,13 @@
 
 #include <cassert>
 
-using namespace Manta;
+// using namespace Manta;
 
 struct MData
 {
 public:
-  Mesh* mesh;
-  Group* group;
+  Manta::Mesh* mesh;
+  Manta::Group* group;
   size_t num_prims;   //NOTE: this should be the number of prims overall in group, the mesh could actually be empty!!!
   bool perVertexColors;
 };
@@ -99,14 +99,14 @@ public:
 
   virtual bool isEmpty() { return _data->num_prims < 1; }  //NOTE: MESH could still be empty...
   virtual size_t getNumPrims() { return _data->num_prims; }  // NOTE: num prims of groups, MESH could still be empty
-  Primitive* instance;
-  AccelerationStructure* as;
+  Manta::Primitive* instance;
+  Manta::AccelerationStructure* as;
 //  Material* material;
   //texture
   MData* _data;
 #if USE_MPI
-  Mesh_DSM* meshDSM;
-  DynBVH_D* asDSM;
+  Manta::Mesh_DSM* meshDSM;
+  Manta::DynBVH_D* asDSM;
 #endif
 };
 
@@ -169,7 +169,7 @@ public:
   virtual void addVertex(Manta::Real x,Manta::Real y,Manta::Real z);
   virtual void addTextureCoord(Manta::Real u, Manta::Real v, Manta::Real w, Manta::Real z) {}
   Manta::Real radius;
-  Vector last_vertex;
+  Manta::Vector last_vertex;
 };
 
 class MGeometryGeneratorLineStrip : public MGeometryGeneratorLines
@@ -183,16 +183,16 @@ public:
   virtual void addTextureCoord(Manta::Real u, Manta::Real v, Manta::Real w, Manta::Real z) {}
 };
 
-class NullRenderable : public PrimitiveCommon
+class NullRenderable : public Manta::PrimitiveCommon
 {
 public:
   NullRenderable() {}
-  virtual void intersect(const RenderContext& context,
-			 RayPacket& rays) {}
-  virtual void computeNormal(const RenderContext& context,
-			     RayPacket& rays) {}
-  virtual void setTexCoordMapper(const TexCoordMapper* new_tex) {}
-  virtual void computeBounds(const PreprocessContext& context, BBox& bbox) {}
+  virtual void intersect(const Manta::RenderContext& context,
+			 Manta::RayPacket& rays) {}
+  virtual void computeNormal(const Manta::RenderContext& context,
+			     Manta::RayPacket& rays) {}
+  virtual void setTexCoordMapper(const Manta::TexCoordMapper* new_tex) {}
+  virtual void computeBounds(const Manta::PreprocessContext& context, Manta::BBox& bbox) {}
 };
 
 

@@ -22,13 +22,16 @@
 #include <Interface/Context.h>
 
 #include "AccelWork.h"
-#include <Modules/Manta/MantaManager.h>
+#include <Modules/Manta/MantaRenderer.h>
 #include <Core/Util/Logger.h>
+
+using namespace glr;
 
 void AccelWork::run() {
   //LOGSTARTC("AccelWork", 0,1,0);
-  LightSet* lights = MantaManager::singleton()->getLights();
-  PreprocessContext context(MantaManager::singleton()->getEngine(), 0, 1, lights);
+  Manta::LightSet* lights = MantaRenderer::singleton()->getLights();
+  assert(MantaRenderer::singleton()->getEngine());
+  Manta::PreprocessContext context(MantaRenderer::singleton()->getEngine(), 0, 1, lights);
   assert(_object);
   _object->preprocess(context);
   //LOGSTOP("AccelWork");

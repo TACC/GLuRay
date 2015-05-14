@@ -15,16 +15,16 @@
 
 #include <queue>
 #include <stack>
-using namespace Manta;
+// using namespace Manta;
 
 
 
 struct GLLight
 {
-	GLLight() : pos(0,0,1), ambient(RGBColor(0.0,0.0,0.0)), diffuse(RGBColor(0,0,0)), specular(RGBColor(0,0,0)), enabled(false), w(0.0)
+	GLLight() : pos(0,0,1), ambient(Manta::RGBColor(0.0,0.0,0.0)), diffuse(Manta::RGBColor(0,0,0)), specular(Manta::RGBColor(0,0,0)), enabled(false), w(0.0)
 	{}
-  Vector pos;
-  Color ambient, diffuse, specular;
+  Manta::Vector pos;
+  Manta::Color ambient, diffuse, specular;
   bool enabled;
   Manta::Real w;  // 0 is directional, 1 is point...
 };
@@ -33,9 +33,9 @@ ostream& operator<<(ostream& out, GLLight& m);
 class GLMaterial
 {
 public:
-  GLMaterial() : ambient(RGBColor(0.2,0.2,0.2)), diffuse(RGBColor(0.8,0.8,0.8)), specular(RGBColor(0,0,0)), emissive(RGBColor(0,0,0)), shiny(0.0)
+  GLMaterial() : ambient(Manta::RGBColor(0.2,0.2,0.2)), diffuse(Manta::RGBColor(0.8,0.8,0.8)), specular(Manta::RGBColor(0,0,0)), emissive(Manta::RGBColor(0,0,0)), shiny(0.0)
   {}
-  Color ambient, diffuse, specular, emissive;
+  Manta::Color ambient, diffuse, specular, emissive;
   float shiny;
 };
 ostream& operator<<(ostream& out, GLMaterial& m);

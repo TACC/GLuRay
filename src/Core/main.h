@@ -71,18 +71,18 @@
 #include <stdio.h>
 
 using namespace std;
-using namespace Manta;
+// using namespace Manta;
 
 #if HAVE_IEEEFP_H
 #include <ieeefp.h>
 #endif
 
 static void
-printList(ostream& out, const Factory::listType& list, int spaces=0)
+printList(ostream& out, const Manta::Factory::listType& list, int spaces=0)
 {
   for(int i=0;i<spaces;i++)
     out << ' ';
-  for(Factory::listType::const_iterator iter = list.begin();
+  for(Manta::Factory::listType::const_iterator iter = list.begin();
       iter != list.end(); ++iter){
     if(iter != list.begin())
       out << ", ";
@@ -91,16 +91,16 @@ printList(ostream& out, const Factory::listType& list, int spaces=0)
   out << "\n";
 }
 
-static void usage(Factory* rtrt)
+static void usage(Manta::Factory* rtrt)
 {
 
   cerr << "Manta Interactive Ray Tracer" << "\n\n";
 
-  cerr << getLicenseString() << "\n";
+  cerr << Manta::getLicenseString() << "\n";
 
   cerr << "Revision information:\n";
 
-  cerr << getAboutString() << "\n\n";
+  cerr << Manta::getAboutString() << "\n\n";
 
   cerr << "Usage: manta [options]\n";
   cerr << "Valid options are:\n";
@@ -135,12 +135,12 @@ static void usage(Factory* rtrt)
        << "           o [RGB8     r g b] (where components range [0,255])\n"
        << "           o [RGBfloat r g b] (where components range [0,1])\n";
   cerr << " --maxdepth [val] - The maximum ray depth\n";
-  Thread::exitAll(1);
+  Manta::Thread::exitAll(1);
 }
 
 class BenchHelper {
 public:
-  BenchHelper(MantaInterface* rtrt, long num_frames, int output_format);
+  BenchHelper(Manta::MantaInterface* rtrt, long num_frames, int output_format);
   void start(int, int);
   void stop(int, int);
 
@@ -150,13 +150,13 @@ public:
     default_format // leave me last
   };
 private:
-  MantaInterface* rtrt;
+  Manta::MantaInterface* rtrt;
   double start_time;
   long num_frames;
   int output_format;
 };
 
-BenchHelper::BenchHelper(MantaInterface* rtrt, long num_frames, int output_format)
+BenchHelper::BenchHelper(Manta::MantaInterface* rtrt, long num_frames, int output_format)
   : rtrt(rtrt), num_frames(num_frames), output_format(output_format)
 {
 }

@@ -32,12 +32,13 @@ FIND_PACKAGE(OpenGL)
 SET(GLURAY_SRC
   src/Core/gluray.cc
   src/Modules/Manta/DirtyInstance.cc
-  src/Modules/Manta/MantaManager.cc
   src/Modules/Manta/MRenderable.cc
+  src/Modules/Manta/MantaRenderer.cc
  src/Modules/Manta/MScene.cc
   src/Core/Work.cc
   src/Modules/Manta/AccelWork.cc
   src/Core/RenderManager.cc
+  src/Core/Renderer.cc
   src/Core/OBJScene.cc
   )
 
@@ -46,8 +47,9 @@ SET(GLURAY_HDR
   src/Core/defines.h
   src/Core/gluray.h
   src/Core/GLuRayRenderParameters.h
-  src/Modules/Manta/MantaManager.h
+  src/Modules/Manta/MantaRenderer.h
   src/Core/RenderManager.h
+  src/Core/Renderer.h
   src/Core/Renderable.h
   src/Modules/Manta/MRenderable.h
   src/Core/Work.h
