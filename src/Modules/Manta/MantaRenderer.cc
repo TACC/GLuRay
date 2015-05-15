@@ -1613,10 +1613,16 @@ void MantaRenderer::displayFrame()
       glDisable(GL_DEPTH_TEST);
       glDisable(GL_SCISSOR_TEST);
       glDisable(GL_ALPHA_TEST);
+    GLint rmode, dmode;
+    glGetIntegerv(GL_READ_BUFFER, &rmode);
+    glGetIntegerv(GL_DRAW_BUFFER, &dmode);
+    glDrawBuffer(rmode);
 
       static CDTimer timer5;
       timer5.start();
       glDrawPixels(mwidth,mheight,GL_RGB,GL_UNSIGNED_BYTE, data);
+          glDrawBuffer(dmode);
+    glFinish();
       timer5.stop();
       //printf("rank: 0 drawpixels time: %f\n", timer5.getDelta());
       //glPopClientAttrib();

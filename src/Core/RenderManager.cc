@@ -7,6 +7,7 @@
 #include "MScene.h"
 #include "MRenderable.h"
 #include <Core/Util/Logger.h>
+#include "MantaRenderer.h"
 
 #include <Engine/PixelSamplers/RegularSampler.h>
 #include <Engine/Display/FileDisplay.h>

@@ -520,10 +520,10 @@ void OptiXRenderer::displayFrame()
   else if ((elementSize % 2) == 0) align = 2;
   glPixelStorei(GL_UNPACK_ALIGNMENT, align);
 
-  glDisable(GL_DEPTH_TEST);
-  glDisable(GL_SCISSOR_TEST);
-  glDisable(GL_ALPHA_TEST);
-  glDrawBuffer(GL_FRONT);
+  // glDisable(GL_DEPTH_TEST);
+  // glDisable(GL_SCISSOR_TEST);
+  // glDisable(GL_ALPHA_TEST);
+  // glDrawBuffer(GL_FRONT);
   // printf("drawing to buffer\n");
 
       // NVTX_RangePushA("glDrawPixels");
