@@ -26,8 +26,8 @@ INCLUDE_DIRECTORIES(
 SET(OSPRAY_SOURCES "")
 
 SET(OSPRAY_SOURCES 
- OSPRayManager.cc
- OSPRayManager.h
+ OSPRayRenderer.cc
+ OSPRayRenderer.h
  ORenderable.cc
  ORenderable.h
  OScene.cc

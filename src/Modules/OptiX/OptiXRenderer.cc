@@ -1042,4 +1042,4 @@ void OptiXRenderer::addRenderable(Renderable* ren)
     }
   }
 
-  glr::Renderer* createOptiXRenderer(){ return OptiXRenderer::singleton(); }
+glr::Renderer* createOptiXRenderer(){ return OptiXRenderer::singleton(); }
