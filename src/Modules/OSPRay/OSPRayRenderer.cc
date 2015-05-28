@@ -161,6 +161,7 @@ OSPCamera      camera;
     _gQuadStrip = new OGeometryGeneratorQuadStrip();
     _gLines = new OGeometryGeneratorLines();
     _gLineStrip= new OGeometryGeneratorLineStrip();
+    _gPoints = new OGeometryGeneratorPoints();
 
 
   // _objScene = new OBJScene();
@@ -1747,6 +1748,9 @@ void OSPRayRenderer::addRenderable(Renderable* ren)
     // normals[i] = ospray::vec3fa(mesh->vertexNormals[i].x(), mesh->vertexNormals[i].y(), mesh->vertexNormals[i].z());
 
 
+  if(oren->_data->geomType == OR_TRIANGLES)
+  {
+
       // embree::Vec3i* vertex_indices = (embree::Vec3i*)alignedMalloc(sizeof(embree::Vec3i)*numTriangles);
   // triangles.resize(numTriangles);
   for(size_t i = 0, mi = 0; i < numTriangles; i++, mi+=3)
@@ -1783,6 +1787,47 @@ void OSPRayRenderer::addRenderable(Renderable* ren)
   ospAddGeometry(oren->_data->ospModel,oren->_data->ospMesh);
   ospCommit(oren->_data->ospModel);
         // instanceModels.push_back(model_i);
+
+  }
+  else if(oren->_data->geomType == OR_POINTS)
+  {
+    // sphere positions are stored as vertices in the odata mesh
+    OSPData sdata = ospNewData(numPositions, OSP_FLOAT3A, &vertices[0]);
+    ospCommit(sdata);
+
+    // create a material list of 1 material [the current one]
+    oren->_data->glmat = gl_material;
+    oren->_data->mat = ospNewMaterial(renderer, "OBJMaterial");
+    updateMaterial(&oren->_data->mat, oren->_data->glmat);
+    OSPData mdata;
+    {
+      OSPMaterial matArray[1];
+      matArray[1] = oren->_data->mat;
+
+      mdata = ospNewData(1,OSP_OBJECT,matArray);
+      ospCommit(mdata);
+    }
+
+    OSPGeometry geom = ospNewGeometry("spheres");
+    ospSet1f(geom,"radius",0.1);
+    ospSet1i(geom,"materialID",0); // there is a shared material across all the points
+    ospSet1i(geom,"bytes_per_sphere",sizeof(ospray::vec3fa));
+    ospSet1i(geom,"offset_center",0);
+    ospSet1i(geom,"offset_radius",-1); // shared radius across all points
+    ospSet1i(geom,"offset_materialID",-1);
+    ospSetData(geom,"spheres",sdata);
+    ospSetData(geom,"materialList",mdata);
+    ospCommit(geom);
+    oren->_data->ospMesh = geom;
+
+    oren->_data->ospModel = ospNewModel();
+    ospAddGeometry(oren->_data->ospModel,oren->_data->ospMesh);
+    ospCommit(oren->_data->ospModel);
+  }
+  else
+  {
+    printf("error: invalid glType provided: %d\n", oren->_data->geomType);
+  }
 
 
   #if 0
@@ -2044,6 +2089,10 @@ GeometryGenerator* OSPRayRenderer::getGeometryGenerator(int type)
     case GL_QUAD_STRIP:
     {
       return _gQuadStrip;
+    }
+    case GL_POINTS:
+    {
+      return _gPoints;
     }
     //case GL_LINES:
     //{

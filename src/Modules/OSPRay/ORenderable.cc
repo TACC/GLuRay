@@ -65,6 +65,7 @@ OGeometryGeneratorTriangles::~OGeometryGeneratorTriangles()
 void OGeometryGeneratorTriangles::addVertex(Manta::Real x, Manta::Real y, Manta::Real z)
 {
   assert(_data);
+  _data->geomType = OR_TRIANGLES;
   Mesh* _mesh = _data->mesh;
 
   bool use_computed_normal = false; //TODO: make config option
@@ -179,6 +180,7 @@ void OGeometryGeneratorTriangleStrip::addNormal(Manta::Real x, Manta::Real y, Ma
 void OGeometryGeneratorTriangleStrip::addVertex(Manta::Real x, Manta::Real y, Manta::Real z)
 {
   // assert(_data);
+  _data->geomType = OR_TRIANGLES;
   Mesh* _mesh = _data->mesh;
   // assert(mesh);
   // printf("addvertex: %f %f %f\n",x,y,z);
@@ -295,6 +297,7 @@ void OGeometryGeneratorQuads::addTextureCoord(Manta::Real u, Manta::Real v, Mant
 void OGeometryGeneratorQuadStrip::addVertex(Manta::Real x, Manta::Real y, Manta::Real z)
 {
   // assert(_data);
+  _data->geomType = OR_TRIANGLES;
   Mesh* _mesh = _data->mesh;
   _mesh->vertices.push_back(Vector(x,y,z));
   size_t num_verts = _mesh->vertices.size();
@@ -397,6 +400,7 @@ OGeometryGeneratorLines::~OGeometryGeneratorLines()
 
 void OGeometryGeneratorLines::addVertex(Manta::Real x,Manta::Real y,Manta::Real z)
 {
+  _data->geomType = OR_CYLINDERS;
 #if 0
   Group* group = _data->group;
   _vertCounter++;
@@ -412,6 +416,7 @@ void OGeometryGeneratorLines::addVertex(Manta::Real x,Manta::Real y,Manta::Real 
 
 void OGeometryGeneratorLineStrip::addVertex(Manta::Real x,Manta::Real y,Manta::Real z)
 {
+  _data->geomType = OR_CYLINDERS;
 #if 0
   Group* group = _data->group;
   _vertCounter++;
@@ -422,4 +427,20 @@ void OGeometryGeneratorLineStrip::addVertex(Manta::Real x,Manta::Real y,Manta::R
   }
   last_vertex = vertex;
 #endif
+}
+
+OGeometryGeneratorPoints::OGeometryGeneratorPoints()
+{
+}
+
+OGeometryGeneratorPoints::~OGeometryGeneratorPoints()
+{
+}
+
+void OGeometryGeneratorPoints::addVertex(Manta::Real x,Manta::Real y,Manta::Real z)
+{
+  _data->geomType = OR_POINTS;
+  Mesh* _mesh = _data->mesh;
+  _mesh->vertices.push_back(Vector(x,y,z));
+  _data->num_prims++;
 }
