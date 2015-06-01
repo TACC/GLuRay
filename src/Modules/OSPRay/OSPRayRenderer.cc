@@ -953,6 +953,8 @@ void OSPRayRenderer::internalRender()
 
 void OSPRayRenderer::render()
 {
+  printf("render\n");
+  return;
   if (!initialized)
     return;
   if (next_scene->instances.size() == 0)
@@ -1699,6 +1701,7 @@ void OSPRayRenderer::addInstance(Renderable* ren)
 
 void OSPRayRenderer::addRenderable(Renderable* ren)
 {
+  return;
   if (!initialized)
     return;
   ORenderable* oren = dynamic_cast<ORenderable*>(ren);
