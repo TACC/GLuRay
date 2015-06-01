@@ -84,6 +84,10 @@
 
 using namespace Manta;
 
+enum OGeometryType {
+  OR_TRIANGLES, OR_POINTS, OR_CYLINDERS
+};
+
 struct OData
 {
   // OData();
@@ -95,6 +99,7 @@ OSPMaterial mat;
 GLMaterial glmat;
 // embree::Handle<embree::Device::RTMaterial> d_material;
 // embree::Handle<embree::Device::RTShape> d_mesh;
+OGeometryType geomType; //geometry type: triangles, cylinders, spheres
 };
 
 class OGeometryGenerator : public GeometryGenerator
@@ -212,6 +217,15 @@ public:
     :OGeometryGeneratorLines()
   {}
   virtual ~OGeometryGeneratorLineStrip() {}
+  virtual void addVertex(Manta::Real x,Manta::Real y,Manta::Real z);
+  virtual void addTextureCoord(Manta::Real u, Manta::Real v, Manta::Real w, Manta::Real z) {}
+};
+
+class OGeometryGeneratorPoints : public OGeometryGenerator
+{
+public:
+  OGeometryGeneratorPoints();
+  virtual  ~OGeometryGeneratorPoints();
   virtual void addVertex(Manta::Real x,Manta::Real y,Manta::Real z);
   virtual void addTextureCoord(Manta::Real u, Manta::Real v, Manta::Real w, Manta::Real z) {}
 };

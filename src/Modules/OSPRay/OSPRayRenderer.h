@@ -149,7 +149,7 @@ class OSPRayRenderer : public Renderer
     //  Variables
     //
 
-    OGeometryGenerator* _gVoid, *_gTriangle, *_gTriangleStrip, *_gQuads, *_gQuadStrip, *_gLines, *_gLineStrip;
+    OGeometryGenerator* _gVoid, *_gTriangle, *_gTriangleStrip, *_gQuads, *_gQuadStrip, *_gLines, *_gLineStrip, *_gPoints;
     // //  static void* clientLoop(void* t);
     OScene *current_scene;
     OScene *next_scene;
