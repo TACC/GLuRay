@@ -115,6 +115,7 @@ public:
   {
     _mutexes[mutex]->unlock();
   }
+  void displayFrame();
 
   //protected:
 
@@ -156,6 +157,22 @@ public:
   bool initialized;
   double _zFar, _zNear;
   vector<Manta::Mutex*> _mutexes;
+
+  size_t _nid_counter;
+  bool _depth;
+  int _width, _height;
+  struct Framebuffer {
+    Framebuffer() { width=height=0;byteAlign=1;format="RGBA8";data=NULL;}
+    int width, height;
+    std::string format;
+    int byteAlign;
+    void* data;
+  };
+  Framebuffer _framebuffer;
+  // bool _resetAccumulation;
+  bool rendered;
+  int _frameNumber;
+  int _realFrameNumber;  //corrected by env param
 };
 
 }

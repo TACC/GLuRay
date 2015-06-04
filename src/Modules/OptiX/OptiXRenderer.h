@@ -104,7 +104,7 @@ namespace glr
      void displayCallback(int proc, int numProcs, bool& changed);
 
      void syncInstances();
-     void displayFrame();
+     // void displayFrame();
      static void* renderLoop(void* t);
      void internalRender();
 
@@ -117,6 +117,7 @@ namespace glr
   optix::Buffer        m_rnd_seeds;
   optix::Context context;
 optix::Buffer buffer;
+bool _bufferMapped;
 
 
 

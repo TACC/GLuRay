@@ -128,6 +128,7 @@ _nid_counter(0), _depth(false), _width(0), _height(0), _frameNumber(0), _realFra
   _gLines = new OGeometryGeneratorLines();
   _gLineStrip= new OGeometryGeneratorLineStrip();
 
+  _bufferMapped = false;
 }
 
 OptiXRenderer::~OptiXRenderer()
@@ -170,7 +171,12 @@ void OptiXRenderer::setSize(int w, int h)
   printf("setSize %d %d\n", w,h);
   if (initialized && (w != _width || h != _height))
   {
-    _width = w; _height = h;
+    _width = w; _height = h;  
+      if (_bufferMapped)
+    {
+      buffer->unmap();
+      _bufferMapped = false;
+    }
     buffer = context->createBuffer( RT_BUFFER_OUTPUT, RT_FORMAT_UNSIGNED_BYTE4, _width, _height );
     updateCamera();
     #if USE_AO
@@ -464,18 +470,18 @@ void OptiXRenderer::render()
     //launch
 
     // Run
+
+  if (_bufferMapped)
+  {
+    buffer->unmap();
+    _bufferMapped = false;
+  }
   context->compile();
   context->launch( 0, width, height );
-
-  displayFrame();
-}
-
-
-void OptiXRenderer::displayFrame()
-{
   buffer = context["output_buffer"]->getBuffer();
 
   GLvoid* imageData = buffer->map();
+  _bufferMapped = true;
   RTformat buffer_format = buffer->getFormat();
   assert( imageData );
 
@@ -518,92 +524,16 @@ void OptiXRenderer::displayFrame()
   if      ((elementSize % 8) == 0) align = 8;
   else if ((elementSize % 4) == 0) align = 4;
   else if ((elementSize % 2) == 0) align = 2;
-  glPixelStorei(GL_UNPACK_ALIGNMENT, align);
 
-  // glDisable(GL_DEPTH_TEST);
-  // glDisable(GL_SCISSOR_TEST);
-  // glDisable(GL_ALPHA_TEST);
-  // glDrawBuffer(GL_FRONT);
-  // printf("drawing to buffer\n");
+  _framebuffer.byteAlign = align;
+  _framebuffer.width = _width;
+  _framebuffer.height = _height;
+  _framebuffer.data = (void*)imageData;
+  _framebuffer.format = "BGRA8";
 
-      // NVTX_RangePushA("glDrawPixels");
-  glDrawPixels( static_cast<GLsizei>( _width ), static_cast<GLsizei>( _height ),
-   gl_format, gl_data_type, imageData);
-    // NVTX_RangePop();
-
-  buffer->unmap();
-
-  if (params.write_to_file != "")
-  {
-    char* data = (char*)imageData;
-    char* rgba_data = (char*)data;
-    DEBUG("writing image\n");
-    string filename = params.write_to_file;
-    if (params.write_to_file == "generated")
-    {
-      char cfilename[256];
-        #if USE_MPI
-      sprintf(cfilename, "render_%04d_%dx%d_%d.rgb", _realFrameNumber, _width, _height, _rank);
-        #else
-      sprintf(cfilename, "render_%04d_%dx%d.rgb", _realFrameNumber, _width, _height);
-        #endif
-      filename = string(cfilename);
-    }
-
-    printf("writing filename: %s\n", filename.c_str());
-
-      //unsigned char* test = new unsigned char[xres*yres*3];
-      //glReadPixels(0,0,xres,yres,GL_RGB, GL_UNSIGNED_BYTE, test);
-    FILE* pFile = fopen(filename.c_str(), "w");
-    assert(pFile);
-    if (_format == "RGBA8")
-    {
-      fwrite((void*)&rgba_data[0], 1, _width*_height*4, pFile);
-      fclose(pFile);
-      stringstream s("");
-        //TODO: this fudge factor on teh sizes makes no sense... I'm assuming it's because they have row padding in the data but it doesn't show up in drawpixels... perplexing.  It can also crash just a hack for now
-      s  << "convert -flip -size " << _width << "x" << _height << " -depth 8 rgba:" << filename << " " << filename << ".png && rm " << filename ;
-        /*printf("calling system call \"%s\"\n", s.str().c_str());*/
-      system(s.str().c_str());
-        //delete []test;
-
-    }
-    if (_format == "BGRA8")
-    {
-      struct Pix { unsigned char r,g,b,a; };        
-      Pix rgba_data[_width*_height*sizeof(Pix)];
-      for(size_t i=0; i <_width*_height;i++)
-      {
-        Pix* pix = &((Pix*)imageData)[i];
-        Pix* pix2 = &rgba_data[i];
-        pix2->r=pix->b;
-        pix2->g=pix->g;
-        pix2->b=pix->r;
-        pix2->a=pix->a;
-      }
-      fwrite((void*)&rgba_data[0], 1, _width*_height*4, pFile);
-      fclose(pFile);
-      stringstream s("");
-        //TODO: this fudge factor on teh sizes makes no sense... I'm assuming it's because they have row padding in the data but it doesn't show up in drawpixels... perplexing.  It can also crash just a hack for now
-      s  << "convert -flip -size " << _width << "x" << _height << " -depth 8 rgba:" << filename << " " << filename << ".png && rm " << filename ;
-        /*printf("calling system call \"%s\"\n", s.str().c_str());*/
-      system(s.str().c_str());
-        //delete []test;
-
-    }
-    else
-    {
-        // fwrite(data, 1, _width*_height*3, pFile);
-        // fclose(pFile);
-        // stringstream s("");
-        //   //TODO: this fudge factor on teh sizes makes no sense... I'm assuming it's because they have row padding in the data but it doesn't show up in drawpixels... perplexing.  It can also crash just a hack for now
-        // s << "convert -flip -size " << _width << "x" << _height << " -depth 8 rgb:" << filename << " " << filename << ".png && rm " << filename;
-        // system(s.str().c_str());
-    }
-      //delete []test;
-    _realFrameNumber++;
-  }
 }
+
+
 
 void OptiXRenderer::syncInstances()
 {}

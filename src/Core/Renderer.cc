@@ -22,6 +22,8 @@
 
 #include <sstream>
 
+#include <GL/gl.h>
+
 using namespace glr;
 
   Renderer::Renderer()
@@ -31,6 +33,7 @@ using namespace glr;
   , use_gl_lights(true), lights_dirty(true), use_gl_material(false), dirty_renderParams(false), new_renderParamsString(""),dirty_sampleGenerator(true)
   , initialized(false)
   , _zNear(0.1), _zFar(100.0)
+  , _nid_counter(0), _depth(false), _width(0), _height(0), _frameNumber(0), _realFrameNumber(0)
 {
   gl_lights.resize(8);
   _mutexes.push_back(new Manta::Mutex("Renderer"));
@@ -334,4 +337,146 @@ void Renderer::addInstance(Renderable* ren)
 // {
 //   _mutexes[mutex]->unlock();
 // }
+
+void Renderer::displayFrame()
+{
+  if (!initialized)
+    return;
+
+  if (!_framebuffer.data || !_framebuffer.width || !_framebuffer.height)
+    return;
+
+  GLenum glData = 0;
+  GLenum glFormat = 0;
+
+  if (_framebuffer.format == "RGBA8")
+  {
+    glData = GL_UNSIGNED_BYTE;
+    glFormat = GL_RGBA;
+  }
+  else if (_framebuffer.format == "BGRA8")
+  {
+    glData = GL_UNSIGNED_BYTE;
+    glFormat = GL_BGRA;
+  }
+  else if (_framebuffer.format == "float1")
+  {
+    glData = GL_FLOAT;
+    glFormat    = GL_LUMINANCE;
+  }
+  else if (_framebuffer.format == "float3")
+  {
+    glData = GL_FLOAT;
+    glFormat    = GL_RGB;
+  }
+  else if (_framebuffer.format == "float4")
+  {
+    glData = GL_FLOAT;
+    glFormat    = GL_RGBA;
+  }
+  else
+  {
+    std::cerr << "GLR_ERROR: unrecognized format type\n";
+    return;
+  }
+
+  glPixelStorei(GL_UNPACK_ALIGNMENT, _framebuffer.byteAlign);
+
+  glDisable(GL_DEPTH_TEST);
+  glDisable(GL_SCISSOR_TEST);
+  glDisable(GL_ALPHA_TEST);
+  glDisable(GL_BLEND);
+  // glDrawBuffer(GL_FRONT);
+  // printf("drawing to buffer\n");
+
+  // struct rgba { unsigned char c[4];};
+  // for(int i =0;i<_width;i++)
+  // {
+  //   for(int j =0;j<_height;j++)
+  //   {
+  //     rgba* c = &(((rgba*)_framebuffer.data)[j*_width + i]);
+  //     // c->c[0]=0;
+  //     // c->c[1]=255;
+  //     // c->c[2]=0;
+  //     // c->c[3]=255;
+  //   }
+  // }
+
+      // NVTX_RangePushA("glDrawPixels");
+  glDrawPixels( static_cast<GLsizei>( _framebuffer.width ), static_cast<GLsizei>( _framebuffer.height ),
+   glFormat, glData, _framebuffer.data);
+    // NVTX_RangePop();
+
+
+  if (params.write_to_file != "")
+  {
+    char* data = (char*)_framebuffer.data;
+    char* rgba_data = (char*)data;
+    DEBUG("writing image\n");
+    string filename = params.write_to_file;
+    if (params.write_to_file == "generated")
+    {
+      char cfilename[256];
+        #if USE_MPI
+      sprintf(cfilename, "render_%04d_%dx%d_%d.rgb", _realFrameNumber, _framebuffer.width, _framebuffer.height, _rank);
+        #else
+      sprintf(cfilename, "render_%04d_%dx%d.rgb", _realFrameNumber, _framebuffer.width, _framebuffer.height);
+        #endif
+      filename = string(cfilename);
+    }
+
+    printf("writing filename: %s\n", filename.c_str());
+
+      //unsigned char* test = new unsigned char[xres*yres*3];
+      //glReadPixels(0,0,xres,yres,GL_RGB, GL_UNSIGNED_BYTE, test);
+    FILE* pFile = fopen(filename.c_str(), "w");
+    assert(pFile);
+    if (_framebuffer.format == "RGBA8")
+    {
+      fwrite((void*)&rgba_data[0], 1, _width*_height*4, pFile);
+      fclose(pFile);
+      stringstream s("");
+        //TODO: this fudge factor on teh sizes makes no sense... I'm assuming it's because they have row padding in the data but it doesn't show up in drawpixels... perplexing.  It can also crash just a hack for now
+      s  << "convert -flip -size " << _framebuffer.width << "x" << _framebuffer.height << " -depth 8 rgba:" << filename << " " << filename << ".png && rm " << filename ;
+        /*printf("calling system call \"%s\"\n", s.str().c_str());*/
+      system(s.str().c_str());
+        //delete []test;
+
+    }
+    if (_framebuffer.format == "BGRA8")
+    {
+      struct Pix { unsigned char r,g,b,a; };        
+      Pix rgba_data[_framebuffer.width*_framebuffer.height*sizeof(Pix)];
+      for(size_t i=0; i <_framebuffer.width*_framebuffer.height;i++)
+      {
+        Pix* pix = &((Pix*)data)[i];
+        Pix* pix2 = &rgba_data[i];
+        pix2->r=pix->b;
+        pix2->g=pix->g;
+        pix2->b=pix->r;
+        pix2->a=pix->a;
+      }
+      fwrite((void*)&rgba_data[0], 1, _framebuffer.width*_framebuffer.height*4, pFile);
+      fclose(pFile);
+      stringstream s("");
+        //TODO: this fudge factor on teh sizes makes no sense... I'm assuming it's because they have row padding in the data but it doesn't show up in drawpixels... perplexing.  It can also crash just a hack for now
+      s  << "convert -flip -size " << _framebuffer.width << "x" << _framebuffer.height << " -depth 8 rgba:" << filename << " " << filename << ".png && rm " << filename ;
+        /*printf("calling system call \"%s\"\n", s.str().c_str());*/
+      system(s.str().c_str());
+        //delete []test;
+
+    }
+    else
+    {
+        // fwrite(data, 1, _width*_height*3, pFile);
+        // fclose(pFile);
+        // stringstream s("");
+        //   //TODO: this fudge factor on teh sizes makes no sense... I'm assuming it's because they have row padding in the data but it doesn't show up in drawpixels... perplexing.  It can also crash just a hack for now
+        // s << "convert -flip -size " << _width << "x" << _height << " -depth 8 rgb:" << filename << " " << filename << ".png && rm " << filename;
+        // system(s.str().c_str());
+    }
+      //delete []test;
+    _realFrameNumber++;
+  }
+}
 

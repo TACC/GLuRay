@@ -130,29 +130,11 @@ OSPCamera      camera;
 
 
   OSPRayRenderer::OSPRayRenderer()
-  :Renderer(), current_scene(NULL), next_scene(NULL),
-  _nid_counter(0), _depth(false), _width(0), _height(0), _frameNumber(0), _realFrameNumber(0)
+  :Renderer(), current_scene(NULL), next_scene(NULL)
   {
-    // current_color = RGBAColor(1,0.714,0.216,1);
     initialized=false;
     printf("%s::%s\n",typeid(*this).name(),__FUNCTION__);
-  // rendered = false;
-  // _camera = NULL;
-  // g_current_material = NULL;
-  // _renderer = NULL;
-  // _tonemapper = NULL;
-  // _frameBuffer = NULL;
-  // _backplate = NULL;
-  // _render_scene = NULL;
-
-  // _scene = "default";
-  // //_scene = "twolevel";
-  // //_accel = "default";
-  // _accel = "bvh4";
-  // _builder = "default";
-  // _traverser = "default";
-  // _resetAccumulation = true;
-  _format = "RGBA8";
+    _framebuffer.format = "RGBA8";
 
     _gVoid = new OGeometryGeneratorVoid();
     _gTriangle = new OGeometryGeneratorTriangles();
@@ -161,13 +143,7 @@ OSPCamera      camera;
     _gQuadStrip = new OGeometryGeneratorQuadStrip();
     _gLines = new OGeometryGeneratorLines();
     _gLineStrip= new OGeometryGeneratorLineStrip();
-    _gPoints = new OGeometryGeneratorPoints();
 
-
-  // _objScene = new OBJScene();
-
-  // _xDisplay = NULL;
-  // _xWin = new Window;
     _currentRenderer = "obj";
     renList.clear();
     o_current_material = 0;
@@ -573,6 +549,7 @@ printf("setSize 2");
 printf("setSize 3");
     framebuffer = ospNewFrameBuffer(newSize,OSP_RGBA_I8);
 printf("setSize 4");
+  _framebuffer.data=NULL;
   }
     // params.width = w;
     // params.height = h;
@@ -619,6 +596,7 @@ void OSPRayRenderer::init()
   // renderer = ospNewRenderer("raycast_eyelight");
   // renderer = ospNewRenderer("ao16");
   renderer = ospNewRenderer("obj");
+  useShadows(params.shadows);
   if (!renderer)
     throw std::runtime_error("could not create renderer ");
   Assert(renderer != NULL && "could not create renderer");
@@ -954,8 +932,6 @@ void OSPRayRenderer::internalRender()
 
 void OSPRayRenderer::render()
 {
-  printf("render\n");
-  return;
   if (!initialized)
     return;
   if (next_scene->instances.size() == 0)
@@ -1151,9 +1127,9 @@ ospray::box3f worldBounds = msgModel->getBBox();
 
 
     // glPixelStorei(GL_UNPACK_ROW_LENGTH, mwidth);
-    GLint rmode, dmode;
-    // glGetIntegerv(GL_READ_BUFFER, &rmode);
-    glGetIntegerv(GL_DRAW_BUFFER, &dmode);
+    // GLint rmode, dmode;
+    // // glGetIntegerv(GL_READ_BUFFER, &rmode);
+    // glGetIntegerv(GL_DRAW_BUFFER, &dmode);
     // glDrawBuffer(rmode);
     //glDrawBuffer(GL_BACK);
     //glEnable(GL_DEPTH_TEST);
@@ -1164,434 +1140,42 @@ ospray::box3f worldBounds = msgModel->getBBox();
 
   // glPixelStorei(GL_UNPACK_ROW_LENGTH, _width);
   // glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-  // glPixelStorei(GL_PACK_ALIGNMENT, 1);
-  glDisable(GL_DEPTH_TEST);
-  glDisable(GL_SCISSOR_TEST);
-  glDisable(GL_ALPHA_TEST);
-  glDrawBuffer(GL_FRONT);
+  // // glPixelStorei(GL_PACK_ALIGNMENT, 1);
+  // glDisable(GL_DEPTH_TEST);
+  // glDisable(GL_SCISSOR_TEST);
+  // glDisable(GL_ALPHA_TEST);
+  // glDrawBuffer(GL_FRONT_AND_BACK);
+    // glDrawBuffer(GL_BACK);
 
     //glDrawBuffer(GL_FRONT);
     // glDrawPixels(mwidth,mheight,GL_RGBA,GL_UNSIGNED_BYTE, &rgba_data[0]);
     //glDrawPixels(mwidth,mheight, GL_DEPTH_COMPONENT, GL_FLOAT, &depth_data[0]);
 
   // _format = "RGB8";
-  _format = "RGBA8";
-   //printf("glDrawPixels %s %d %d\n", _format.c_str(), _width, _height);
+  // _format = "RGBA8";
+  //  printf("glDrawPixels %s %d %d\n", _format.c_str(), _width, _height);
+  if (_framebuffer.data)
+    ospUnmapFrameBuffer(_framebuffer.data,framebuffer);
   unsigned char* data = (unsigned char *) ospMapFrameBuffer(framebuffer);
-  if (_format == "RGB_FLOAT32")
-    glDrawPixels(_width,_height,GL_RGB,GL_FLOAT,data);
-  else if (_format == "RGBA8")
-  glDrawPixels(_width,_height,GL_RGBA,GL_UNSIGNED_BYTE,data);
-  else if (_format == "RGB8")
-    glDrawPixels(_width,_height,GL_RGB,GL_UNSIGNED_BYTE,data);
-  else
-    throw std::runtime_error("unkown format: "+_format);
+  // if (_format == "RGB_FLOAT32")
+  //   glDrawPixels(_width,_height,GL_RGB,GL_FLOAT,data);
+  // else if (_format == "RGBA8")
+  // glDrawPixels(_width,_height,GL_RGBA,GL_UNSIGNED_BYTE,data);
+  // else if (_format == "RGB8")
+  //   glDrawPixels(_width,_height,GL_RGB,GL_UNSIGNED_BYTE,data);
+  // else
+  //   throw std::runtime_error("unkown format: "+_format);
 
-  ospUnmapFrameBuffer(data,framebuffer);
-
-  // glDrawBuffer(dmode);
-
-  // unsigned char testBuffer[256*256*3];
-  // for (int i =0;i < 256*256*3; i++)
-  // {
-  //   testBuffer[i] = 0;
-  //   if (i%3 == 0) testBuffer[i] = 255;
-  // }
-  // glDrawPixels(256,256,GL_RGB,GL_UNSIGNED_BYTE,testBuffer);
-  glFinish();
+    _framebuffer.byteAlign = 1;
+  _framebuffer.width = _width;
+  _framebuffer.height = _height;
+  _framebuffer.data = (void*)data;
+  _framebuffer.format = "RGBA8";
 
 
-
-  for(vector<OSPGeometry>::iterator itr = instances.begin(); itr != instances.end(); itr++)
-  {
-
-      // AffineSpace3f et(LinearSpace3f(mt(0,0), mt(0,1), mt(0,2), mt(1,0), mt(1,1), mt(1,2), mt(2,0),mt(2,1),mt(2,2)), Vector3f(mt(0,3),mt(1,3),mt(2,3)));
-      //AffineSpace3f et(LinearSpace3f(mt(0,0), mt(1,0), mt(2,0), mt(0,1), mt(1,1), mt(2,1), mt(0,2),mt(1,2),mt(2,2)), Vector3f(mt(3,0),mt(3,1),mt(3,2)));
-      // prims.push_back(g_device->rtNewShapePrimitive(er->_data->d_mesh, er->_data->d_material, copyToArray(et)));
-      // OSPGeometry inst = *itr;
-      // ospRemoveGeometry(model,inst);
-  }
-
-  if (params.write_to_file != "")
-  {
-      char* rgba_data = (char*)data;
-      DEBUG("writing image\n");
-      string filename = params.write_to_file;
-      // if (params.write_to_file == "generated")
-      {
-        char cfilename[256];
-#if USE_MPI
-        sprintf(cfilename, "render_%04d_%dx%d_%d.rgb", _realFrameNumber, _width, _height, _rank);
-#else
-        sprintf(cfilename, "render_%04d_%dx%d.rgb", _realFrameNumber, _width, _height);
-#endif
-        filename = string(cfilename);
-      }
-
-      printf("writing filename: %s\n", filename.c_str());
-
-      //unsigned char* test = new unsigned char[xres*yres*3];
-      //glReadPixels(0,0,xres,yres,GL_RGB, GL_UNSIGNED_BYTE, test);
-      FILE* pFile = fopen(filename.c_str(), "w");
-      assert(pFile);
-      if (_format == "RGBA8")
-      {
-        fwrite((void*)&rgba_data[0], 1, _width*_height*4, pFile);
-        fclose(pFile);
-        stringstream s("");
-        //TODO: this fudge factor on teh sizes makes no sense... I'm assuming it's because they have row padding in the data but it doesn't show up in drawpixels... perplexing.  It can also crash just a hack for now
-        s  << "convert -flip -size " << _width << "x" << _height << " -depth 8 rgba:" << filename << " " << filename << ".png && rm " << filename ;
-        /*printf("calling system call \"%s\"\n", s.str().c_str());*/
-        system(s.str().c_str());
-        //delete []test;
-
-      }
-      else
-      {
-        fwrite(data, 1, _width*_height*3, pFile);
-        fclose(pFile);
-        stringstream s("");
-        //TODO: this fudge factor on teh sizes makes no sense... I'm assuming it's because they have row padding in the data but it doesn't show up in drawpixels... perplexing.  It can also crash just a hack for now
-        s << "convert -flip -size " << _width << "x" << _height << " -depth 8 rgb:" << filename << " " << filename << ".png && rm " << filename;
-        system(s.str().c_str());
-      }
-      //delete []test;
-    _realFrameNumber++;
-  }
-
-  #if 0
-  if (!initialized)
-    return;
-  if (next_scene->instances.size() == 0)
-    return;
-  //if (rendered && params.accumulate)
-  //displayFrame();
-  rendered = true;
-  std::vector<Handle<Device::RTPrimitive> > prims;
-  AffineSpace3f transform(one);
-
-  if (lights_dirty)
-    updateLights();
-  for(std::vector<embree::Handle<embree::Device::RTPrimitive> >::iterator itr = _lights.begin(); itr != _lights.end(); itr++)
-    prims.push_back(*itr);
-
-  if (++_frameNumber == params.export_obj)
-    exportOBJ(next_scene);
-  next_scene->instances.resize(0);
-  return; //TODO: DEBUG take out
-
-  embreeMutex.lock();
-  //printf("adding %d instances to scene\n", next_scene->instances.size());
-  for(vector<GRInstance>::iterator itr = next_scene->instances.begin(); itr != next_scene->instances.end(); itr++)
-  {
-    Manta::AffineTransform mt = itr->transform;
-    Renderable* ren = itr->renderable;
-    ERenderable* er = dynamic_cast<ERenderable*>(ren);
-    if (er->isBuilt())
-    {
-      AffineSpace3f et(LinearSpace3f(mt(0,0), mt(0,1), mt(0,2), mt(1,0), mt(1,1), mt(1,2), mt(2,0),mt(2,1),mt(2,2)), Vector3f(mt(0,3),mt(1,3),mt(2,3)));
-      //AffineSpace3f et(LinearSpace3f(mt(0,0), mt(1,0), mt(2,0), mt(0,1), mt(1,1), mt(2,1), mt(0,2),mt(1,2),mt(2,2)), Vector3f(mt(3,0),mt(3,1),mt(3,2)));
-      prims.push_back(g_device->rtNewShapePrimitive(er->_data->d_mesh, er->_data->d_material, copyToArray(et)));
-    }
-  }
-  next_scene->instances.resize(0);
-  embreeMutex.unlock();
-
-  Handle<Device::RTScene> scene = g_device->rtNewScene(_scene.c_str());
-  g_device->rtSetString(scene,"accel",_accel.c_str());
-  g_device->rtSetString(scene,"builder",_builder.c_str());
-  g_device->rtSetString(scene,"traverser",_traverser.c_str());
-  //printf("creating scene with %d prims\n", prims.size());
-  for (size_t i=0; i<prims.size(); i++)
-    g_device->rtSetPrimitive(scene,i,prims[i]);
-  g_device->rtCommit(scene);
-  _render_scene = scene;
-
-  //glDrawPixels(fb->size.x, fb->size.y, GL_RGBA, GL_UNSIGNED_BYTE, fb->h_mem);
-
-  static CDTimer timer;
-  timer.start();
-
-  if (dirty_renderParams)
-  {
-    printf("\n\nUPDATING RENDER PARAMS\n\n");
-    GLuRayRenderParameters p = params;
-    setRenderParametersString(new_renderParamsString, false);
-    GLuRayRenderParameters p2 = params;
-    cout << "\n\nCOMPARISON: " << p.num_samples << " " << p2.num_samples << endl << endl;
-    //if(p.num_samples != p2.num_samples || p.shadows != p2.shadows)
-    //{
-    //cout << "\n\nNEEDS RELAUNCH\n\n";
-    ////relaunch = true;
-    //}
-    dirty_renderParams = false;
-  }
-
-  _resetAccumulation = true;
-  embreeMutex.unlock();
-  if (!params.accumulate)
-  {
-    internalRender();
-    displayFrame();
-    prims.clear();
-    g_device->rtClear(scene);
-  }
-  static bool once = false;
-  if (!once)
-  {
-    once = true;
-    if (params.accumulate)
-    {
-      pthread_t thread;
-      int err = pthread_create(&thread, 0, renderLoop, this);
-      if (err){
-        printf("ERROR creating Embree render loop. return code from pthread_create() is %d\n", err);
-        exit(-1);
-      }
-    }
-
-  }
-
-  /*rtClearTextureCache();*/
-  /*rtClearImageCache();*/
-  /*delete g_device;*/
-  /*g_device = NULL;*/
-  /*initialized = false;*/
-  /*init();*/
-
-
-#endif
 }
 Display* dis2;
 Window win2;
-
-
-void OSPRayRenderer::displayFrame()
-{
-  if (!initialized)
-    return;
-  #if 0
-  if (!rendering)
-    return;
-  if (_rank > 0)
-    return;
-  lock(0);
-  LOGSTARTC("OSPRayRenderer::displayFrame", 0.1,0.5,0.0);
-
-  DEBUG("copying image\n");
-  static CDTimer displayTimer;
-  displayTimer.start();
-
-  g_device->rtSwapBuffers(_frameBuffer);
-
-
-  /* draw image in OpenGL */
-
-  //glPixelStorei(GL_UNPACK_ROW_LENGTH, _width);
-  //glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-  //glPixelStorei(GL_PACK_ALIGNMENT, 1);
-  glDisable(GL_DEPTH_TEST);
-  glDisable(GL_SCISSOR_TEST);
-  glDisable(GL_ALPHA_TEST);
-  glDrawBuffer(GL_BACK);
-
-
-  void* data = g_device->rtMapFrameBuffer(_frameBuffer);
-
-  if (_format == "RGB_FLOAT32")
-    glDrawPixels(_width,_height,GL_RGB,GL_FLOAT,data);
-  else if (_format == "RGBA8")
-    glDrawPixels(_width,_height,GL_RGBA,GL_UNSIGNED_BYTE,data);
-  else if (_format == "RGB8")
-    glDrawPixels(_width,_height,GL_RGB,GL_UNSIGNED_BYTE,data);
-  else
-    throw std::runtime_error("unkown format: "+_format);
-
-  /*
-   *X Test
-   */
-#if 0
-
-  //static Display* dis;
-  //static Window win;
-  char green[] = "#00FF00";
-
-  static bool once = false;
-  if (!once)
-  {
-    once = true;
-    //dis = XOpenDisplay(0);
-    //int screen = DefaultScreen(dis);
-    //win = XCreateSimpleWindow(dis, RootWindow(dis, 0), 1, 1, _width, _height, 0, BlackPixel (dis, 0), BlackPixel(dis,0));
-    ////Widget w;
-    ////Pixmap pixmap = XCreateBitmapFromData(XtDisplay(w),RootWindowOfScreen(XtScreen(w)), data, _width, _height);
-    ////Pixmap pixmap = XCreatePixmapFromBitmapData(dis,win, (char*)data, _width, _height, BlackPixel(dis,0), BlackPixel(dis,0), 4);
-    //XMapWindow(dis,win);
-
-    //XColor green_col;
-    //Colormap colormap;
-    //colormap = DefaultColormap(dis, 0);
-    //char green[] = "#00FF00";
-    //GC green_gc = XCreateGC(dis, win, 0, 0);
-    //XSetForeground(dis, green_gc, green_col.pixel);
-    //XDrawRectangle(dis,win,green_gc,50,50,200,200);
-    //XFlush(dis);
-    Display *dis;
-    Window win;
-
-    XEvent report;
-    GC green_gc;
-    XColor green_col;
-    Colormap colormap;
-    //
-    //
-    /*
-     * Try changing the green[] = below to a different color.
-     * The color can also be from /usr/X11R6/lib/X11/rgb.txt, such as RoyalBlue4.
-     * A # (number sign) is only needed when using hexadecimal colors.
-     * */
-
-    //int main()
-    {
-      dis = XOpenDisplay(NULL);
-      win = XCreateSimpleWindow(dis, RootWindow(dis, 0), 1, 1, _width, _height, 0, BlackPixel (dis, 0), BlackPixel(dis, 0));
-      XMapWindow(dis, win);
-      colormap = DefaultColormap(dis, 0);
-      green_gc = XCreateGC(dis, win, 0, 0);
-      XParseColor(dis, colormap, green, &green_col);
-      XAllocColor(dis, colormap, &green_col);
-      XSetForeground(dis, green_gc, green_col.pixel);
-
-      XSelectInput(dis, win, ExposureMask | KeyPressMask | ButtonPressMask);
-
-      XDrawRectangle(dis, win, green_gc, 1, 1, 497, 497);
-      //XDrawRectangle(dis, win, green_gc, 50, 50, 398,   398);
-      Pixmap pixmap = XCreatePixmapFromBitmapData(dis,win, (char*)data, _width, _height, BlackPixel(dis,0), BlackPixel(dis,0), 4);
-      XFlush(dis);
-      _xDisplay = dis;
-      *_xWin = win;
-
-      //while (1)  {
-      //XNextEvent(dis, &report);
-      //switch           (report.type) {
-      //case Expose:
-      //fprintf(stdout, "I have been exposed.\n");
-      //XDrawRectangle(dis, win, green_gc, 1, 1, 497, 497);
-      //XDrawRectangle(dis, win, green_gc, 50, 50, 398, 398);
-      //XFlush(dis);
-      //break;
-      //case KeyPress:
-      //[>Close the program if q is pressed.<]
-      //if (XLookupKeysym(&report.xkey, 0) == XK_q) {
-      //exit(0);
-      //}
-      //break;
-      //}
-      //}
-
-      //return 0;
-    }
-
-  }
-  GC green_gc;
-  XColor green_col;
-  Colormap colormap;
-  colormap = DefaultColormap(_xDisplay, 0);
-  green_gc = XCreateGC(_xDisplay, *_xWin, 0, 0);
-  //XParseColor(_xDisplay, colormap, green, &green_col);
-  //XAllocColor(_xDisplay, colormap, &green_col);
-  //XSetForeground(_xDisplay, green_gc, green_col.pixel);
-  //XDrawRectangle(_xDisplay, *_xWin, green_gc, 50, 50, 398,   398);
-  Screen* screen = XDefaultScreenOfDisplay(_xDisplay);
-  int screen2 = DefaultScreen(_xDisplay);
-  int depth = DefaultDepth(_xDisplay,screen2);
-  printf("xdepth: %d\n", depth);
-  Pixmap pixmap = XCreatePixmapFromBitmapData(_xDisplay,*_xWin, (char*)data, _width, _height, BlackPixel(_xDisplay,0), BlackPixel(_xDisplay,0), depth);
-  //Pixmap pixmap = XCreatePixmap(_xDisplay,*_xWin,_width,_height,DefaultDepthOfScreen(screen));
-  //XFillRectangle(_xDisplay,pixmap,green_gc,0,0,_width,_height);
-  XSetFillStyle(_xDisplay,green_gc,FillTiled);
-  XSetTile(_xDisplay, green_gc, pixmap);
-  //XSetRegion(_xDisplay,green_gc,region);
-  XFillRectangle(_xDisplay,*_xWin, green_gc,0,0,_width,_height);
-  //XCopyArea(_xDisplay,pixmap,*_xWin, green_gc, 0,0,_width,_height,0,0);
-  //XColor green_col;
-  //Colormap colormap;
-  //
-  //colormap = DefaultColormap(dis, 0);
-  //char green[] = "#00FF00";
-  //GC green_gc = XCreateGC(dis, win, 0, 0);
-  //XSetForeground(dis, green_gc, green_col.pixel);
-  //XDrawRectangle(dis,win,green_gc,1,1,200,200);
-  //XFlush(dis);
-
-
-#endif
-  /*
-   *END X Test
-   */
-
-  glFinish();
-  g_device->rtUnmapFrameBuffer(_frameBuffer);
-
-  DEBUG("copy image done\n");
-
-
-  //TODO: HACK
-  if (params.write_to_file != "")
-  {
-      char* rgba_data = (char*)data;
-      DEBUG("writing image\n");
-      string filename = params.write_to_file;
-      if (params.write_to_file == "generated")
-      {
-        char cfilename[256];
-#if USE_MPI
-        sprintf(cfilename, "render_%04d_%dx%d_%d.rgb", _realFrameNumber, _width, _height, _rank);
-#else
-        sprintf(cfilename, "render_%04d_%dx%d.rgb", _realFrameNumber, _width, _height);
-#endif
-        filename = string(cfilename);
-      }
-
-      printf("writing filename: %s\n", filename.c_str());
-
-      //unsigned char* test = new unsigned char[xres*yres*3];
-      //glReadPixels(0,0,xres,yres,GL_RGB, GL_UNSIGNED_BYTE, test);
-      FILE* pFile = fopen(filename.c_str(), "w");
-      assert(pFile);
-      if (_format == "RGBA8")
-      {
-        fwrite((void*)&rgba_data[0], 1, _width*_height*4, pFile);
-        fclose(pFile);
-        stringstream s("");
-        //TODO: this fudge factor on teh sizes makes no sense... I'm assuming it's because they have row padding in the data but it doesn't show up in drawpixels... perplexing.  It can also crash just a hack for now
-        s  << "convert -flip -size " << _width << "x" << _height << " -depth 8 rgba:" << filename << " " << filename << ".png && rm " << filename ;
-        /*printf("calling system call \"%s\"\n", s.str().c_str());*/
-        system(s.str().c_str());
-        //delete []test;
-
-      }
-      else
-      {
-        fwrite(data, 1, _width*_height*3, pFile);
-        fclose(pFile);
-        stringstream s("");
-        //TODO: this fudge factor on teh sizes makes no sense... I'm assuming it's because they have row padding in the data but it doesn't show up in drawpixels... perplexing.  It can also crash just a hack for now
-        s << "convert -flip -size " << _width << "x" << _height << " -depth 8 rgb:" << filename << " " << filename << ".png && rm " << filename;
-        system(s.str().c_str());
-      }
-      //delete []test;
-    _realFrameNumber++;
-  }
-
-  DEBUG("draw pixels done \n");
-  displayTimer.stop();
-  //printf("rank: %d display time: %f\n", _rank, displayTimer.getDelta());
-  LOGSTOP("OSPRayRenderer::displayFrame");
-  unlock(0);
-  embreeMutex.unlock();
-  #endif
-}
 
 void OSPRayRenderer::syncInstances()
 {}
@@ -1702,7 +1286,6 @@ void OSPRayRenderer::addInstance(Renderable* ren)
 
 void OSPRayRenderer::addRenderable(Renderable* ren)
 {
-  return;
   if (!initialized)
     return;
   ORenderable* oren = dynamic_cast<ORenderable*>(ren);
@@ -1751,9 +1334,6 @@ void OSPRayRenderer::addRenderable(Renderable* ren)
     // normals[i] = ospray::vec3fa(mesh->vertexNormals[i].x(), mesh->vertexNormals[i].y(), mesh->vertexNormals[i].z());
 
 
-  if(oren->_data->geomType == OR_TRIANGLES)
-  {
-
       // embree::Vec3i* vertex_indices = (embree::Vec3i*)alignedMalloc(sizeof(embree::Vec3i)*numTriangles);
   // triangles.resize(numTriangles);
   for(size_t i = 0, mi = 0; i < numTriangles; i++, mi+=3)
@@ -1790,47 +1370,6 @@ void OSPRayRenderer::addRenderable(Renderable* ren)
   ospAddGeometry(oren->_data->ospModel,oren->_data->ospMesh);
   ospCommit(oren->_data->ospModel);
         // instanceModels.push_back(model_i);
-
-  }
-  else if(oren->_data->geomType == OR_POINTS)
-  {
-    // sphere positions are stored as vertices in the odata mesh
-    OSPData sdata = ospNewData(numPositions, OSP_FLOAT3A, &vertices[0]);
-    ospCommit(sdata);
-
-    // create a material list of 1 material [the current one]
-    oren->_data->glmat = gl_material;
-    oren->_data->mat = ospNewMaterial(renderer, "OBJMaterial");
-    updateMaterial(&oren->_data->mat, oren->_data->glmat);
-    OSPData mdata;
-    {
-      OSPMaterial matArray[1];
-      matArray[1] = oren->_data->mat;
-
-      mdata = ospNewData(1,OSP_OBJECT,matArray);
-      ospCommit(mdata);
-    }
-
-    OSPGeometry geom = ospNewGeometry("spheres");
-    ospSet1f(geom,"radius",0.1);
-    ospSet1i(geom,"materialID",0); // there is a shared material across all the points
-    ospSet1i(geom,"bytes_per_sphere",sizeof(ospray::vec3fa));
-    ospSet1i(geom,"offset_center",0);
-    ospSet1i(geom,"offset_radius",-1); // shared radius across all points
-    ospSet1i(geom,"offset_materialID",-1);
-    ospSetData(geom,"spheres",sdata);
-    ospSetData(geom,"materialList",mdata);
-    ospCommit(geom);
-    oren->_data->ospMesh = geom;
-
-    oren->_data->ospModel = ospNewModel();
-    ospAddGeometry(oren->_data->ospModel,oren->_data->ospMesh);
-    ospCommit(oren->_data->ospModel);
-  }
-  else
-  {
-    printf("error: invalid glType provided: %d\n", oren->_data->geomType);
-  }
 
 
   #if 0
@@ -2092,10 +1631,6 @@ GeometryGenerator* OSPRayRenderer::getGeometryGenerator(int type)
     case GL_QUAD_STRIP:
     {
       return _gQuadStrip;
-    }
-    case GL_POINTS:
-    {
-      return _gPoints;
     }
     //case GL_LINES:
     //{

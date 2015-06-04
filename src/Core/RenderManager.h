@@ -70,7 +70,7 @@ public:
   //virtual void addScene(Scene* scene)=0;
   virtual void addWork(Work* work) {  _renderer->addWork(work); }
 
-  virtual void render() {_renderer->render();}
+  virtual void render() {_renderer->render(); _renderer->displayFrame();}
   virtual void init() {_renderer->init();}
 
   virtual void setNumSamples(int samples) {_renderer->setNumSamples(0,1,samples);}

@@ -139,7 +139,6 @@ class OSPRayRenderer : public Renderer
     void displayCallback(int proc, int numProcs, bool& changed);
 
     void syncInstances();
-    void displayFrame();
     static void* renderLoop(void* t);
     void internalRender();
 
@@ -166,14 +165,6 @@ class OSPRayRenderer : public Renderer
     // int _rank;
     // int _numProcs;
     // void relaunchCallback(int,int);
-    size_t _nid_counter;
-    bool _depth;
-    int _width, _height;
-    std::string _format;
-    // bool _resetAccumulation;
-    bool rendered;
-    int _frameNumber;
-    int _realFrameNumber;  //corrected by env param
     OSPMaterial o_current_material;
 
     // embree::Handle<embree::Device::RTCamera> _camera;
