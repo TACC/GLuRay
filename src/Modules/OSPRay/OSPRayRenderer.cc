@@ -134,7 +134,7 @@ OSPCamera      camera;
   {
     initialized=false;
     printf("%s::%s\n",typeid(*this).name(),__FUNCTION__);
-    _framebuffer.format = "RGBA8";
+    _framebuffer.SetFormat(GL_RGBA, GL_UNSIGNED_BYTE);
 
     _gVoid = new OGeometryGeneratorVoid();
     _gTriangle = new OGeometryGeneratorTriangles();
@@ -532,28 +532,13 @@ void OSPRayRenderer::setSize(int w, int h)
   if (!initialized)
     return;
 
-printf("setSize %d %d\n", w,h);
-  #if 1
   if (initialized && (w != _width || h != _height))
   {
-printf("setSize 1");
-    // embreeMutex.lock();
     _width = w; _height = h;
-    // _frameBuffer = g_device->rtNewFrameBuffer(_format.c_str(),w,h,2/*num buffers*/);
-    // _resetAccumulation = true;
-    // embreeMutex.unlock();
     updateCamera();
     ospray::vec2i newSize(w,h);
-printf("setSize 2");
-    // if (framebuffer) ospFreeFrameBuffer(framebuffer);
-printf("setSize 3");
-    framebuffer = ospNewFrameBuffer(newSize,OSP_RGBA_I8);
-printf("setSize 4");
-  _framebuffer.data=NULL;
+    framebuffer = ospNewFrameBuffer(newSize, OSP_RGBA_I8, OSP_FB_COLOR | OSP_FB_DEPTH);
   }
-    // params.width = w;
-    // params.height = h;
-  #endif
 }
 
 // struct networkSetupInfo
@@ -1123,57 +1108,13 @@ ospray::box3f worldBounds = msgModel->getBBox();
 
    ospRenderFrame(framebuffer,renderer);
 
-
-
-
-    // glPixelStorei(GL_UNPACK_ROW_LENGTH, mwidth);
-    // GLint rmode, dmode;
-    // // glGetIntegerv(GL_READ_BUFFER, &rmode);
-    // glGetIntegerv(GL_DRAW_BUFFER, &dmode);
-    // glDrawBuffer(rmode);
-    //glDrawBuffer(GL_BACK);
-    //glEnable(GL_DEPTH_TEST);
-    // glDrawPixels(mwidth,mheight, GL_DEPTH_COMPONENT, GL_FLOAT, &depth_data[0]);
-    // glDisable(GL_DEPTH_TEST);
-    // glDrawPixels(mwidth,mheight,GL_RGBA,GL_UNSIGNED_BYTE, &rgba_data[0]);
-    // glEnable(GL_DEPTH_TEST);
-
-  // glPixelStorei(GL_UNPACK_ROW_LENGTH, _width);
-  // glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-  // // glPixelStorei(GL_PACK_ALIGNMENT, 1);
-  // glDisable(GL_DEPTH_TEST);
-  // glDisable(GL_SCISSOR_TEST);
-  // glDisable(GL_ALPHA_TEST);
-  // glDrawBuffer(GL_FRONT_AND_BACK);
-    // glDrawBuffer(GL_BACK);
-
-    //glDrawBuffer(GL_FRONT);
-    // glDrawPixels(mwidth,mheight,GL_RGBA,GL_UNSIGNED_BYTE, &rgba_data[0]);
-    //glDrawPixels(mwidth,mheight, GL_DEPTH_COMPONENT, GL_FLOAT, &depth_data[0]);
-
-  // _format = "RGB8";
-  // _format = "RGBA8";
-  //  printf("glDrawPixels %s %d %d\n", _format.c_str(), _width, _height);
-  if (_framebuffer.data)
-    ospUnmapFrameBuffer(_framebuffer.data,framebuffer);
-  unsigned char* data = (unsigned char *) ospMapFrameBuffer(framebuffer);
-  // if (_format == "RGB_FLOAT32")
-  //   glDrawPixels(_width,_height,GL_RGB,GL_FLOAT,data);
-  // else if (_format == "RGBA8")
-  // glDrawPixels(_width,_height,GL_RGBA,GL_UNSIGNED_BYTE,data);
-  // else if (_format == "RGB8")
-  //   glDrawPixels(_width,_height,GL_RGB,GL_UNSIGNED_BYTE,data);
-  // else
-  //   throw std::runtime_error("unkown format: "+_format);
-
-    _framebuffer.byteAlign = 1;
-  _framebuffer.width = _width;
-  _framebuffer.height = _height;
-  _framebuffer.data = (void*)data;
-  _framebuffer.format = "RGBA8";
-
-
+	void* depth = (unsigned char *) ospMapFrameBuffer(framebuffer, OSP_FB_DEPTH);
+	void* data = (unsigned char *) ospMapFrameBuffer(framebuffer);
+	_framebuffer.Load(_width, _height, data, depth);
+	ospUnmapFrameBuffer(data, framebuffer);
+	ospUnmapFrameBuffer(depth, framebuffer);
 }
+
 Display* dis2;
 Window win2;
 
