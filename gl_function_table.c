@@ -11348,10 +11348,21 @@ void glDrawPixels(GLsizei width, GLsizei height, GLenum format, GLenum type, con
       gl_lookup_enum_by_nr(format, _PixelFormat_enum_, tableSize(_PixelFormat_enum_)),
       gl_lookup_enum_by_nr(type, _PixelType_enum_, tableSize(_PixelType_enum_)));
   GLLOCK();
-next_glDrawPixels(width, height, format, type, pixels);
+	next_glDrawPixels(width, height, format, type, pixels);
   __sgPrintError();
   read_flag_write_msg_gl("carson: opengl call made: ");    read_flag_write_msg_gl(format_function_call_gl(196, args));
 GLUNLOCK();
+}
+
+void gda(int x,int y)
+{
+	int foo[20];
+	next_glReadPixels(x, y, 20, 1, GL_RGBA, GL_UNSIGNED_BYTE, (GLvoid *)&foo);
+	float bar[20];
+	next_glReadPixels(x, y, 20, 1, GL_DEPTH_COMPONENT, GL_FLOAT, (GLvoid *)&bar);
+	int i;
+	for (i = 0; i < 20; i++)
+		fprintf(stderr, "(%d, %d): 0x%08lx %f\n", x+i, y, foo[i], bar[i]);
 }
 
 void glDrawRangeElementArrayATI(GLenum mode, GLuint start, GLuint end, GLsizei count) {
@@ -13221,6 +13232,33 @@ GLUNLOCK();
 
 const GLubyte * glGetString(GLenum name) {
   const GLubyte * result;
+#if 1
+
+	if (name == GL_RENDERER) return "GLuRay";
+	else if (name == GL_VERSION) return "1.4";
+	else if (name == GL_VENDOR) return "Carson Brownlee";
+	else if (name == GL_EXTENSIONS) 
+	{
+		char *src = next_glGetString(GL_EXTENSIONS);
+		return src;
+
+		char *dst = (char *)malloc(strlen(src)+1);
+		char *s = src, *d = dst, *ns, *nd;
+		while ((ns = strchr(s, ' ')) != NULL)
+		{
+			size_t len = ns - s;
+			if (strncmp(s, "GL_ARB_vertex_buffer_object", len) && strncmp(s, "GL_ARB_pixel_buffer_object", len))
+			{
+				strncpy(d, s, len);
+				d += len;
+				*d++ = ' ';
+			}
+			s = ns + 1;
+		}
+		return dst;
+ 	}
+#endif
+	
   sprintf(args, "(%s);\n",
       gl_lookup_enum_by_nr(name, _StringName_enum_, tableSize(_StringName_enum_)));
   GLLOCK();
