@@ -343,84 +343,22 @@ void Renderer::displayFrame()
   if (!initialized)
     return;
 
-  if (!_framebuffer.data || !_framebuffer.width || !_framebuffer.height)
+  if (!_framebuffer.GetData() || !_framebuffer.GetWidth() || !_framebuffer.GetHeight())
     return;
 
-  GLenum glData = 0;
-  GLenum glFormat = 0;
-
-  if (_framebuffer.format == "RGBA8")
-  {
-    glData = GL_UNSIGNED_BYTE;
-    glFormat = GL_RGBA;
-  }
-  else if (_framebuffer.format == "BGRA8")
-  {
-    glData = GL_UNSIGNED_BYTE;
-    glFormat = GL_BGRA;
-  }
-  else if (_framebuffer.format == "float1")
-  {
-    glData = GL_FLOAT;
-    glFormat    = GL_LUMINANCE;
-  }
-  else if (_framebuffer.format == "float3")
-  {
-    glData = GL_FLOAT;
-    glFormat    = GL_RGB;
-  }
-  else if (_framebuffer.format == "float4")
-  {
-    glData = GL_FLOAT;
-    glFormat    = GL_RGBA;
-  }
-  else
-  {
-    std::cerr << "GLR_ERROR: unrecognized format type\n";
-    return;
-  }
-
-  glPixelStorei(GL_UNPACK_ALIGNMENT, _framebuffer.byteAlign);
-
-  glDisable(GL_DEPTH_TEST);
-  glDisable(GL_SCISSOR_TEST);
-  glDisable(GL_ALPHA_TEST);
-  glDisable(GL_BLEND);
-  // glDrawBuffer(GL_FRONT);
-  // printf("drawing to buffer\n");
-
-  // struct rgba { unsigned char c[4];};
-  // for(int i =0;i<_width;i++)
-  // {
-  //   for(int j =0;j<_height;j++)
-  //   {
-  //     rgba* c = &(((rgba*)_framebuffer.data)[j*_width + i]);
-  //     // c->c[0]=0;
-  //     // c->c[1]=255;
-  //     // c->c[2]=0;
-  //     // c->c[3]=255;
-  //   }
-  // }
-
-      // NVTX_RangePushA("glDrawPixels");
-  glDrawPixels( static_cast<GLsizei>( _framebuffer.width ), static_cast<GLsizei>( _framebuffer.height ),
-   glFormat, glData, _framebuffer.data);
-    // NVTX_RangePop();
-
+	_framebuffer.Store();
 
   if (params.write_to_file != "")
   {
-    char* data = (char*)_framebuffer.data;
-    char* rgba_data = (char*)data;
     DEBUG("writing image\n");
     string filename = params.write_to_file;
     if (params.write_to_file == "generated")
     {
       char cfilename[256];
         #if USE_MPI
-      sprintf(cfilename, "render_%04d_%dx%d_%d.rgb", _realFrameNumber, _framebuffer.width, _framebuffer.height, _rank);
+      sprintf(cfilename, "render_%04d_%dx%d_%d.rgb", _realFrameNumber, _framebuffer.GetWidth(), _framebuffer.GetHeight(), _rank);
         #else
-      sprintf(cfilename, "render_%04d_%dx%d.rgb", _realFrameNumber, _framebuffer.width, _framebuffer.height);
+      sprintf(cfilename, "render_%04d_%dx%d.rgb", _realFrameNumber, _framebuffer.GetWidth(), _framebuffer.GetHeight());
         #endif
       filename = string(cfilename);
     }
@@ -431,36 +369,36 @@ void Renderer::displayFrame()
       //glReadPixels(0,0,xres,yres,GL_RGB, GL_UNSIGNED_BYTE, test);
     FILE* pFile = fopen(filename.c_str(), "w");
     assert(pFile);
-    if (_framebuffer.format == "RGBA8")
+    if (_framebuffer.GetFormat() == GL_RGBA && _framebuffer.GetType() == GL_UNSIGNED_BYTE)
     {
-      fwrite((void*)&rgba_data[0], 1, _width*_height*4, pFile);
+      fwrite(_framebuffer.GetData(), 1, _width*_height*4, pFile);
       fclose(pFile);
       stringstream s("");
         //TODO: this fudge factor on teh sizes makes no sense... I'm assuming it's because they have row padding in the data but it doesn't show up in drawpixels... perplexing.  It can also crash just a hack for now
-      s  << "convert -flip -size " << _framebuffer.width << "x" << _framebuffer.height << " -depth 8 rgba:" << filename << " " << filename << ".png && rm " << filename ;
+      s  << "convert -flip -size " << _framebuffer.GetWidth() << "x" << _framebuffer.GetHeight() << " -depth 8 rgba:" << filename << " " << filename << ".png && rm " << filename ;
         /*printf("calling system call \"%s\"\n", s.str().c_str());*/
       system(s.str().c_str());
         //delete []test;
 
     }
-    if (_framebuffer.format == "BGRA8")
+    else if (_framebuffer.GetFormat() == GL_RGBA && _framebuffer.GetType() == GL_UNSIGNED_BYTE)
     {
       struct Pix { unsigned char r,g,b,a; };        
-      Pix rgba_data[_framebuffer.width*_framebuffer.height*sizeof(Pix)];
-      for(size_t i=0; i <_framebuffer.width*_framebuffer.height;i++)
+      Pix rgba_data[_framebuffer.GetWidth()*_framebuffer.GetHeight()];
+			Pix *pix = (Pix *)_framebuffer.GetData();
+			Pix *pix2 = rgba_data;
+      for(size_t i=0; i <_framebuffer.GetWidth()*_framebuffer.GetHeight();i++, pix++, pix2++)
       {
-        Pix* pix = &((Pix*)data)[i];
-        Pix* pix2 = &rgba_data[i];
         pix2->r=pix->b;
         pix2->g=pix->g;
         pix2->b=pix->r;
         pix2->a=pix->a;
       }
-      fwrite((void*)&rgba_data[0], 1, _framebuffer.width*_framebuffer.height*4, pFile);
+      fwrite((void*)rgba_data, 1, _framebuffer.GetWidth()*_framebuffer.GetHeight()*4, pFile);
       fclose(pFile);
       stringstream s("");
         //TODO: this fudge factor on teh sizes makes no sense... I'm assuming it's because they have row padding in the data but it doesn't show up in drawpixels... perplexing.  It can also crash just a hack for now
-      s  << "convert -flip -size " << _framebuffer.width << "x" << _framebuffer.height << " -depth 8 rgba:" << filename << " " << filename << ".png && rm " << filename ;
+      s  << "convert -flip -size " << _framebuffer.GetWidth() << "x" << _framebuffer.GetHeight() << " -depth 8 rgba:" << filename << " " << filename << ".png && rm " << filename ;
         /*printf("calling system call \"%s\"\n", s.str().c_str());*/
       system(s.str().c_str());
         //delete []test;

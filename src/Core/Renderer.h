@@ -26,6 +26,8 @@
 #include "Renderable.h"
 #include "GLTypes.h"
 
+#include <GL/gl.h>
+
 #include <Model/Lights/DirectionalLight.h>
 #include <Interface/LightSet.h>
 #include <Interface/MantaInterface.h>
@@ -47,6 +49,105 @@
 
 namespace glr
 {
+
+class Framebuffer 
+{
+public:
+	Framebuffer() :  width(0), height(0), byteAlign(1), data(NULL), depth(NULL)
+	{
+		SetFormat(GL_RGBA, GL_UNSIGNED_BYTE);
+	}
+
+	void SetFormat(GLenum f, GLenum t)
+	{
+		glFormat = f;
+		glType = t;
+
+	  if (glFormat == GL_RGBA && glType == GL_UNSIGNED_BYTE)
+			csize = 4;
+	  else if (glFormat == GL_BGRA && glType == GL_UNSIGNED_BYTE)
+			csize = 4;
+		else if (glFormat == GL_FLOAT && glType == GL_LUMINANCE)
+			csize = 4;
+		else if (glFormat == GL_FLOAT && glType == GL_RGB)
+			csize = 12;
+		else if (glFormat == GL_FLOAT && glType == GL_RGBA)
+			csize = 16;
+		else
+		{
+			std::cerr << "GLR_ERROR: Framebuffer: unrecognized format/type\n";
+			return;
+		}
+
+		if (data) 
+		{
+			width = 0;
+			height = 0;
+			free(data);
+			if (depth) free(depth);
+		}
+	}
+
+	GLenum GetFormat() { return glFormat; }
+	GLenum GetType() { return glType; }
+	GLenum GetAlignment() { return byteAlign; }
+	int GetWidth() { return width; }
+	int GetHeight() { return height; }
+	void *GetData() { return data; }
+	void *GetDepth() { return depth; }
+
+	~Framebuffer()
+	{
+		if (data) free(data);
+		if (depth) free(depth);
+	}
+
+	void Load(int w, int h, void *c, void *d)
+	{
+		if (w != width || h != height)
+		{
+			if (data) free(data);
+			data = (void *)malloc(w*h*csize);
+			if (depth) free(depth);
+			if (d) depth = (void *)malloc(w*h*sizeof(float));
+			width = w;
+			height = h;
+		}
+
+		memcpy(data, c, w*h*sizeof(int32_t));
+		if (d)
+			memcpy(depth, d, w*h*sizeof(float));
+	}
+
+	void Store()
+	{
+		std::cerr << "S";
+		if (width && height && data)
+		{
+			glPixelStorei(GL_UNPACK_ALIGNMENT, byteAlign);
+			glDisable(GL_DEPTH_TEST);
+			glDisable(GL_SCISSOR_TEST);
+			glDisable(GL_ALPHA_TEST);
+			glDisable(GL_BLEND);
+			glDepthFunc(GL_ALWAYS);
+
+			glMatrixMode(GL_MODELVIEW);
+			glLoadIdentity();
+			glMatrixMode(GL_PROJECTION);
+			glLoadIdentity();
+
+			if (depth) glDrawPixels(width, height, GL_DEPTH_COMPONENT, GL_FLOAT, depth);
+			glDrawPixels(width, height, glFormat, glType, data);
+		}
+	}
+
+private:
+	int csize;
+	void *data;
+	void *depth;
+	GLenum glType, glFormat, byteAlign;
+	size_t width, height;
+};
 
 class Renderer
 {
@@ -161,13 +262,6 @@ public:
   size_t _nid_counter;
   bool _depth;
   int _width, _height;
-  struct Framebuffer {
-    Framebuffer() { width=height=0;byteAlign=1;format="RGBA8";data=NULL;}
-    int width, height;
-    std::string format;
-    int byteAlign;
-    void* data;
-  };
   Framebuffer _framebuffer;
   // bool _resetAccumulation;
   bool rendered;
