@@ -122,14 +122,14 @@ static void init_fifos(void);
 
 static void spyglass_init(void)
 {
-  /*printf("using gluray\n");*/
+  printf("using gluray\n");
 
     static int done = 0;
 
     if (!done)
     {
         init_fifos();
-        /*printf("load_lib_sym\n");*/
+        printf("load_lib_sym\n");
         load_library_symbols();
         /*printf("done load_lib_sym\n");*/
 #if defined(LINK_ENUMS_HACK)
@@ -222,9 +222,10 @@ static void * open_GL_lib(void)
                 OPENGLLIB);
         exit(1);
     }
+    printf("opengl library dlopen done\n");
     return h;
 #else
-    /*printf("using RTLD_NEXT\n");*/
+    printf("using RTLD_NEXT\n");
  //   exit(3);
     return RTLD_NEXT;
 #endif
@@ -250,7 +251,7 @@ static void load_library_symbols(void)
         *(symbol_info[i].doit) = dlsym(h, symbol_info[i].name);
         if ((msg = dlerror()) != NULL)
         {
-            //fprintf(stderr, "dlsym(%s): %s\n", symbol_info[i].name, msg);
+            // fprintf(stderr, "dlsym(%s): %s\n", symbol_info[i].name, msg);
         }
     }
 

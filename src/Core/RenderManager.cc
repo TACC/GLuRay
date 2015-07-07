@@ -78,6 +78,8 @@ extern Renderer* createOptiXRenderer();
   _renderer =  MantaRenderer::singleton();
   //rm = MantaManager::singleton();
 #endif
+
+  initClient();
 }
 
 

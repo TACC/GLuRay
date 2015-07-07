@@ -70,7 +70,13 @@ public:
   //virtual void addScene(Scene* scene)=0;
   virtual void addWork(Work* work) {  _renderer->addWork(work); }
 
-  virtual void render() {_renderer->render(); _renderer->displayFrame();}
+  virtual void render() {   if (dirty_renderParams)
+  {
+    cout << "\nRenderManager: updating render params\n" << endl;
+    _renderer->setRenderParametersString(new_renderParamsString, false);
+    dirty_renderParams = false;
+  }
+   _renderer->render(); _renderer->displayFrame();}
   virtual void init() {_renderer->init();}
 
   virtual void setNumSamples(int samples) {_renderer->setNumSamples(0,1,samples);}

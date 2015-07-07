@@ -941,12 +941,7 @@ void OSPRayRenderer::render()
       ospSetParam(renderer,"world",model);
   ospSetParam(renderer,"model",model);
 
-  if (dirty_renderParams)
-  {
-    cout << "\nosp: render: updating render params\n" << endl;
-    setRenderParametersString(new_renderParamsString, false);
-    dirty_renderParams = false;
-  }
+
 
   updateBackground();
   ospCommit(renderer);
