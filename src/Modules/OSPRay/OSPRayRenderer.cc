@@ -143,6 +143,7 @@ OSPCamera      camera;
     _gQuadStrip = new OGeometryGeneratorQuadStrip();
     _gLines = new OGeometryGeneratorLines();
     _gLineStrip= new OGeometryGeneratorLineStrip();
+    _gPoints = new OGeometryGeneratorPoints();
 
     _currentRenderer = "obj";
     renList.clear();
@@ -603,9 +604,9 @@ void OSPRayRenderer::init()
 
   PRINT(renderer);
   PRINT(model);
-  ospSetParam(renderer,"world",model);
-  ospSetParam(renderer,"model",model);
-  ospSetParam(renderer,"camera",camera);
+  ospSetObject(renderer,"world",model);
+  ospSetObject(renderer,"model",model);
+  ospSetObject(renderer,"camera",camera);
   ospCommit(camera);
   ospCommit(renderer);
 
@@ -938,8 +939,8 @@ void OSPRayRenderer::render()
     return;
   #if 1
     model = ospNewModel();
-      ospSetParam(renderer,"world",model);
-  ospSetParam(renderer,"model",model);
+  ospSetObject(renderer,"world",model);
+  ospSetObject(renderer,"model",model);
 
 
 
@@ -1328,6 +1329,9 @@ void OSPRayRenderer::addRenderable(Renderable* ren)
   // for(size_t i = 0; i < numNormals; i++)
     // normals[i] = ospray::vec3fa(mesh->vertexNormals[i].x(), mesh->vertexNormals[i].y(), mesh->vertexNormals[i].z());
 
+  if(oren->_data->geomType == OR_TRIANGLES)
+  {
+
 
       // embree::Vec3i* vertex_indices = (embree::Vec3i*)alignedMalloc(sizeof(embree::Vec3i)*numTriangles);
   // triangles.resize(numTriangles);
@@ -1365,6 +1369,93 @@ void OSPRayRenderer::addRenderable(Renderable* ren)
   ospAddGeometry(oren->_data->ospModel,oren->_data->ospMesh);
   ospCommit(oren->_data->ospModel);
         // instanceModels.push_back(model_i);
+
+  }
+  else if(oren->_data->geomType == OR_POINTS)
+  {
+      // sphere positions are stored as vertices in the odata mesh
+      OSPData sdata = ospNewData(numPositions, OSP_FLOAT3A, &vertices[0]);
+      ospCommit(sdata);
+
+      // create a material list of 1 material [the current one]
+      oren->_data->glmat = gl_material;
+      oren->_data->mat = ospNewMaterial(renderer, "OBJMaterial");
+      updateMaterial(&oren->_data->mat, oren->_data->glmat);
+
+      // this is the per-vertex color logic, however it doesn't seem to work
+      // properly [even tho its from the example].
+      // it seems that setting the material like the triangle mesh does work however
+      // so will just use that logic
+      // OSPData mdata;
+      // {
+      //     OSPMaterial matArray[1];
+      //     matArray[1] = oren->_data->mat;
+
+      //     mdata = ospNewData(1,OSP_OBJECT,matArray);
+      //     ospCommit(mdata);
+      // }
+
+      OSPGeometry geom = ospNewGeometry("spheres");
+      ospSet1f(geom,"radius",0.1); // TODO: remove hardcoded radius
+      ospSet1i(geom,"materialID",0); // there is a shared material across all the points
+      ospSet1i(geom,"bytes_per_sphere",sizeof(ospray::vec3fa));
+      ospSet1i(geom,"offset_center",0);
+      ospSet1i(geom,"offset_radius",-1); // shared radius across all points
+      ospSet1i(geom,"offset_materialID",-1);
+      ospSetData(geom,"spheres",sdata);
+      // ospSetData(geom,"materialList",mdata); // not setting the per-vertex color list for now
+      oren->_data->ospMesh = geom;
+
+      ospSetMaterial(oren->_data->ospMesh, oren->_data->mat);
+      ospCommit(oren->_data->ospMesh);
+
+      oren->_data->ospModel = ospNewModel();
+      ospAddGeometry(oren->_data->ospModel,oren->_data->ospMesh);
+      ospCommit(oren->_data->ospModel);
+  }
+  else if(oren->_data->geomType == OR_CYLINDERS)
+  {
+      // create ospray data structs
+      OSPData verts = ospNewData(numPositions, OSP_FLOAT3A, &vertices[0]);
+      OSPData indices = ospNewData(mesh->vertex_indices.size(), OSP_INT, &mesh->vertex_indices[0]);
+      // OSPData colors = ospNewData(numPositions, OSP_FLOAT3A, &colors[0]);
+
+      oren->_data->glmat = gl_material;
+      oren->_data->mat = ospNewMaterial(renderer, "OBJMaterial");
+      updateMaterial(&oren->_data->mat, oren->_data->glmat);
+
+      // this is the per-vertex color logic, however it doesn't seem to work properly
+      // the streamlineviewer example just sets a material like the triangle mesh does
+      // so will use that logic for now
+      // // for color, pull out the diffuse color that is in the glmat and copy it for all the vertices
+      // ospray::vec3fa color = ospray::vec3fa(
+      //         (float)gl_material.diffuse[0],
+      //         (float)gl_material.diffuse[1],
+      //         (float)gl_material.diffuse[2]);
+      // cout << "\t\tcolor: " << color[0] << " " << color[1] << " " << color[2] << " " << color[3] << endl;
+      // ospray::vec3fa* colorv = (ospray::vec3fa*)embree::alignedMalloc(sizeof(ospray::vec3fa)*numPositions);
+      // for(size_t i=0; i<numPositions; i++) {
+      //     colorv[i] = color;
+      // }
+
+      OSPGeometry geom = ospNewGeometry("streamlines");
+      ospSetObject(geom,"vertex",verts);
+      ospSetObject(geom,"index",indices);
+      ospSet1f(geom,"radius",0.1); // TODO: remove hardcoded radius
+      // ospSetObject(geom,"vertex.color", colors); // not setting the per-vertex color list for now
+      oren->_data->ospMesh = geom;
+
+      ospSetMaterial(oren->_data->ospMesh, oren->_data->mat);
+      ospCommit(oren->_data->ospMesh);
+
+      oren->_data->ospModel = ospNewModel();
+      ospAddGeometry(oren->_data->ospModel,oren->_data->ospMesh);
+      ospCommit(oren->_data->ospModel);
+  }
+  else
+  {
+      printf("error: invalid glType provided: %d\n", oren->_data->geomType);
+  }
 
 
   #if 0
@@ -1627,16 +1718,18 @@ GeometryGenerator* OSPRayRenderer::getGeometryGenerator(int type)
     {
       return _gQuadStrip;
     }
-    //case GL_LINES:
-    //{
-        ////			gen = rm->GLines;
-        ////break;
-    //}
-    //case GL_LINE_STRIP:
-    //{
-        ////			gen = rm->GLineStrip;
-        ////break;
-    //}
+    case GL_POINTS:
+    {
+      return _gPoints;
+    }
+    case GL_LINES:
+    {
+      return _gLines;
+    }
+    case GL_LINE_STRIP:
+    {
+      return _gLineStrip;
+    }
     //case GL_POLYGON:
     //{
         ////this is temporary for visit, need to support other than quads

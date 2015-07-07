@@ -401,32 +401,25 @@ OGeometryGeneratorLines::~OGeometryGeneratorLines()
 void OGeometryGeneratorLines::addVertex(Manta::Real x,Manta::Real y,Manta::Real z)
 {
   _data->geomType = OR_CYLINDERS;
-#if 0
-  Group* group = _data->group;
-  _vertCounter++;
-  Vector vertex(x,y,z);
-  if (_vertCounter > 1 && _vertCounter%2 == 0) {
-    _data->num_prims++;
-    group->add(new Cylinder(MantaManager::singleton()->current_material, last_vertex, vertex, radius));
+
+  Mesh* _mesh = _data->mesh;
+  _mesh->vertices.push_back(Vector(x,y,z));
+
+  // we create the index with every odd vertex, this way we get pairs of lines
+  if(_mesh->vertices.size() % 2 == 1) {
+      _mesh->vertex_indices.push_back(_mesh->vertices.size()-1);
+      _data->num_prims++;
   }
-  last_vertex = vertex;
-#endif
 }
 
 
 void OGeometryGeneratorLineStrip::addVertex(Manta::Real x,Manta::Real y,Manta::Real z)
 {
   _data->geomType = OR_CYLINDERS;
-#if 0
-  Group* group = _data->group;
-  _vertCounter++;
-  Vector vertex(x,y,z);
-  if (_vertCounter > 1) {
-    _data->num_prims++;
-    group->add(new Cylinder(MantaManager::singleton()->current_material, last_vertex, vertex, radius));
-  }
-  last_vertex = vertex;
-#endif
+  Mesh* _mesh = _data->mesh;
+  _mesh->vertices.push_back(Vector(x,y,z));
+  _mesh->vertex_indices.push_back(_mesh->vertices.size()-1);
+  _data->num_prims++;
 }
 
 OGeometryGeneratorPoints::OGeometryGeneratorPoints()
