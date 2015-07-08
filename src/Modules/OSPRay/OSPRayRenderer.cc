@@ -1110,7 +1110,7 @@ ospray::box3f worldBounds = msgModel->getBBox();
 
 	void* depth = (unsigned char *) ospMapFrameBuffer(framebuffer, OSP_FB_DEPTH);
 	void* data = (unsigned char *) ospMapFrameBuffer(framebuffer);
-	_framebuffer.Load(_width, _height, data, depth);
+	_framebuffer.Load(_zNear, _zFar, _width, _height, data, depth);
 	ospUnmapFrameBuffer(data, framebuffer);
 	ospUnmapFrameBuffer(depth, framebuffer);
 }

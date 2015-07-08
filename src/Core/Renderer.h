@@ -50,6 +50,7 @@
 namespace glr
 {
 
+
 class Framebuffer 
 {
 public:
@@ -102,7 +103,7 @@ public:
 		if (depth) free(depth);
 	}
 
-	void Load(int w, int h, void *c, void *d)
+	void Load(float near, float far, int w, int h, void *c, void *d)
 	{
 		if (w != width || h != height)
 		{
@@ -114,21 +115,30 @@ public:
 			height = h;
 		}
 
-		memcpy(data, c, w*h*sizeof(int32_t));
+		for (int i = 0; i < w*h; i++)
+			((unsigned int *)data)[i] = ((unsigned int *)c)[i] | 0xff000000;
+ 
+		// memcpy(data, c, w*h*sizeof(int32_t));
+
 		if (d)
-			memcpy(depth, d, w*h*sizeof(float));
+		{
+			float denom = 1.0 / (far - near);
+
+			for (int i = 0; i < (width*height); i++)
+				((float *)depth)[i] = (((float *)d)[i] - near) * denom;
+		}
 	}
 
 	void Store()
 	{
-		std::cerr << "S";
 		if (width && height && data)
 		{
-			glPixelStorei(GL_UNPACK_ALIGNMENT, byteAlign);
-			glDisable(GL_DEPTH_TEST);
 			glDisable(GL_SCISSOR_TEST);
 			glDisable(GL_ALPHA_TEST);
 			glDisable(GL_BLEND);
+
+			glPixelStorei(GL_UNPACK_ALIGNMENT, byteAlign);
+			glEnable(GL_DEPTH_TEST);
 			glDepthFunc(GL_ALWAYS);
 
 			glMatrixMode(GL_MODELVIEW);
@@ -136,8 +146,16 @@ public:
 			glMatrixMode(GL_PROJECTION);
 			glLoadIdentity();
 
-			if (depth) glDrawPixels(width, height, GL_DEPTH_COMPONENT, GL_FLOAT, depth);
+			glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+			glDepthMask(GL_FALSE);
 			glDrawPixels(width, height, glFormat, glType, data);
+
+			if (depth)
+			{
+				glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+				glDepthMask(GL_TRUE);
+				glDrawPixels(width, height, GL_DEPTH_COMPONENT, GL_FLOAT, depth);
+			}
 		}
 	}
 

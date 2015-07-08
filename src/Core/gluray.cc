@@ -1340,7 +1340,10 @@ void gr_material(int pname, float* params)
 void gr_frustum(GLdouble left, GLdouble right, GLdouble bottom, GLdouble top, GLdouble near, GLdouble far)
 {
   GRCHECK();
-  rm->setNearFar(near,far);
+
+	float distance_to_far_corner = (far * sqrt(near*near + top*top + right*right)) / near;
+	fprintf(stderr, "NNN %f %f\n", far, distance_to_far_corner);
+  rm->setNearFar(near, distance_to_far_corner);
 }
 
 void gr_texImage1D(GLenum target, GLint level, GLint internalFormat, GLsizei width,
