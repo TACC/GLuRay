@@ -96,11 +96,11 @@ class Renderable;
 // a manta scene consisting of a scene->acceleration structure->world
 // objects should be added to world
 // all objects should be added to queues for deletion
-class GvtScene
+class OScene
 {
   public:
-    GvtScene();
-    ~GvtScene();
+    OScene();
+    ~OScene();
 
     void build();
 //    void setBGColor(const Manta::Color& color);

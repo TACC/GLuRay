@@ -25,6 +25,7 @@
 #include "GeometryGenerator.h"
 #include "Renderable.h"
 #include "GLTypes.h"
+#include "Scene.h"
 
 #include <Model/Lights/DirectionalLight.h>
 #include <Interface/LightSet.h>
@@ -173,6 +174,10 @@ public:
   bool rendered;
   int _frameNumber;
   int _realFrameNumber;  //corrected by env param
+  int _rank;
+  
+  Scene *current_scene;
+  Scene *next_scene;
 };
 
 }

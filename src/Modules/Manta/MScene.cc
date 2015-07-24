@@ -41,7 +41,7 @@ void MScene::build()
 {
   GLuRayRenderParameters& p = MantaRenderer::singleton()->params;
   as = new DynBVH(DEBUG_MSGS);
-  scene = new Scene();
+  scene = new Manta::Scene();
 
 
 

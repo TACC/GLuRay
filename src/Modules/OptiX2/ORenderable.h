@@ -21,8 +21,6 @@
 #ifndef ORENDERABLE_H
 #define ORENDERABLE_H
 
-#include "ospray/ospray.h"
-#include "ospray/common/OSPCommon.h"
 
 #include <Interface/MantaInterface.h>
 #include <Interface/Scene.h>
@@ -47,28 +45,54 @@
 #include "Renderable.h"
 
 
+/*
+ *Embreee
+ */
+// #include "sys/platform.h"
+// #include "sys/ref.h"
+// #include "lexers/streamfilters.h"
+// #include "lexers/parsestream.h"
+// //#include "../tutorials/glutdisplay.h"
+// #include "../tutorial_host/tutorials_host.h"
+
+// #include "sys/filename.h"
+// #include "image/image.h"
+// #include "device/loaders/loaders.h"
+// //#include "glutdisplay.h"
+// #include "regression.h"
+// #include "math/affinespace.h"
+// #include "math/color.h"
+// #include "math/vec2.h"
+// #include "math/vec3.h"
+// #include "math/vec4.h"
+
+
+// #include "sys/platform.h"
+// #include "sys/ref.h"
+// #include "camera.h"
+ #include <optixu/optixpp_namespace.h>
+
+/*
+ *
+ */
+
 
 
 #include <cassert>
 
 using namespace Manta;
 
-enum OGeometryType {
-  OR_TRIANGLES, OR_POINTS, OR_CYLINDERS
-};
+
+// namespace optix
+// {
+  // class GeometryInstance;
+//   class Geometry;
+// };
 
 struct OData
 {
-  // OData();
- Manta::Mesh* mesh;
-size_t num_prims;
-OSPGeometry ospMesh;
-OSPModel ospModel;
-OSPMaterial mat;
-GLMaterial glmat;
-// embree::Handle<embree::Device::RTMaterial> d_material;
-// embree::Handle<embree::Device::RTShape> d_mesh;
-OGeometryType geomType; //geometry type: triangles, cylinders, spheres
+  Manta::Mesh* mesh;
+  size_t num_prims;
 };
 
 class OGeometryGenerator : public GeometryGenerator
@@ -76,8 +100,6 @@ class OGeometryGenerator : public GeometryGenerator
 public:
   OGeometryGenerator() : _data(NULL) {_vertCounter=0;}
   virtual void addVertex(Manta::Real x, Manta::Real y, Manta::Real z) = 0;
-  virtual void addNormal(Manta::Real x, Manta::Real y, Manta::Real z) {}
-  virtual void addTextureCoord(Manta::Real u, Manta::Real v, Manta::Real w, Manta::Real z) = 0;
   void setData(OData* data) { _data = data; }
 protected:
   OData* _data;
@@ -114,6 +136,11 @@ public:
   virtual bool isEmpty();  //NOTE: MESH could still be empty...
   virtual size_t getNumPrims() ; // NOTE: num prims of groups, MESH could still be empty
   OData* _data;
+  optix::GeometryInstance* gi;
+  optix::Geometry oMesh;
+  optix::Material oMaterial;
+  optix::GeometryGroup gg;
+  optix::Transform* transform;
 };
 
 class OGeometryGeneratorVoid: public OGeometryGenerator
@@ -122,8 +149,6 @@ public:
   OGeometryGeneratorVoid();
   virtual ~OGeometryGeneratorVoid();
   virtual void addVertex(Manta::Real x, Manta::Real y, Manta::Real z) {}
-  virtual void addNormal(Manta::Real x, Manta::Real y, Manta::Real z) {}
-  virtual void addTextureCoord(Manta::Real u, Manta::Real v, Manta::Real w, Manta::Real z) {}
 };
 
 
@@ -134,8 +159,6 @@ public:
   {}
   virtual ~OGeometryGeneratorTriangles();
   virtual void addVertex(Manta::Real x, Manta::Real y, Manta::Real z);
-  virtual void addNormal(Manta::Real x, Manta::Real y, Manta::Real z);
-  virtual void addTextureCoord(Manta::Real u, Manta::Real v, Manta::Real w, Manta::Real z);
 };
 
 class OGeometryGeneratorTriangleStrip : public OGeometryGenerator
@@ -145,8 +168,6 @@ public:
   {}
   virtual ~OGeometryGeneratorTriangleStrip();
   virtual void addVertex(Manta::Real x, Manta::Real y, Manta::Real z);
-  virtual void addNormal(Manta::Real x, Manta::Real y, Manta::Real z);
-  virtual void addTextureCoord(Manta::Real u, Manta::Real v, Manta::Real w, Manta::Real z);
 };
 
 
@@ -156,7 +177,6 @@ public:
   OGeometryGeneratorQuads()
   {}
   virtual void addVertex(Manta::Real x, Manta::Real y, Manta::Real z);
-  virtual void addTextureCoord(Manta::Real u, Manta::Real v, Manta::Real w, Manta::Real z);
 };
 
 class OGeometryGeneratorQuadStrip : public OGeometryGenerator
@@ -165,7 +185,6 @@ public:
   OGeometryGeneratorQuadStrip()
   {}
   virtual void addVertex(Manta::Real x, Manta::Real y, Manta::Real z);
-  virtual void addTextureCoord(Manta::Real u, Manta::Real v, Manta::Real w, Manta::Real z);
 };
 
 class OGeometryGeneratorLines : public OGeometryGenerator
@@ -174,7 +193,6 @@ public:
   OGeometryGeneratorLines();
   virtual  ~OGeometryGeneratorLines();
   virtual void addVertex(Manta::Real x,Manta::Real y,Manta::Real z);
-  virtual void addTextureCoord(Manta::Real u, Manta::Real v, Manta::Real w, Manta::Real z) {}
   Manta::Real radius;
   Vector last_vertex;
 };
@@ -187,16 +205,6 @@ public:
   {}
   virtual ~OGeometryGeneratorLineStrip() {}
   virtual void addVertex(Manta::Real x,Manta::Real y,Manta::Real z);
-  virtual void addTextureCoord(Manta::Real u, Manta::Real v, Manta::Real w, Manta::Real z) {}
-};
-
-class OGeometryGeneratorPoints : public OGeometryGenerator
-{
-public:
-  OGeometryGeneratorPoints();
-  virtual  ~OGeometryGeneratorPoints();
-  virtual void addVertex(Manta::Real x,Manta::Real y,Manta::Real z);
-  virtual void addTextureCoord(Manta::Real u, Manta::Real v, Manta::Real w, Manta::Real z) {}
 };
 
 #endif

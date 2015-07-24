@@ -5,7 +5,7 @@
 #include "defines.h"
 #include "Work.h"
 #include "GLuRayRenderParameters.h"
-#include "GeometryGenerator.h"
+//#include "GeometryGenerator.h"
 //#include "Renderable.h"
 
 #include <Interface/MantaInterface.h>

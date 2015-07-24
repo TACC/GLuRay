@@ -1,11 +1,10 @@
 SET(GVT_SOURCES "")
 
 SET(GVT_SOURCES ${GVT_SOURCES}
- GvtManager.cc
- GvtManager.h
+ GvtRenderer.cc
+ GvtRenderer.h
  GvtRenderable.cc
  GvtRenderable.h
- GvtScene.cc
  GvtScene.h
   )
 

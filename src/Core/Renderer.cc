@@ -33,7 +33,8 @@ using namespace glr;
   , use_gl_lights(true), lights_dirty(true), use_gl_material(false), dirty_renderParams(false), new_renderParamsString(""),dirty_sampleGenerator(true)
   , initialized(false)
   , _zNear(0.1), _zFar(100.0)
-  , _nid_counter(0), _depth(false), _width(0), _height(0), _frameNumber(0), _realFrameNumber(0)
+  , _nid_counter(0), _depth(false), _width(0), _height(0), _frameNumber(0), _realFrameNumber(0),
+ current_scene(NULL), next_scene(NULL)
 {
   gl_lights.resize(8);
   _mutexes.push_back(new Manta::Mutex("Renderer"));

@@ -1623,8 +1623,8 @@ void OSPRayRenderer::deleteRenderable(Renderable* ren)
     return;
   }
 
-  ospRemoveGeometry(oren->_data->ospModel, oren->_data->ospMesh);
-  ospRelease(oren->_data->mat);
+  //ospRemoveGeometry(oren->_data->ospModel, oren->_data->ospMesh);
+  //ospRelease(oren->_data->mat);
 
   for(int i=0; i<renList.size(); i++) {
     if(renList[i] == ren) {
