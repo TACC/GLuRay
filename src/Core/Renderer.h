@@ -17,9 +17,8 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 **********************************************************************************/
-
-#ifndef RENDERMANAGER_H
-#define RENDERMANAGER_H
+#ifndef RENDERER_H
+#define RENDERER_H
 #include "defines.h"
 #include "Work.h"
 #include "GLuRayRenderParameters.h"
@@ -44,27 +43,29 @@
 
 #include <queue>
 #include <stack>
-using namespace Manta;
+// using namespace Manta;
 
+namespace glr
+{
 
-//class Scene;
-class RenderManager
+class Renderer
 {
 public:
-  RenderManager() ;
-  ~RenderManager() {}
+  Renderer() ;
+  ~Renderer() {}
   virtual void setBGColor(float r, float g, float b, float a)
   {
-    Color color = Color(RGBColor(r,g,b));
-	  if ((params.env_map == "" || params.env_map == "none") && (current_color.color[0] != color[0] || current_color.color[1] != color[1] || current_color.color[2] != color[2] || current_color.a != a))
-	  {
-		current_color.color = color;
-		current_color.a = a;
-		params.bgcolor = current_color;
-		updateBackground();
-	  }
+    printf("setBGColor\n");
+    Manta::Color color = Manta::Color(Manta::RGBColor(r,g,b));
+    if ((params.env_map == "" || params.env_map == "none") && (current_bgcolor.color[0] != color[0] || current_bgcolor.color[1] != color[1] || current_bgcolor.color[2] != color[2] || current_bgcolor.a != a))
+    {
+    current_bgcolor.color = color;
+    current_bgcolor.a = a;
+    params.bgcolor = current_bgcolor;
+    updateBackground();
+    }
   }
-  virtual void setColor(float r, float g, float b, float a) {current_color = RGBAColor(r,g,b,a);}
+  virtual void setColor(float r, float g, float b, float a) {current_color = Manta::RGBAColor(r,g,b,a);}
   virtual GLMaterial& getCurrentMaterial() { return gl_material; }
   virtual void enableGLMaterial(bool st) { use_gl_material = st; }
   virtual void updateMaterial() = 0;
@@ -94,7 +95,7 @@ public:
   virtual void setLight(int num, const GLLight& l ) { gl_lights.at(num) = l; lights_dirty = true; }
   virtual bool getUsePerVertexColors() {return usePerVertexColors; }
   virtual void setUsePerVertexColors(bool st) {usePerVertexColors = st;}
-  virtual RGBAColor getCurrentColor() { return current_color; }
+  virtual Manta::RGBAColor getCurrentColor() { return current_color; }
   virtual GeometryGenerator* getGeometryGenerator(int type) = 0;
   virtual Renderable* createRenderable(GeometryGenerator* gen) = 0;
   virtual void addRenderable(Renderable* ren) = 0;
@@ -104,7 +105,7 @@ public:
   virtual void addInstance(Renderable* ren);
   Renderable* getCurrentRenderable() { return current_renderable; }
   void setCurrentRenderable(Renderable* r) { current_renderable = r; }
-  AffineTransform& getCurrentTransform() { return current_transform; }
+  Manta::AffineTransform& getCurrentTransform() { return current_transform; }
 
   /*inline*/ void lock(const int mutex)
   {
@@ -114,21 +115,23 @@ public:
   {
     _mutexes[mutex]->unlock();
   }
+  void displayFrame();
 
   //protected:
 
   std::queue<Work*> accel_work_queue;
   bool kill_accel_threads;
 
-  static void* clientLoop(void* t);
+  // void initClient();
+  // static void* clientLoop(void* t);
 
-  RGBAColor current_color;
-  Material* current_material;
-  AffineTransform current_transform;
-  stack<AffineTransform> transform_stack;
-  RGBAColor current_bgcolor;
+  Manta::RGBAColor current_color;
+  Manta::Material* current_material;
+  Manta::AffineTransform current_transform;
+  stack<Manta::AffineTransform> transform_stack;
+  Manta::RGBAColor current_bgcolor;
   Renderable* current_renderable;
-  Vector current_normal;
+  Manta::Vector current_normal;
   bool auto_camera;
   int num_threads;
   int window_id;
@@ -153,10 +156,24 @@ public:
   bool dirty_sampleGenerator;
   bool initialized;
   double _zFar, _zNear;
-  vector<Mutex*> _mutexes;
+  vector<Manta::Mutex*> _mutexes;
+
+  size_t _nid_counter;
+  bool _depth;
+  int _width, _height;
+  struct Framebuffer {
+    Framebuffer() { width=height=0;byteAlign=1;format="RGBA8";data=NULL;}
+    int width, height;
+    std::string format;
+    int byteAlign;
+    void* data;
+  };
+  Framebuffer _framebuffer;
+  // bool _resetAccumulation;
+  bool rendered;
+  int _frameNumber;
+  int _realFrameNumber;  //corrected by env param
 };
 
-RenderManager* createRenderManager();
-
+}
 #endif
-

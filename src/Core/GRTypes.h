@@ -14,7 +14,7 @@
 
 #include <queue>
 #include <stack>
-using namespace Manta;
+// using namespace Manta;
 
 struct GRInstance
 {

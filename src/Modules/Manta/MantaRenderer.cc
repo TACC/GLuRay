@@ -2,17 +2,17 @@
 *                     Copyright (c) 2013-2015 Carson Brownlee
 *         Texas Advanced Computing Center, University of Texas at Austin
 *                       All rights reserved
-* 
+*
 *       This library is free software; you can redistribute it and/or
 * modify it under the terms of the GNU Lesser General Public
 * License as published by the Free Software Foundation; either
 * version 2.1 of the License, or (at your option) any later version.
-* 
+*
 * This library is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 * Lesser General Public License for more details.
-* 
+*
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -27,7 +27,7 @@
 #endif
 
 #include "defines.h"
-#include "MantaManager.h"
+#include "MantaRenderer.h"
 #include "CDTimer.h"
 #include "MScene.h"
 #include "MRenderable.h"
@@ -78,6 +78,8 @@
 int cacheFraction = -1;  //for dynbvh_d and mesh_dsm
 #endif
 
+using namespace glr;
+
 ostream& operator<<(ostream& out, GLMaterial& m)
 {
   out << "GLMaterial:\n";
@@ -124,44 +126,44 @@ void getLightSamples( float *u_, float *v_, int n)
   }
 }
 
-void addLights( LightSet* lights, int num_lights, float width_scale, float intensity)
+void addLights( Manta::LightSet* lights, int num_lights, float width_scale, float intensity)
 {
   float minx = -200; float scalex = 30*width_scale;
   float minz = 400; float scalez = 30*width_scale;
   float y = 400;
-  Color c1 = Color(RGB(0.85, 0.9, 0.6));
-  Color c2 = Color(RGB(0.3,0.3,1.0));
-  Color c4 = Color(RGB(1.,1.0,1.0));
+  Manta::Color c1 = Manta::Color(Manta::RGB(0.85, 0.9, 0.6));
+  Manta::Color c2 = Manta::Color(Manta::RGB(0.3,0.3,1.0));
+  Manta::Color c4 = Manta::Color(Manta::RGB(1.,1.0,1.0));
 
   float *u = new float[num_lights];
   float *v = new float[num_lights];
   getLightSamples( u, v, num_lights );
   srand(1);
   for (int i = 0; i < num_lights; i++) {
-    Color c3 = Color(RGB(drand48(), drand48(), drand48()));
+    Manta::Color c3 = Manta::Color(Manta::RGB(drand48(), drand48(), drand48()));
     float rand = drand48(), rand2 = drand48(), rand3 = drand48();
-    Color col = (c3*rand*.2 + ((c1*rand2 + c2*(1.0-rand2))*rand3*.5 + c4*(1.0-rand3)*.5)*.8) * (intensity/num_lights);
-    lights->add(new PointLight(Vector(minx + u[i] * scalex, y, minz + v[i]*scalez), col));
+    Manta::Color col = (c3*rand*.2 + ((c1*rand2 + c2*(1.0-rand2))*rand3*.5 + c4*(1.0-rand3)*.5)*.8) * (intensity/num_lights);
+    lights->add(new Manta::PointLight(Manta::Vector(minx + u[i] * scalex, y, minz + v[i]*scalez), col));
   }
   delete [] u;
   delete [] v;
 }
 
+MantaRenderer* MantaRenderer::_singleton = NULL;
 
-MantaManager* MantaManager::_singleton = NULL;
-
-MantaManager* MantaManager::singleton()
+MantaRenderer* MantaRenderer::singleton()
 {
   if (!_singleton)
-    _singleton = new MantaManager();
+    _singleton = new MantaRenderer();
   return _singleton;
 }
 
 
-MantaManager::MantaManager()
-  :RenderManager(), current_material(NULL), current_scene(NULL), next_scene(NULL),
+MantaRenderer::MantaRenderer()
+  :Renderer(), current_material(NULL), current_scene(NULL), next_scene(NULL),
   rtrt(0), factory(0), sync_display(0), camera(NULL), accel_mutex("accel lock"), accel_barrier("accel_barrier"), ready("ready lock",1), done("done lock",1), general_mutex("general lock"), _nid_counter(0), _depth(false), params_mutex("params_mutex")
 {
+  std::cout << __PRETTY_FUNCTION__ << std::endl;
   _gVoid = new MGeometryGeneratorVoid();
   _gTriangle = new MGeometryGeneratorTriangles();
   _gTriangleStrip = new MGeometryGeneratorTriangleStrip();
@@ -171,11 +173,11 @@ MantaManager::MantaManager()
   _gLineStrip= new MGeometryGeneratorLineStrip();
 }
 
-MantaManager::~MantaManager()
+MantaRenderer::~MantaRenderer()
 {
 }
 
-void MantaManager::updateLights()
+void MantaRenderer::updateLights()
 {
   if(!lights)
     return;
@@ -199,7 +201,7 @@ void MantaManager::updateLights()
     //lights->add(new PointLight(Vector(8,5,6), Color(RGBColor(.6,.67,.9))*.4*compI));
   }
 
-  Color ambient(RGB(0,0,0));
+  Manta::Color ambient(Manta::RGB(0,0,0));
   bool addedLight = false;
   //TODO: modify light position by modelview!
   if (params.use_gl_lights && use_gl_lights)
@@ -213,12 +215,12 @@ void MantaManager::updateLights()
         if (l.w == 0)
         {
           //cout << "adding gl directional light " << i << ":\n" << l << "\n";
-          lights->add(new DirectionalLight(l.pos, l.diffuse));
+          lights->add(new Manta::DirectionalLight(l.pos, l.diffuse));
         }
         else
         {
           cout << "adding gl point light " << i << ":\n" << l << "\n";
-          lights->add(new PointLight(l.pos, l.diffuse));
+          lights->add(new Manta::PointLight(l.pos, l.diffuse));
         }
         if (use_gl_material)
         {
@@ -230,47 +232,47 @@ void MantaManager::updateLights()
     }
     if (!addedLight) //Manta crashes with no lights...
     {
-      lights->add(new PointLight(Vector(10,10,-1), Color(RGBColor(1,1,1))*0.3));
+      lights->add(new Manta::PointLight(Manta::Vector(10,10,-1), Manta::Color(Manta::RGBColor(1,1,1))*0.3));
     }
   }
   else
   {
-    lights->add(new PointLight(Vector(8,5,6), Color(RGBColor(.6,.67,.9))*.5*compI));
+    lights->add(new Manta::PointLight(Manta::Vector(8,5,6), Manta::Color(Manta::RGBColor(.6,.67,.9))*.5*compI));
   }
   if (!use_gl_lights)
-    ambient = Color(RGB(.2,.2,.2));
+    ambient = Manta::Color(Manta::RGB(.2,.2,.2));
   if (params.num_ao_samples > 0)
   {
     //  current_material = new AmbientOcclusionCombiner(current_material, 100.0,params.num_ao_samples);
     //lights->setAmbientLight(new AmbientOcclusionBackground(ambient*params.ao_intensity,params.ao_distance,params.num_ao_samples, false, background));
-    ambient = Color(RGB(1,1,1));  //HACK!
-    lights->setAmbientLight(new AmbientOcclusion(ambient*params.ao_intensity,params.ao_distance,params.num_ao_samples, false));
+    ambient = Manta::Color(Manta::RGB(1,1,1));  //HACK!
+    lights->setAmbientLight(new Manta::AmbientOcclusion(ambient*params.ao_intensity,params.ao_distance,params.num_ao_samples, false));
   }
   else {
-    lights->setAmbientLight(new ConstantAmbient(ambient));
+    lights->setAmbientLight(new Manta::ConstantAmbient(ambient));
   }
-    lights->add(new PointLight(Vector(10,10,-1), Color(RGBColor(1,1,1))*0.5));
-    lights->setAmbientLight(new ConstantAmbient(Color(RGB(.5,.5,.5))));
-    lights->setAmbientLight(new ConstantAmbient(ambient));
+    lights->add(new Manta::PointLight(Manta::Vector(10,10,-1), Manta::Color(Manta::RGBColor(1,1,1))*0.5));
+    lights->setAmbientLight(new Manta::ConstantAmbient(Manta::Color(Manta::RGB(.5,.5,.5))));
+    lights->setAmbientLight(new Manta::ConstantAmbient(ambient));
   //cerr << "setuplights done\n";
 }
 
-void  MantaManager::updateMaterial()
+void  MantaRenderer::updateMaterial()
 {
   //TODO: transparency taken from glcolor always for now...
   GLMaterial m = gl_material;
   //TODO: DEBUG: hardcoding mat for debugging
   //m.diffuse = Color(RGB(1.0, 0.713726, .21569));
   //m.diffuse = Color(RGB(0.8, 0.8, 0.8));
-  m.specular = Color(RGB(.1, .1, .1));
-  m.ambient = Color(RGB(0, 0, 0));
+  m.specular = Manta::Color(Manta::RGB(.1, .1, .1));
+  m.ambient = Manta::Color(Manta::RGB(0, 0, 0));
   m.shiny = 100;
 
   if (!use_gl_material)
   {
     m.diffuse = current_color.color;
-    m.specular = Color(RGB(0,0,0));
-    m.ambient = Color(RGB(1.0,1.0,1.0));
+    m.specular = Manta::Color(Manta::RGB(0,0,0));
+    m.ambient = Manta::Color(Manta::RGB(1.0,1.0,1.0));
     m.shiny = 10;
   }
   else
@@ -292,22 +294,22 @@ void  MantaManager::updateMaterial()
     //    texture = new Constant<Manta::Color>(m.diffuse);
     if (params.material == "phong")
     {
-      Texture<Color> *specular =
-        new Constant<Manta::Color>
+      Manta::Texture<Manta::Color> *specular =
+        new Manta::Constant<Manta::Color>
         (m.specular);
-      Texture<float> *refl = new Constant<float>(params.reflectivity);
+      Manta::Texture<float> *refl = new Manta::Constant<float>(params.reflectivity);
 
-      current_material= new Phong(texture,
+      current_material= new Manta::Phong(texture,
           specular, m.shiny,refl);
     }
     else if (params.material == "lambertian")
     {
 
       //current_material = new Lambertian(Color(RGBColor(0,1,0)));
-      current_material = new Lambertian(texture);
+      current_material = new Manta::Lambertian(texture);
     }
     else if (params.material == "metal")
-      current_material = new MetalMaterial(texture, m.shiny);
+      current_material = new Manta::MetalMaterial(texture, m.shiny);
     else if (params.material == "glass")
     {
       //current_material = new Dielectric(params.ri, params.ri2, texture);
@@ -317,20 +319,20 @@ void  MantaManager::updateMaterial()
       //current_material = new ThinDielectric(params.eta, texture, params.thickness, 1);
     }
     else if (params.material == "orenNayar")
-      current_material = new OrenNayar(texture);
+      current_material = new Manta::OrenNayar(texture);
     else if (params.material == "transparent")
     {
       if (current_color.a < 0.95)
-        current_material = new Transparent(texture, current_color.a);
+        current_material = new Manta::Transparent(texture, current_color.a);
       else
       {
 
-        Texture<Color> *specular =
-          new Constant<Manta::Color>
+        Manta::Texture<Manta::Color> *specular =
+          new Manta::Constant<Manta::Color>
           (m.specular);
-        Texture<float> *refl = new Constant<float>(params.reflectivity);
+        Manta::Texture<float> *refl = new Manta::Constant<float>(params.reflectivity);
 
-        current_material= new Phong(texture,
+        current_material= new Manta::Phong(texture,
             specular, m.shiny,refl);
       }
     }
@@ -342,28 +344,28 @@ void  MantaManager::updateMaterial()
 
     //   cout << "setColor: " << r <<  " " << g << " " << b << endl;
     if (params.material == "phong")
-      current_material= new Phong(m.diffuse,
-          m.specular, m.shiny, (ColorComponent)params.reflectivity);
+      current_material= new Manta::Phong(m.diffuse,
+          m.specular, m.shiny, (Manta::ColorComponent)params.reflectivity);
     else if (params.material == "lambertian")
-      current_material = new Lambertian(m.diffuse);
+      current_material = new Manta::Lambertian(m.diffuse);
     else if (params.material == "metal")
-      current_material = new MetalMaterial(m.diffuse, 10);
+      current_material = new Manta::MetalMaterial(m.diffuse, 10);
     else if (params.material == "glass")
     {
-      current_material = new Dielectric(params.ri, params.ri2, current_color.color);
+      current_material = new Manta::Dielectric(params.ri, params.ri2, current_color.color);
     }
     else if (params.material == "thinDielectric")
-      current_material = new ThinDielectric(params.eta, m.diffuse, params.thickness, 1);
+      current_material = new Manta::ThinDielectric(params.eta, m.diffuse, params.thickness, 1);
     else if (params.material == "orenNayar")
-      current_material = new OrenNayar(m.diffuse, 1);
+      current_material = new Manta::OrenNayar(m.diffuse, 1);
     else if (params.material == "transparent")
-      current_material = new Transparent(m.diffuse, current_color.a);
+      current_material = new Manta::Transparent(m.diffuse, current_color.a);
     else
       assert(0);
   }
 }
 
-//void MantaManager::updateScene() {
+//void MantaRenderer::updateScene() {
 //  //    cout << "internal updateScene\n";
 //  // static AccelRunnable works;
 //  //works.run();
@@ -428,7 +430,7 @@ void  MantaManager::updateMaterial()
 //  }
 //}
 
-// void MantaManager::parallelBVHBuild(int proc, int numProcs, )
+// void MantaRenderer::parallelBVHBuild(int proc, int numProcs, )
 // {
 //   mutex.lock();
 //   //get work
@@ -447,7 +449,7 @@ void  MantaManager::updateMaterial()
 
 
 
-void MantaManager::useShadows(bool st)
+void MantaRenderer::useShadows(bool st)
 {
   if (!st)
     factory->selectShadowAlgorithm("noshadows");
@@ -456,41 +458,41 @@ void MantaManager::useShadows(bool st)
 }
 
 
-Scene* createDefaultScene()
+Manta::Scene* createDefaultScene()
 {
   // Create a default scene.  This scene is used for benchmarks, so
   // please do not change it.  Please create a new scene instead.
   // Don't even put any #ifdefs in it or code that is commented out.
-  Scene* scene = new Scene();
+  Manta::Scene* scene = new Manta::Scene();
 
-  scene->setBackground(new ConstantBackground(ColorDB::getNamedColor("SkyBlue3")*0.5));
+  scene->setBackground(new Manta::ConstantBackground(Manta::ColorDB::getNamedColor("SkyBlue3")*0.5));
 
   // Material* red=new Phong(Color(RGBColor(.6,0,0)),
   //                      Color(RGBColor(.6,.6,.6)), 32, (ColorComponent)0.4);
 
-  Material* red = new Lambertian(Color(RGBColor(0,0,0)));
+  Manta::Material* red = new Manta::Lambertian(Manta::Color(Manta::RGBColor(0,0,0)));
 
-  Material* plane_matl = new Phong(new CheckerTexture<Color>(Color(RGBColor(.6,.6,.6)),
-        Color(RGBColor(0,0,0)),
-        Vector(1,0,0),
-        Vector(0,1,0)),
-      new Constant<Color>(Color(RGBColor(.6,.6,.6))),
+  Manta::Material* plane_matl = new Manta::Phong(new Manta::CheckerTexture<Manta::Color>(Manta::Color(Manta::RGBColor(.6,.6,.6)),
+        Manta::Color(Manta::RGBColor(0,0,0)),
+        Manta::Vector(1,0,0),
+        Manta::Vector(0,1,0)),
+      new Manta::Constant<Manta::Color>(Manta::Color(Manta::RGBColor(.6,.6,.6))),
       32,
-      new CheckerTexture<ColorComponent>
-      ((ColorComponent)0.2,
-       (ColorComponent)0.5,
-       Vector(1,0,0),
-       Vector(0,1,0)));
+      new Manta::CheckerTexture<Manta::ColorComponent>
+      ((Manta::ColorComponent)0.2,
+       (Manta::ColorComponent)0.5,
+       Manta::Vector(1,0,0),
+       Manta::Vector(0,1,0)));
 
 
-  Group* world = new Group();
-  Primitive* floor = new Parallelogram(plane_matl, Vector(-20,-20,0),
-      Vector(40,0,0), Vector(0,40,0));
+  Manta::Group* world = new Manta::Group();
+  Manta::Primitive* floor = new Manta::Parallelogram(plane_matl, Manta::Vector(-20,-20,0),
+      Manta::Vector(40,0,0), Manta::Vector(0,40,0));
   // Setup world-space texture coordinates for the checkerboard floor
-  UniformMapper* uniformmap = new UniformMapper();
+  Manta::UniformMapper* uniformmap = new Manta::UniformMapper();
   floor->setTexCoordMapper(uniformmap);
   world->add(floor);
-  world->add(new Sphere(red, Vector(0,0,0), Manta::Real(0e-6)));
+  world->add(new Manta::Sphere(red, Manta::Vector(0,0,0), Manta::Real(0e-6)));
   scene->setObject(world);
 
   /*LightSet* lights = new LightSet();
@@ -501,11 +503,11 @@ Scene* createDefaultScene()
     scene->setLights(lights);*/
   scene->getRenderParameters().maxDepth = 5;
 
-  scene->addBookmark("default view", Vector(3, 3, 2), Vector(0, 0, 0.3), Vector(0, 0, 1), 60, 60);
+  scene->addBookmark("default view", Manta::Vector(3, 3, 2), Manta::Vector(0, 0, 0.3), Manta::Vector(0, 0, 1), 60, 60);
   return scene;
 }
 
-void MantaManager::setSize(int w, int h)
+void MantaRenderer::setSize(int w, int h)
 {
   if (w != params.width || h != params.height)
   {
@@ -535,7 +537,7 @@ void MantaManager::setSize(int w, int h)
   }
 }
 
-void MantaManager::init()
+void MantaRenderer::init()
 {
   _rank = -1;
 #ifdef USE_MPI
@@ -546,10 +548,10 @@ void MantaManager::init()
 #endif
   GetVar<bool>("GLURAY_DEPTH", _depth);
   cerr << "initializing GLuRay\n";
-  lights = new LightSet();
-  gl_lights[0].diffuse = Color(RGB(1,1,1));
-  gl_lights[0].specular = Color(RGB(1,1,1));
-  gl_lights[0].pos = Vector(0,0,1);
+  lights = new Manta::LightSet();
+  gl_lights[0].diffuse = Manta::Color(Manta::RGB(1,1,1));
+  gl_lights[0].specular = Manta::Color(Manta::RGB(1,1,1));
+  gl_lights[0].pos = Manta::Vector(0,0,1);
   gl_lights[0].w = 0;
   updateLights();
   setColor(current_color.color[0], current_color.color[2], current_color.color[3], current_color.a);
@@ -557,7 +559,7 @@ void MantaManager::init()
   //  current_material= new Phong(Color(RGBColor(1,1,1)),
   //			      Color(RGBColor(.6,.6,.6)), 32, (ColorComponent)params.reflectivity);
   //current_material = new AmbientOcclusion(current_material, 100.0,20);
-  current_normal = Vector(0,1,0);
+  current_normal = Manta::Vector(0,1,0);
   current_transform.initWithIdentity();
   current_bgcolor = params.bgcolor;
   //  background = new ConstantBackground(current_bgcolor.color);
@@ -569,22 +571,10 @@ void MantaManager::init()
     next_scene = new MScene();
   //DEBUG: insert dummy object to avoid DynBVH from crashing!
   //   if (scene->world->getVectorOfObjects().empty())
-  current_scene->world->add(new Sphere(new Lambertian(Color(RGBColor(current_bgcolor.color[0],current_bgcolor.color[1],current_bgcolor.color[2]))), Vector(0,0,0), Manta::Real(0e-6)));
+  current_scene->world->add(new Manta::Sphere(new Manta::Lambertian(Manta::Color(Manta::RGBColor(current_bgcolor.color[0],current_bgcolor.color[1],current_bgcolor.color[2]))), Manta::Vector(0,0,0), Manta::Real(0e-6)));
 
-#if RUN_CLIENT
-  if (!client_running)
-  {
-    client_running = true;
-    pthread_t thread;
-    cout << "run client\n";
-    int err = pthread_create(&thread, 0, clientLoop, this);
-    if (err){
-      printf("ERROR; return code from pthread_create() is %d\n", err);
-      exit(-1);
-    }
-  }
-#endif
-
+  // create client poll thread
+  // initClient();
 
   //GetVariables();
   //  cout << "setting up manta\n";
@@ -603,14 +593,14 @@ void MantaManager::init()
     cout << "creating manta\n";
     ///////////////////////////////////////////////////////////////////////////
     // Create Manta.
-    rtrt = createManta();
+    rtrt = Manta::createManta();
     updateCamera();
 
     rtrt->setDisplayBeforeRender(false);
 
     cout << "creating factory\n";
     // Create a Manta Factory.
-    factory = new Factory( rtrt );
+    factory = new Manta::Factory( rtrt );
 
 
     // Use one worker by default.
@@ -631,12 +621,12 @@ void MantaManager::init()
     if (_depth)
     {
       if(!factory->selectImageType("rgba8zfloat"))
-        throw InternalError("default image not found");
+        throw Manta::InternalError("default image not found");
     }
     else
     {
       if(!factory->selectImageType("rgb8"))
-        throw InternalError("default image not found");
+        throw Manta::InternalError("default image not found");
     }
     if (params.shadows)
       factory->selectShadowAlgorithm("hard");
@@ -654,7 +644,7 @@ void MantaManager::init()
     bool stereo = false;
     bool timeView = false;
     vector<string> timeViewArgs;
-    Color bgcolor;
+    Manta::Color bgcolor;
     bool override_scene_bgcolor = false;
     int maxDepth = -1;          // -1 is invalid and represent unset state.
 
@@ -714,7 +704,7 @@ void MantaManager::init()
 
     // Check to see if a UI was specified
     if(!haveUI){
-      UserInterface* ui = factory->createUserInterface("null");
+      Manta::UserInterface* ui = factory->createUserInterface("null");
 
       ui->startup();
     }
@@ -724,7 +714,7 @@ void MantaManager::init()
     // current_scene = new MScene();
 
     //NOTE: this is added because dynbvh bombs on empty scenes
-    current_scene->world->add(new Sphere(current_material, Vector(0,0,0), Manta::Real(0e-6)));
+    current_scene->world->add(new Manta::Sphere(current_material, Manta::Vector(0,0,0), Manta::Real(0e-6)));
 
     //rtrt->setScene(scenet);
     rtrt->setScene(current_scene->scene);
@@ -732,7 +722,7 @@ void MantaManager::init()
 
 
     // rtrt->registerSerialAnimationCallback(Callback::create(this,
-    // 		    	  &MantaManager::buildAccelerationCallback));
+    // 		    	  &MantaRenderer::buildAccelerationCallback));
     //  }
 
     //    ready.down();
@@ -745,7 +735,7 @@ void MantaManager::init()
          rendering = true;
     //     cout << "gl2manta rendering\n";
     // rtrt->addTransaction( "setScene",
-    //		Callback::create(this, &MantaManager::updateScene));
+    //		Callback::create(this, &MantaRenderer::updateScene));
 
     cout << "starting rendering\n";
     if (frame_lag)
@@ -761,12 +751,12 @@ void MantaManager::init()
 
 #ifdef USE_MPI
     if(!factory->selectLoadBalancer("MPI_LoadBalancer(-granularity 100 -masterGranularity 4)"))
-      throw InternalError("MPI load balancer not found");
+      throw Manta::InternalError("MPI load balancer not found");
 
     //if(!factory->selectImageTraverser("tiled(-square)"))
     //  throw InternalError("default image traverser not found");
     if(!factory->selectImageTraverser("MPI_ImageTraverser(-square)"))
-      throw InternalError("MPI image traverser not found");
+      throw Manta::InternalError("MPI image traverser not found");
 
     //if(!factory->selectLoadBalancer("workqueue(-granularity 60)"))
     //   throw InternalError("default load balancer not found");
@@ -775,10 +765,10 @@ void MantaManager::init()
     //    throw InternalError("default image traverser not found");
 #else
     if(!factory->selectLoadBalancer("workqueue(-granularity 60)"))
-      throw InternalError("default load balancer not found");
+      throw Manta::InternalError("default load balancer not found");
 
     if(!factory->selectImageTraverser("tiled(-square)"))
-      throw InternalError("default image traverser not found");
+      throw Manta::InternalError("default image traverser not found");
 #endif
 
     //    if(!factory->selectPixelSampler("singlesample"))
@@ -788,46 +778,51 @@ void MantaManager::init()
     else
       s << "singlesample";
     if(!factory->selectPixelSampler(s.str()))
-      throw InternalError("default pixel sampler not found");
+      throw Manta::InternalError("default pixel sampler not found");
 
     if(!factory->selectRenderer("raytracer"))
       //	    if(!factory->selectRenderer("pathtracer"))
-      throw InternalError("default renderer not found");
+      throw Manta::InternalError("default renderer not found");
 
-} catch (Exception& e) {
+} catch (Manta::Exception& e) {
   cerr << "manta.cc (top level): Caught exception: " << e.message() << '\n';
-  Thread::exitAll( 1 );
+  Manta::Thread::exitAll( 1 );
   assert(0);
 } catch (std::exception e){
   cerr << "manta.cc (top level): Caught std exception: "
                                  << e.what()
                                             << '\n';
-  Thread::exitAll(1);
+  Manta::Thread::exitAll(1);
   assert(0);
 } catch(...){
   cerr << "manta.cc (top level): Caught unknown exception\n";
-  Thread::exitAll(1);
+  Manta::Thread::exitAll(1);
   assert(0);
 }
 
 #if USE_MPI
-MPI_LoadBalancer::setNumRenderThreadsPerNode(rtrt->numWorkers());
+Manta::MPI_LoadBalancer::setNumRenderThreadsPerNode(rtrt->numWorkers());
 #endif //USE_MPI
 
 
 //  if (!frame_lag)
 //    sync_display->waitOnFrameReady();
 cout << "initialization done\n";
+assert(rtrt);
 initialized = true;
 }
 
-LightSet* MantaManager::getLights() { if (!rtrt || !rtrt->getScene()) return new LightSet(); return rtrt->getScene()->getLights(); }
-MantaInterface* MantaManager::getEngine() { return rtrt; }
+Manta::LightSet* MantaRenderer::getLights() { if (!rtrt || !rtrt->getScene()) return new Manta::LightSet(); return rtrt->getScene()->getLights(); }
+Manta::MantaInterface* MantaRenderer::getEngine() { return rtrt; }
 
 
 //TODO: updating pixelsampler mid flight crashes manta
-void MantaManager::setNumSamples(int,int,int samples)
+void MantaRenderer::setNumSamples(int,int,int samples)
 {
+  // need to relaunch manta to change samples
+  this->relaunch = true;
+
+#if 0
   cout << "setting samples\n";
   params.num_samples = samples;
   stringstream s;
@@ -844,9 +839,10 @@ void MantaManager::setNumSamples(int,int,int samples)
   //rtrt->setPixelSampler(ps);
   //  assert(0);
   cout << "set num samples to: " << samples << endl;
+#endif
 }
 
-void MantaManager::displayCallback(int proc, int numProcs, bool& changed)
+void MantaRenderer::displayCallback(int proc, int numProcs, bool& changed)
 {
   cout << "display callback\n";
   ready.up();
@@ -854,24 +850,24 @@ void MantaManager::displayCallback(int proc, int numProcs, bool& changed)
   cout << "display callback finished\n";
 }
 
-void MantaManager::setNumThreads(int t)
+void MantaRenderer::setNumThreads(int t)
 {
   params.num_threads = t;
   if (!rtrt)
     num_threads = t;
   else
-    rtrt->addOneShotCallback(MantaInterface::Absolute, 0,
-        Callback::create(this, &MantaManager::setNumThreadsCallback));
+    rtrt->addOneShotCallback(Manta::MantaInterface::Absolute, 0,
+        Manta::Callback::create(this, &MantaRenderer::setNumThreadsCallback));
 }
 
-void MantaManager::setNumThreadsCallback(int, int)
+void MantaRenderer::setNumThreadsCallback(int, int)
 {
   //  general_mutex.lock();
   if (_rank == 1)
     rtrt->changeNumWorkers(1);
   else if (_rank == 0)
   {
-    rtrt->changeNumWorkers(Max(2, Min(4, params.num_threads-1)));
+    rtrt->changeNumWorkers(Manta::Max(2, Manta::Min(4, params.num_threads-1)));
     //rtrt->changeNumWorkers(1);
     printf("num_threads master: %d", int(rtrt->numWorkers()));
   }
@@ -889,24 +885,24 @@ void MantaManager::setNumThreadsCallback(int, int)
   callback_handles.resize(0);
   for(int i = 0; i < num_threads; i++)
   {
-    callback_handles.push_back(rtrt->registerSerialAnimationCallback(Callback::create(this,
-            &MantaManager::buildAccelerationCallback)));
+    callback_handles.push_back(rtrt->registerSerialAnimationCallback(Manta::Callback::create(this,
+            &MantaRenderer::buildAccelerationCallback)));
   }
   //  general_mutex.unlock();
 }
 
 
-size_t MantaManager::generateNID()
+size_t MantaRenderer::generateNID()
 {
   return ++_nid_counter;
 }
 
-Renderable* MantaManager::getRenderable(size_t nid)
+Renderable* MantaRenderer::getRenderable(size_t nid)
 {
   return _map_renderables[nid];
 }
 
-void MantaManager::buildAccelerationCallback(int proc, int numProcs, bool& changed)
+void MantaRenderer::buildAccelerationCallback(int proc, int numProcs, bool& changed)
 {
 #if DEBUG_MSGS
   accel_barrier.wait(num_threads);
@@ -985,14 +981,14 @@ void MantaManager::buildAccelerationCallback(int proc, int numProcs, bool& chang
 #define MPI_TAG_RENDERABLE 547
 
 
-void MantaManager::render()
+void MantaRenderer::render()
 {
   //MPI_Barrier(MPI_COMM_WORLD);
-  //DEBUG("MantaManager::render\n");
-  //LOGSTARTC("MantaManager::render", 0.4,0.4,0.0);
+  //DEBUG("MantaRenderer::render\n");
+  //LOGSTARTC("MantaRenderer::render", 0.4,0.4,0.0);
   static int mpiCounter = 0;
   mpiCounter++;
-  //printf("rank: %d MantaManager::render %d\n", _rank, mpiCounter);
+  //printf("rank: %d MantaRenderer::render %d\n", _rank, mpiCounter);
   /*MPI_Status stat;
     static vector<int> renderProcNums;
     static int renderProcNum = -1;
@@ -1087,7 +1083,7 @@ void MantaManager::render()
   //MPI_Barrier(pv_comm);
   //MPI_Barrier(MPI_COMM_WORLD);
   //MPI_Barrier(MPI_COMM_WORLD);
-  //DEBUG("MantaManager::render2\n");
+  //DEBUG("MantaRenderer::render2\n");
   //return;
   static CDTimer timer;
   timer.start();
@@ -1100,7 +1096,7 @@ void MantaManager::render()
   MPI_Bcast(&res, 2, MPI_INT, 0, MPI_COMM_WORLD);
   setSize(res[0],res[1]);
 
-  DEBUG("MantaManager::render done syncing resolution rank:\n");
+  DEBUG("MantaRenderer::render done syncing resolution rank:\n");
 
 #endif
 
@@ -1113,7 +1109,7 @@ void MantaManager::render()
       rendering = true;
       //     cout << "gl2manta rendering\n";
       // rtrt->addTransaction( "setScene",
-      //		Callback::create(this, &MantaManager::updateScene));
+      //		Callback::create(this, &MantaRenderer::updateScene));
 
       //printf("rank: %d starting rendering\n", _rank);
       if (frame_lag)
@@ -1149,8 +1145,8 @@ void MantaManager::render()
   }
 
   if (auto_camera) {
-    BBox bbox;
-    PreprocessContext context2(rtrt, 0, 1, lights);
+    Manta::BBox bbox;
+    Manta::PreprocessContext context2(rtrt, 0, 1, lights);
 
     current_scene->world->preprocess(context2);
     current_scene->world->computeBounds(context2, bbox);
@@ -1183,7 +1179,7 @@ void MantaManager::render()
   static CDTimer timer2;
   timer2.start();
   //Manta::LogManager::GetSingleton()->SetEnabled(true);
-  LOGSTARTC("MantaManager::render internal", 0.7,0.5,0.0);
+  LOGSTARTC("MantaRenderer::render internal", 0.7,0.5,0.0);
   //timer4.stop();
   //printf("rank: %d display time: %f\n", _rank, timer4.getDelta());
 
@@ -1245,7 +1241,7 @@ void MantaManager::render()
     //cerr << str.str();
     //if (mr->isBuilt())
     {
-      DirtyInstance* di = new DirtyInstance(mr->instance, itr->transform);
+      Manta::DirtyInstance* di = new Manta::DirtyInstance(mr->instance, itr->transform);
       AccelWork* work = new AccelWork(di, "di build\n");
       //addWork(work);
       work->run();
@@ -1261,7 +1257,7 @@ void MantaManager::render()
     printf("rank: %d id: %d meshsize: %fMB\n", _rank, mr->getNID(), meshsize);
 #endif
   }
-  current_scene->world->add(new Sphere(current_material, Vector(0,0,0), Manta::Real(0e-6)));
+  current_scene->world->add(new Manta::Sphere(current_material, Manta::Vector(0,0,0), Manta::Real(0e-6)));
 #if DEBUG_MSGS
   printf("rank: %d total mesh size: %f\MB\n", _rank, totalMeshSize);
 #endif
@@ -1270,7 +1266,7 @@ void MantaManager::render()
   //DEBUG: insert dummy object to avoid DynBVH from crashing!
   if (current_scene->world->getVectorOfObjects().empty())
   {
-    current_scene->world->add(new Sphere(new Lambertian(Color(RGBColor(current_bgcolor.color[0],current_bgcolor.color[1],current_bgcolor.color[2]))), Vector(0,0,0), Manta::Real(0e-6)));
+    current_scene->world->add(new Manta::Sphere(new Manta::Lambertian(Manta::Color(Manta::RGBColor(current_bgcolor.color[0],current_bgcolor.color[1],current_bgcolor.color[2]))), Manta::Vector(0,0,0), Manta::Real(0e-6)));
     cout << "scene empty\n";
   }
   /*
@@ -1379,7 +1375,7 @@ void MantaManager::render()
   }
 
   DEBUG("wait on frame ready done\n");
-  LOGSTOP("MantaManager::render internal");
+  LOGSTOP("MantaRenderer::render internal");
   //MPI_Barrier(MPI_COMM_WORLD);
   timer2.stop();
   //printf("rank: %d internal render time: %f\n", _rank, timer2.getDelta());
@@ -1422,20 +1418,20 @@ void MantaManager::render()
   }
   DEBUG("done rendering\n");
   //printf("rank: %d render time: %f\n", _rank, timer.getDelta());
-  LOGSTOP("MantaManager::render");
+  LOGSTOP("MantaRenderer::render");
 #if USE_MPI
   //  MPI_Barrier(MPI_COMM_WORLD);
 #endif
 }
 
 
-void MantaManager::displayFrame()
+void MantaRenderer::displayFrame()
 {
   if (!rendering)
     return;
   if (_rank > 0)
     return;
-  LOGSTARTC("MantaManager::displayFrame", 0.1,0.5,0.0);
+  LOGSTARTC("MantaRenderer::displayFrame", 0.1,0.5,0.0);
   //sync_display->doneRendering();
 #if USE_MPI
   //DEBUG("render barrier wait\n");
@@ -1447,7 +1443,7 @@ void MantaManager::displayFrame()
   static CDTimer displayTimer;
   displayTimer.start();
 
-  const SimpleImageBase* image = dynamic_cast< const Manta::SimpleImageBase * >
+  const Manta::SimpleImageBase* image = dynamic_cast< const Manta::SimpleImageBase * >
     ( sync_display->getCurrentImage() );
   if (!image)
     return;
@@ -1617,10 +1613,16 @@ void MantaManager::displayFrame()
       glDisable(GL_DEPTH_TEST);
       glDisable(GL_SCISSOR_TEST);
       glDisable(GL_ALPHA_TEST);
+    GLint rmode, dmode;
+    glGetIntegerv(GL_READ_BUFFER, &rmode);
+    glGetIntegerv(GL_DRAW_BUFFER, &dmode);
+    glDrawBuffer(rmode);
 
       static CDTimer timer5;
       timer5.start();
       glDrawPixels(mwidth,mheight,GL_RGB,GL_UNSIGNED_BYTE, data);
+          glDrawBuffer(dmode);
+    glFinish();
       timer5.stop();
       //printf("rank: 0 drawpixels time: %f\n", timer5.getDelta());
       //glPopClientAttrib();
@@ -1672,13 +1674,13 @@ void MantaManager::displayFrame()
   DEBUG("draw pixels done \n");
   displayTimer.stop();
   //printf("rank: %d display time: %f\n", _rank, displayTimer.getDelta());
-  LOGSTOP("MantaManager::displayFrame");
+  LOGSTOP("MantaRenderer::displayFrame");
 
 }
 
-void MantaManager::syncInstances()
+void MantaRenderer::syncInstances()
 {
-  static Mesh* megaMesh = new Mesh;
+  static Manta::Mesh* megaMesh = new Manta::Mesh;
   static MRenderable* megaRenderable = NULL;
   static int mcounter = 0;
   mcounter++;
@@ -1868,8 +1870,8 @@ void MantaManager::syncInstances()
 #endif
         renderable->setNID(nid);
         _map_renderables[nid] = renderable;
-        mr->asDSM = new DynBVH_D();
-        mr->as = new DynBVH();
+        mr->asDSM = new Manta::DynBVH_D();
+        mr->as = new Manta::DynBVH();
 
         //mr->meshDSM = new Mesh_DSM();
         //mr->meshDSM->populateMesh(testMesh);
@@ -1881,12 +1883,12 @@ void MantaManager::syncInstances()
         //mr->asDSM->setGroup(testMesh);
         mr->asDSM->setGroup(testMesh);
         mr->as->setGroup(testMesh);
-        AffineTransform t;
+        Manta::AffineTransform t;
         t.initWithIdentity();
         if (cacheFraction > 0)
-          mr->instance = new DirtyInstance(mr->asDSM, t); //TODO:  gllists can have compiled local transforms!!!
+          mr->instance = new Manta::DirtyInstance(mr->asDSM, t); //TODO:  gllists can have compiled local transforms!!!
         else
-          mr->instance = new DirtyInstance(mr->as, t); //TODO:  gllists can have compiled local transforms!!!
+          mr->instance = new Manta::DirtyInstance(mr->as, t); //TODO:  gllists can have compiled local transforms!!!
         //TODO: memory leak
         std::stringstream named;
         static size_t counter = 0;
@@ -1917,19 +1919,19 @@ void MantaManager::syncInstances()
       megaRenderable = dynamic_cast<MRenderable*>(this->createRenderable(this->getGeometryGenerator(GL_TRIANGLE_STRIP)));
 
       printf("rank: %d building megamesh size: %d \n", _rank, megaMesh->size());
-      AffineTransform t;
+      Manta::AffineTransform t;
       t.initWithIdentity();
       if (cacheFraction <= 0)
       {
-        megaRenderable->as = new DynBVH();
+        megaRenderable->as = new Manta::DynBVH();
         megaRenderable->as->setGroup(megaMesh);
-        megaRenderable->instance = new DirtyInstance(megaRenderable->as, t);
+        megaRenderable->instance = new Manta::DirtyInstance(megaRenderable->as, t);
       }
       else
       {
-        megaRenderable->asDSM = new DynBVH_D();
+        megaRenderable->asDSM = new Manta::DynBVH_D();
         megaRenderable->asDSM->setGroup(megaMesh);
-        megaRenderable->instance = new DirtyInstance(megaRenderable->asDSM, t);
+        megaRenderable->instance = new Manta::DirtyInstance(megaRenderable->asDSM, t);
       }
       std::stringstream named;
       named << "renderable asdsm build ";
@@ -1948,7 +1950,7 @@ void MantaManager::syncInstances()
 #if DEBUG_MSGS
   printf("rank%d syncing new renderables done\n", _rank);
 #endif
-  AffineTransform megaT;
+  Manta::AffineTransform megaT;
   for(int i = 0; i < _numProcs; i++)
   {
     numi = nNumInstances[i];
@@ -1982,7 +1984,7 @@ void MantaManager::syncInstances()
       Renderable* renderable = getRenderable(nis.nid);
       assert(renderable);
 
-      AffineTransform& t = nis.transform;
+      Manta::AffineTransform& t = nis.transform;
       megaT = t;
       //t.initWithIdentity();
       if (i != _rank)
@@ -2017,7 +2019,7 @@ void MantaManager::syncInstances()
 #endif //USE_MPI
 }
 
-void MantaManager::relaunchCallback(int, int)
+void MantaRenderer::relaunchCallback(int, int)
 {
   cout << "killing manta\n";
 
@@ -2054,7 +2056,7 @@ void MantaManager::relaunchCallback(int, int)
 }
 
 
-void MantaManager::updateCamera()
+void MantaRenderer::updateCamera()
 {
   //  cout << "updateCamera\n";
   GLuRayRenderParameters& p = params;
@@ -2066,13 +2068,13 @@ void MantaManager::updateCamera()
   if (!camera)
   {
     if (p.camera == "pinhole")
-      camera = new PinholeCamera(p.camera_eye, p.camera_dir, p.camera_up, p.camera_hfov, p.camera_vfov);
+      camera = new Manta::PinholeCamera(p.camera_eye, p.camera_dir, p.camera_up, p.camera_hfov, p.camera_vfov);
     else
-      camera = new ThinLensCamera(p.camera_eye, p.camera_dir, p.camera_up, p.camera_hfov, p.camera_vfov, p.focalDistance, p.aperture);
+      camera = new Manta::ThinLensCamera(p.camera_eye, p.camera_dir, p.camera_up, p.camera_hfov, p.camera_vfov, p.focalDistance, p.aperture);
   }
   else  //would be better to just use the new camera... but it seems these arent updated correctly anyway in manta so instead set cameradata.  You have to choose pinhole or thinlens at startup then
   {
-    BasicCameraData data = camera->getBasicCameraData();
+    Manta::BasicCameraData data = camera->getBasicCameraData();
     data.lookat = p.camera_dir;
     data.eye = p.camera_eye;
     data.up = p.camera_up;
@@ -2083,38 +2085,37 @@ void MantaManager::updateCamera()
 
   //TODO: memory leak!
   //   rtrt->addOneShotCallback(MantaInterface::Absolute, 0,
-  //      Callback::create(this, &MantaManager::setCameraCallback));
+  //      Callback::create(this, &MantaRenderer::setCameraCallback));
 }
 
-
-void MantaManager::setCameraCallback(int,int)
+void MantaRenderer::setCameraCallback(int,int)
 {
   rtrt->setCamera(0,camera);
 }
 
-void MantaManager::updateBackground()
+void MantaRenderer::updateBackground()
 {
   //  cout << "updateBackground\n";
   current_bgcolor = params.bgcolor;
   if (params.env_map == "" || params.env_map == "none")
-    background = new ConstantBackground(current_bgcolor.color);
+    background = new Manta::ConstantBackground(current_bgcolor.color);
   else
   {
-    EnvMapBackground::MappingType mapping_type = EnvMapBackground::DebevecSphere;
+    Manta::EnvMapBackground::MappingType mapping_type = Manta::EnvMapBackground::DebevecSphere;
     //CylindricalEqualArea;
 
-    ImageTexture<Color>* t = LoadColorImageTexture( params.env_map, &std::cerr );
-    t->setInterpolationMethod(ImageTexture<Color>::Bilinear);
-    Vector up( 0.0f, 1.0f, 0.0f );
-    Vector right( 1.0f, 0.0f, 0.0f );
+    Manta::ImageTexture<Manta::Color>* t = Manta::LoadColorImageTexture( params.env_map, &std::cerr );
+    t->setInterpolationMethod(Manta::ImageTexture<Manta::Color>::Bilinear);
+    Manta::Vector up( 0.0f, 1.0f, 0.0f );
+    Manta::Vector right( 1.0f, 0.0f, 0.0f );
 
-    background =  new EnvMapBackground( t,
+    background =  new Manta::EnvMapBackground( t,
         mapping_type, right, up ) ;
   }
   //  cout << "done updateBackground\n";
 }
 
-void MantaManager::addInstance(Renderable* ren)
+void MantaRenderer::addInstance(Renderable* ren)
 {
   if (!rendering)
     return;
@@ -2128,7 +2129,7 @@ void MantaManager::addInstance(Renderable* ren)
   //next_scene->instances.push_back(inst);
 }
 
-void MantaManager::addRenderable(Renderable* ren)
+void MantaRenderer::addRenderable(Renderable* ren)
 {
   /*static int addcounter = 0;
     if (_rank == 0)
@@ -2182,7 +2183,7 @@ void MantaManager::addRenderable(Renderable* ren)
   AccelWork* workd = new AccelWork(mad,named.str());
   addWork(workd);
 #else
-  AccelerationStructure* ma = mr->as;
+  Manta::AccelerationStructure* ma = mr->as;
   std::stringstream name;
   name << "renderable as build " << counter++;
   //AccelWork* worka = new AccelWork(mr->as,name.str());
@@ -2198,13 +2199,13 @@ void MantaManager::addRenderable(Renderable* ren)
   //printf("rank: %d %s: size: %d done\n", _rank, __FUNCTION__, mr->getNumPrims());
 }
 
-void MantaManager::deleteRenderable(Renderable* ren)
+void MantaRenderer::deleteRenderable(Renderable* ren)
 {
   MRenderable* mr = dynamic_cast<MRenderable*>(ren);
   kill<MRenderable>(mr);
 }
 
-GeometryGenerator* MantaManager::getGeometryGenerator(int type)
+GeometryGenerator* MantaRenderer::getGeometryGenerator(int type)
 {
   switch(type)
   {
@@ -2245,4 +2246,3 @@ GeometryGenerator* MantaManager::getGeometryGenerator(int type)
       }
   }
 }
-

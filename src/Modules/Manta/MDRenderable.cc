@@ -19,7 +19,7 @@
 **********************************************************************************/
 
 #include "MDSMRenderable.h"
-#include "MantaManager.h"
+#include "MantaRenderer.h"
 #include "MScene.h"
 //#include "Work.h"
 #include <Model/Primitives/KenslerShirleyTriangle.h>
@@ -60,7 +60,7 @@ typedef KenslerShirleyTriangle TTYPE;
   //   as->preprocess(context);
   as->setGroup(_data->mesh);
   //   _data->group->add(as);
-  instance = new DirtyInstance(as, MantaManager::singleton()->current_transform);
+  instance = new DirtyInstance(as, MantaRenderer::singleton()->current_transform);
   //instance = new InstanceRT(as, MantaManager::singleton()->current_transform);
   _data->num_prims = 0;
   gen->setData(_data);
@@ -96,8 +96,8 @@ void MGeometryGeneratorTriangles::addVertex(Real x, Real y, Real z)
   //if (!use_computed_normal)
   //  _mesh->vertexNormals.push_back(MantaManager::singleton()->current_normal);
   size_t num_verts = _mesh->vertices.size();
-  if (_mesh->materials.size() == 0 || _mesh->materials.back() != MantaManager::singleton()->current_material)
-    _mesh->materials.push_back(MantaManager::singleton()->current_material);
+  if (_mesh->materials.size() == 0 || _mesh->materials.back() != MantaRenderer::singleton()->current_material)
+    _mesh->materials.push_back(MantaRenderer::singleton()->current_material);
   if (++_vertCounter > 2 && _vertCounter%3 == 0) {
     _data->num_prims++;
     /*static size_t prim_counter = 10000;
@@ -196,8 +196,8 @@ void MGeometryGeneratorTriangleStrip::addVertex(Real x, Real y, Real z)
   _mesh->vertices.push_back(Vector(x,y,z));
   size_t num_verts = _mesh->vertices.size();
   //   _mesh->materials.push_back(MantaManager::singleton()->current_material);
-  if (_mesh->materials.size() == 0 || _mesh->materials.back() != MantaManager::singleton()->current_material)
-    _mesh->materials.push_back(MantaManager::singleton()->current_material);
+  if (_mesh->materials.size() == 0 || _mesh->materials.back() != MantaRenderer::singleton()->current_material)
+    _mesh->materials.push_back(MantaRenderer::singleton()->current_material);
   if (++_vertCounter > 2) {
     _data->num_prims++;
     TTYPE* prim = new TTYPE();
@@ -240,8 +240,8 @@ void MGeometryGeneratorQuads::addVertex(Real x, Real y, Real z)
   size_t num_verts = _mesh->vertices.size();
   _vertCounter++;
   // _mesh->materials.push_back(MantaManager::singleton()->current_material);
-  if (_mesh->materials.size() == 0 || _mesh->materials.back() != MantaManager::singleton()->current_material)
-    _mesh->materials.push_back(MantaManager::singleton()->current_material);
+  if (_mesh->materials.size() == 0 || _mesh->materials.back() != MantaRenderer::singleton()->current_material)
+    _mesh->materials.push_back(MantaRenderer::singleton()->current_material);
   if (_vertCounter > 3 && _vertCounter%4 == 0) {
     _data->num_prims++;
     TTYPE* prim = new TTYPE();
@@ -309,8 +309,8 @@ void MGeometryGeneratorQuadStrip::addVertex(Real x, Real y, Real z)
   size_t num_verts = _mesh->vertices.size();
   _vertCounter++;
   // _mesh->materials.push_back(MantaManager::singleton()->current_material);
-  if (_mesh->materials.size() == 0 || _mesh->materials.back() != MantaManager::singleton()->current_material)
-    _mesh->materials.push_back(MantaManager::singleton()->current_material);
+  if (_mesh->materials.size() == 0 || _mesh->materials.back() != MantaRenderer::singleton()->current_material)
+    _mesh->materials.push_back(MantaRenderer::singleton()->current_material);
   if (_vertCounter > 3 && _vertCounter%2 == 0) {
     _data->num_prims++;
     TTYPE* prim = new TTYPE();
@@ -410,7 +410,7 @@ void MGeometryGeneratorLines::addVertex(Real x,Real y,Real z)
   Vector vertex(x,y,z);
   if (_vertCounter > 1 && _vertCounter%2 == 0) {
     _data->num_prims++;
-    group->add(new Cylinder(MantaManager::singleton()->current_material, last_vertex, vertex, radius));
+    group->add(new Cylinder(MantaRenderer::singleton()->current_material, last_vertex, vertex, radius));
   }
   last_vertex = vertex;
 }
@@ -423,7 +423,7 @@ void MGeometryGeneratorLineStrip::addVertex(Real x,Real y,Real z)
   Vector vertex(x,y,z);
   if (_vertCounter > 1) {
     _data->num_prims++;
-    group->add(new Cylinder(MantaManager::singleton()->current_material, last_vertex, vertex, radius));
+    group->add(new Cylinder(MantaRenderer::singleton()->current_material, last_vertex, vertex, radius));
   }
   last_vertex = vertex;
 }

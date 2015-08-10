@@ -18,8 +18,8 @@
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 **********************************************************************************/
 
-#ifndef OSPRAYMANAGER_H
-#define OSPRAYMANAGER_H
+#ifndef OSPRayRenderer_H
+#define OSPRayRenderer_H
  //
 //ospray
 //
@@ -28,7 +28,7 @@
 #include <queue>
 #include <stack>
 #include "defines.h"
-#include "RenderManager.h"
+#include "Renderer.h"
 #include "Work.h"
 #include "GLuRayRenderParameters.h"
 //#include "ERenderable.h"
@@ -88,12 +88,15 @@ class Renderer;
 class Camera;
 }*/
 
-class OSPRayManager : public RenderManager
+namespace glr
+{
+
+class OSPRayRenderer : public Renderer
 {
   public:
 
-    OSPRayManager() ;
-    ~OSPRayManager();
+    OSPRayRenderer() ;
+    ~OSPRayRenderer();
 
 /*
  *Inherited functions
@@ -101,6 +104,7 @@ class OSPRayManager : public RenderManager
 
     GLMaterial& getCurrentMaterial() { return gl_material; }
     virtual void updateMaterial();
+    void updateMaterial(OSPMaterial *matp, const GLMaterial &glmat);
     //virtual void updateScene();
     virtual void render();
     virtual void init();
@@ -125,6 +129,8 @@ class OSPRayManager : public RenderManager
     void useShadows(bool st);
     void updateBackground();
     void updateCamera();
+    void updateRenderer();
+    void reloadRenderer();
 
     /*
      *new functions
@@ -133,7 +139,6 @@ class OSPRayManager : public RenderManager
     void displayCallback(int proc, int numProcs, bool& changed);
 
     void syncInstances();
-    void displayFrame();
     static void* renderLoop(void* t);
     void internalRender();
 
@@ -143,7 +148,7 @@ class OSPRayManager : public RenderManager
     //  Variables
     //
 
-    OGeometryGenerator* _gVoid, *_gTriangle, *_gTriangleStrip, *_gQuads, *_gQuadStrip, *_gLines, *_gLineStrip;
+    OGeometryGenerator* _gVoid, *_gTriangle, *_gTriangleStrip, *_gQuads, *_gQuadStrip, *_gLines, *_gLineStrip, *_gPoints;
     // //  static void* clientLoop(void* t);
     OScene *current_scene;
     OScene *next_scene;
@@ -160,14 +165,6 @@ class OSPRayManager : public RenderManager
     // int _rank;
     // int _numProcs;
     // void relaunchCallback(int,int);
-    size_t _nid_counter;
-    bool _depth;
-    int _width, _height;
-    std::string _format;
-    // bool _resetAccumulation;
-    bool rendered;
-    int _frameNumber;
-    int _realFrameNumber;  //corrected by env param
     OSPMaterial o_current_material;
 
     // embree::Handle<embree::Device::RTCamera> _camera;
@@ -198,11 +195,14 @@ class OSPRayManager : public RenderManager
 
     // OBJScene* _objScene;
 
+    std::string _currentRenderer;
+    std::vector<ORenderable*> renList;
 
 
-    static OSPRayManager* singleton();
-    static OSPRayManager* _singleton;
+    static OSPRayRenderer* singleton();
+    static OSPRayRenderer* _singleton;
 };
-RenderManager* createOSPRayManager();
+}
+glr::Renderer* createOSPRayRenderer();
 
 #endif

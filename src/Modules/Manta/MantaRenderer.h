@@ -2,28 +2,28 @@
 *                     Copyright (c) 2013-2015 Carson Brownlee
 *         Texas Advanced Computing Center, University of Texas at Austin
 *                       All rights reserved
-* 
+*
 *       This library is free software; you can redistribute it and/or
 * modify it under the terms of the GNU Lesser General Public
 * License as published by the Free Software Foundation; either
 * version 2.1 of the License, or (at your option) any later version.
-* 
+*
 * This library is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 * Lesser General Public License for more details.
-* 
+*
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 **********************************************************************************/
 
-#ifndef MANTAMANAGER_H
-#define MANTAMANAGER_H
+#ifndef MantaRenderer_H
+#define MantaRenderer_H
 #include <queue>
 #include <stack>
 #include "defines.h"
-#include "RenderManager.h"
+#include "Renderer.h"
 #include "GLTypes.h"
 
 #include <Model/Lights/DirectionalLight.h>
@@ -45,12 +45,15 @@
 #include "Work.h"
 #include "GLuRayRenderParameters.h"
 #include "MRenderable.h"
-using namespace Manta;
+// using namespace Manta;
 
 class MScene;
 class MRenderable;
 
-class MantaManager : public RenderManager
+namespace glr
+{
+
+class MantaRenderer : public Renderer
 {
   public:
 
@@ -65,11 +68,11 @@ class MantaManager : public RenderManager
   struct NInstance
   {
     size_t nid;
-    AffineTransform transform;
+    Manta::AffineTransform transform;
   };
 
-    MantaManager() ;
-    ~MantaManager();
+    MantaRenderer() ;
+    ~MantaRenderer();
     GLMaterial& getCurrentMaterial() { return gl_material; }
     virtual void updateMaterial();
     //virtual void updateScene();
@@ -78,7 +81,7 @@ class MantaManager : public RenderManager
     virtual void updateLights();
 
     Manta::LightSet* getLights();
-    MantaInterface* getEngine();
+    Manta::MantaInterface* getEngine();
     Manta::Camera* getCamera() { return camera; }
 
     virtual Renderable* createRenderable(GeometryGenerator* gen)
@@ -116,7 +119,7 @@ class MantaManager : public RenderManager
 
     template<class T> void kill(T* o)
     {
-      rtrt->addOneShotCallback(MantaInterface::Relative, 1, Callback::create(this,&MantaManager::kill_callback<T>, o));
+      rtrt->addOneShotCallback(Manta::MantaInterface::Relative, 1, Manta::Callback::create(this,&MantaRenderer::kill_callback<T>, o));
     }
     template<class T> void kill_callback(int, int, T* o)
     {
@@ -133,17 +136,17 @@ class MantaManager : public RenderManager
   map<int, Renderable*> _map_renderables;
   vector<Renderable*> _newRenderables; //new renderables added to be synced over mpi
 
-    Material* current_material;
-    MantaInterface* rtrt;
-    Factory *factory;
-    SyncDisplay* sync_display;
-    LightSet* lights;
-    Background* background;
-    Camera* camera;
-    Mutex accel_mutex, general_mutex, params_mutex;
-    Semaphore ready, done;
-    Barrier accel_barrier;
-    vector<CallbackHandle*> callback_handles;
+    Manta::Material* current_material;
+    Manta::MantaInterface* rtrt;
+    Manta::Factory *factory;
+    Manta::SyncDisplay* sync_display;
+    Manta::LightSet* lights;
+    Manta::Background* background;
+    Manta::Camera* camera;
+    Manta::Mutex accel_mutex, general_mutex, params_mutex;
+    Manta::Semaphore ready, done;
+    Manta::Barrier accel_barrier;
+    vector<Manta::CallbackHandle*> callback_handles;
     vector<float> depth_data;
     vector<float> rgba_data;
     vector<char> rgb_data;
@@ -154,9 +157,10 @@ class MantaManager : public RenderManager
     size_t _nid_counter;
     bool _depth;
 
-    static MantaManager* singleton();
-    static MantaManager* _singleton;
+    static MantaRenderer* singleton();
+    static MantaRenderer* _singleton;
 };
 
+}
 
 #endif

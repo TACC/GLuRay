@@ -18,28 +18,26 @@
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 **********************************************************************************/
 
-#include <CMakeDefines.h>
 
-#include "MScene.h"
-#include "MantaRenderer.h"
+#include "OScene.h"
+// #include "RIVLManager.h"
 #include "GLuRayRenderParameters.h"
 
 using namespace std;
-using namespace Manta;
-using namespace glr;
+// using namespace Manta;
 
 
 
-  MScene::MScene(string cam_type, float focal_d, float ap, string env_file)
-: num_elements(0), camera(NULL), created(false), camera_type(cam_type), focal_distance(focal_d), aperture(ap), env_filename(env_file), icounter(0)
+  OScene::OScene()
 {
-  camera =  MantaRenderer::singleton()->getCamera();
+ // camera =  MantaManager::singleton()->getCamera();
 
   build();
 }
-void MScene::build()
+void OScene::build()
 {
-  GLuRayRenderParameters& p = MantaRenderer::singleton()->params;
+#if 0
+  GLuRayRenderParameters& p = MantaManager::singleton()->params;
   as = new DynBVH(DEBUG_MSGS);
   scene = new Scene();
 
@@ -55,7 +53,7 @@ void MScene::build()
   mapping_type = EnvMapBackground::DebevecSphere;
 
   if (env_filename == "")
-    scene->setBackground(new ConstantBackground(MantaRenderer::singleton()->current_bgcolor.color));
+    scene->setBackground(new ConstantBackground(MantaManager::singleton()->current_bgcolor.color));
   else
   {
     ImageTexture<Color>* t = LoadColorImageTexture( env_filename, &std::cerr );
@@ -73,33 +71,17 @@ void MScene::build()
   scene->setObject(as);
 
 
-  LightSet* lights = MantaRenderer::singleton()->lights;
+  LightSet* lights = MantaManager::singleton()->lights;
   //lights->add(new PointLight(Vector(-8,-5,-10), Color(RGBColor(.7,.7,.7))));
   scene->setLights(lights);
   //    scene->getRenderParameters().maxDepth = 5;
 
   scene->addBookmark("default view", Vector(3, 3, 2), Vector(0, 0, 0.3), Vector(0, 0, 1), 60, 60);
 
+#endif
 }
 
-MScene::~MScene()
+OScene::~OScene()
 {
 
 }
-
-void MScene::setBGColor(const Color& color)
-{
-  scene->setBackground(new ConstantBackground(color));
-}
-
-
-// DirtyInstance& MScene::addInstance()
-// {
-//   if (icounter >= instances.size())
-//     instances.resize(instances.size()+10);
-//   return instances.at(icounter++);
-// }
-
-// DirtyInstance& MScene::addInstance(DirtyInstance& i) {
-//   //addInstance() = i;
-// }

@@ -44,13 +44,13 @@ horrible error, file needs mpi support
 
 #include <cassert>
 
-using namespace Manta;
+// using namespace Manta;
 
 struct MDSMData
 {
 public:
-  Mesh_DSM* mesh;
-  Group* group;
+  Manta::Mesh_DSM* mesh;
+  Manta::Group* group;
   size_t num_prims;   //NOTE: this should be the number of prims overall in group, the mesh could actually be empty!!!
   bool perVertexColors;
 };
@@ -60,9 +60,9 @@ class MDSMGeometryGenerator : public GeometryGenerator
 {
 public:
   MDSMGeometryGenerator() {}
-  virtual void addVertex(Real x, Real y, Real z) = 0;
-  virtual void addNormal(Real x, Real y, Real z) {}
-  virtual void addTextureCoord(Real u, Real v, Real w, Real z) = 0;
+  virtual void addVertex(Manta::Real x, Manta::Real y, Manta::Real z) = 0;
+  virtual void addNormal(Manta::Real x, Manta::Real y, Manta::Real z) {}
+  virtual void addTextureCoord(Manta::Real u, Manta::Real v, Manta::Real w, Manta::Real z) = 0;
   void setData(MDSMData* data) { _data = data; }
 protected:
   MDSMData* _data;
@@ -76,15 +76,15 @@ class MDSMRenderable : public Renderable
 public:
   MDSMRenderable(MDSMGeometryGenerator* gen);
   virtual ~MDSMRenderable();
-  virtual void addVertex(Real x, Real y, Real z)
+  virtual void addVertex(Manta::Real x, Manta::Real y, Manta::Real z)
   {
     _generator->addVertex(x,y,z);
   }
-  virtual void addNormal(Real x, Real y, Real z)
+  virtual void addNormal(Manta::Real x, Manta::Real y, Manta::Real z)
   {
     _generator->addNormal(x,y,z);
   }
-  virtual void addTextureCoord(Real u, Real v, Real w, Real z)
+  virtual void addTextureCoord(Manta::Real u, Manta::Real v, Manta::Real w, Manta::Real z)
   {
     _generator->addTextureCoord(u,v,w,z);
   }
@@ -98,8 +98,8 @@ public:
 
   virtual bool isEmpty() { return _data->num_prims < 1; }  //NOTE: MESH could still be empty...
   virtual size_t getNumPrims() { return _data->num_prims; }  // NOTE: num prims of groups, MESH could still be empty
-  Primitive* instance;
-  AccelerationStructure* as;
+  Manta::Primitive* instance;
+  Manta::AccelerationStructure* as;
 //  Material* material;
   //texture
   MDSMData* _data;
@@ -110,9 +110,9 @@ class MDSMGeometryGeneratorVoid: public MDSMGeometryGenerator
 public:
   MDSMGeometryGeneratorVoid();
   virtual ~MDSMGeometryGeneratorVoid();
-  virtual void addVertex(Real x, Real y, Real z) {}
-  virtual void addNormal(Real x, Real y, Real z) {}
-  virtual void addTextureCoord(Real u, Real v, Real w, Real z) {}
+  virtual void addVertex(Manta::Real x, Manta::Real y, Manta::Real z) {}
+  virtual void addNormal(Manta::Real x, Manta::Real y, Manta::Real z) {}
+  virtual void addTextureCoord(Manta::Real u, Manta::Real v, Manta::Real w, Manta::Real z) {}
 };
 
 
@@ -122,9 +122,9 @@ public:
   MDSMGeometryGeneratorTriangles()
   {}
   virtual ~MDSMGeometryGeneratorTriangles();
-  virtual void addVertex(Real x, Real y, Real z);
-  virtual void addNormal(Real x, Real y, Real z);
-  virtual void addTextureCoord(Real u, Real v, Real w, Real z);
+  virtual void addVertex(Manta::Real x, Manta::Real y, Manta::Real z);
+  virtual void addNormal(Manta::Real x, Manta::Real y, Manta::Real z);
+  virtual void addTextureCoord(Manta::Real u, Manta::Real v, Manta::Real w, Manta::Real z);
 };
 
 class MDSMGeometryGeneratorTriangleStrip : public MDSMGeometryGenerator
@@ -133,8 +133,8 @@ public:
   MDSMGeometryGeneratorTriangleStrip()
   {}
   virtual ~MDSMGeometryGeneratorTriangleStrip();
-  virtual void addVertex(Real x, Real y, Real z);
-  virtual void addTextureCoord(Real u, Real v, Real w, Real z);
+  virtual void addVertex(Manta::Real x, Manta::Real y, Manta::Real z);
+  virtual void addTextureCoord(Manta::Real u, Manta::Real v, Manta::Real w, Manta::Real z);
 };
 
 
@@ -143,8 +143,8 @@ class MDSMGeometryGeneratorQuads : public MDSMGeometryGenerator
 public:
   MDSMGeometryGeneratorQuads()
   {}
-  virtual void addVertex(Real x, Real y, Real z);
-  virtual void addTextureCoord(Real u, Real v, Real w, Real z);
+  virtual void addVertex(Manta::Real x, Manta::Real y, Manta::Real z);
+  virtual void addTextureCoord(Manta::Real u, Manta::Real v, Manta::Real w, Manta::Real z);
 };
 
 class MDSMGeometryGeneratorQuadStrip : public MDSMGeometryGenerator
@@ -152,8 +152,8 @@ class MDSMGeometryGeneratorQuadStrip : public MDSMGeometryGenerator
 public:
   MDSMGeometryGeneratorQuadStrip()
   {}
-  virtual void addVertex(Real x, Real y, Real z);
-  virtual void addTextureCoord(Real u, Real v, Real w, Real z);
+  virtual void addVertex(Manta::Real x, Manta::Real y, Manta::Real z);
+  virtual void addTextureCoord(Manta::Real u, Manta::Real v, Manta::Real w, Manta::Real z);
 };
 
 class MDSMGeometryGeneratorLines : public MDSMGeometryGenerator
@@ -161,9 +161,9 @@ class MDSMGeometryGeneratorLines : public MDSMGeometryGenerator
 public:
   MDSMGeometryGeneratorLines();
   virtual  ~MDSMGeometryGeneratorLines();
-  virtual void addVertex(Real x,Real y,Real z);
-  virtual void addTextureCoord(Real u, Real v, Real w, Real z) {}
-  Real radius;
+  virtual void addVertex(Manta::Real x,Manta::Real y,Manta::Real z);
+  virtual void addTextureCoord(Manta::Real u, Manta::Real v, Manta::Real w, Manta::Real z) {}
+  Manta::Real radius;
   Vector last_vertex;
 };
 
@@ -174,8 +174,8 @@ public:
     :MDSMGeometryGeneratorLines()
   {}
   virtual ~MDSMGeometryGeneratorLineStrip() {}
-  virtual void addVertex(Real x,Real y,Real z);
-  virtual void addTextureCoord(Real u, Real v, Real w, Real z) {}
+  virtual void addVertex(Manta::Real x,Manta::Real y,Manta::Real z);
+  virtual void addTextureCoord(Manta::Real u, Manta::Real v, Manta::Real w, Manta::Real z) {}
 };
 
 #endif

@@ -19,7 +19,7 @@
 **********************************************************************************/
 
 #include "MDSMRenderable.h"
-#include "MantaManager.h"
+#include "MantaRenderer.h"
 #include "MScene.h"
 //#include "Work.h"
 #include <Model/Primitives/KenslerShirleyTriangle.h>
