@@ -1,4 +1,4 @@
-<h1>GLuRay</h1>
+<h1>GLuRay - <a href="http://tacc.github.io/GLuRay/">http://tacc.github.io/GLuRay/</a></h1>
 ======
 
 <h2>An OpenGL inter ceptor using Ray Tracing backends for photorealistic rendering</h2>
