@@ -1,41 +1,0 @@
-
-//
-// GLuRay:
-//
-GLuRay is a ray tracing library built on top of the OpenGL API. OpenGL interception allows our ray tracing implementations to be run on top of many programs which use the OpenGL fixed-function pipeline, enabled fast CPU rendering as well as high quality image generation. Currently, the publicly available version of GLuRay uses the open-source ray tracer Manta. Currently GLuRay only runs on Linux.
-GLuRay is an OpenGL interception library which ray traces scene descriptions through the OpenGL API. This software was based upon SpyglassGL by Marcelo E. Magallon, some of whose code is included in this distribution.
-
-//
-// Prerequisites:
-//
-1. Revision 2542 of Manta. Enable MANTA_USE_DYNBVH_APPROXIMATE options in Manta for significantly faster acceleration structure build times. 2. cmake [ccmake recommended]
-building:
-mkdir build cd build ccmake ..
-in CMAKE options you will need to set the location of MANTA_SRC and MANTA_BUILD_PREFIX.
-chmod +x gluray
-
-//
-// Embree support:  
-// 
-
-1.  Currently, Manta is still required and Manta must be built built with MANTA_SSE disabled in order to build with Embree support.
-2.  In build directory, ccmake .
-3.  Enable USE_EMBREE and then specify the root folder of the Embree install as well as the build directory.
-4.  Configure, Generate, and then run "make"
-
-//
-// Running:
-//
-./gluray glxgears
-environment variables:
-GLURAY_RENDER_MODE [GLREADPIXELS, GLXSWAPBUFFERS, GLFINISH, GLFLUSH] GLURAY_CONFIG
-configuration files:
-config files are in the form: -apply [-spp ] [-skydome ] [-reflectivity ] [-env ] [-ao ] [-phong] [-shadows] [-no_gl_lights] [-rotate ] [-plane] [-thinLens ] [-pinhole] [-lambertian] [-thinDielectric] [-metal] [-transparent] [-orenNayar] [-write_to_file ]
-example configuration files: “-apply -spp 1 -threads 8 -phong -fov 30 -ao 36 10.0 0.8″ “-apply -spp 8 -threads 8 -skyDome 32 100 0.8 -reflectivity 0.1 -env /Users/username/data/lightProbes/campus_probe.hdr -ao 36 10.0 0.8 -phong -fov 45 -shadows -no_gl_lights”
-
-//
-// Building the GUI:
-//
-the GUI is located in glurayGUI folder which can be built with Qt. Currently this is disabled and hasn’t been tested with newer versions of GLuRay, you will need to modify defines.h to enable run_client. The client is run by first running the GUI program using GLuRay and then launching GLuRay instances with other programs which will then attach to the GUI.
-GLuRay was written by Carson Brownlee at the University of Utah. It is based on SpyGlassGL and the Manta ray tracer.
-

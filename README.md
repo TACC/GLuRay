@@ -1,4 +1,4 @@
-<h1>GLuRay</h1>
+<h1>GLuRay - <a href="http://tacc.github.io/GLuRay/">http://tacc.github.io/GLuRay/</a></h1>
 ======
 
 <h2> UPDATE: OptiX backend temporarily removed from distribution due to potential licensing issues with an external library.  This will be fixed in a future update. </h>
