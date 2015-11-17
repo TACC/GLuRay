@@ -1,7 +1,19 @@
 <h1>GLuRay</h1>
 ======
 
-<h2>An OpenGL inter ceptor using Ray Tracing backends for photorealistic rendering</h2>
+<h2> UPDATE: OptiX backend temporarily removed from distribution due to potential licensing issues with an external library.  This will be fixed in a future update. </h>
+
+<h2>An OpenGL inter ceptor using Ray Tracing backends for photorealistic rendering.  Currently supports OpenGL 1.x and has backends for both CPU and GPU ray tracing. </h2>
+
+<h3>Tested in the following programs, though other programs using OpenGL 1.x backends may work </h>
+<p>
+<ol>
+<li>ParaView</li>
+<li>VisIt</li>
+<li>VAPOR - Limited testing</li>
+<li>Ensight - Limited testing</li>
+</ol>
+</p>
 
 <h3>prerequisites:</h3>
 <p>

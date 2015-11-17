@@ -49,6 +49,7 @@ using namespace glr;
 
 extern Renderer* createEmbreeRenderer();
 extern Renderer* createOSPRayRenderer();
+extern Renderer* createGvtRenderer();
 extern Renderer* createRIVLRenderer();
 extern Renderer* createOptiXRenderer();
 
@@ -74,6 +75,8 @@ extern Renderer* createOptiXRenderer();
   _renderer = createOptiXRenderer();
 #elif USE_OSPRAY
   _renderer = createOSPRayRenderer();
+#elif USE_GVT
+  _renderer = createGvtRenderer();
 #else
   _renderer =  MantaRenderer::singleton();
   //rm = MantaManager::singleton();

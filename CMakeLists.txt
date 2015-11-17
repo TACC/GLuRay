@@ -40,6 +40,8 @@ SET(GLURAY_SRC
   src/Core/RenderManager.cc
   src/Core/Renderer.cc
   src/Core/OBJScene.cc
+  src/Core/Scene.cc
+  src/Core/GeometryGenerator.cc
   )
 
 
@@ -52,12 +54,14 @@ SET(GLURAY_HDR
   src/Core/Renderer.h
   src/Core/Renderable.h
   src/Modules/Manta/MRenderable.h
+  src/Core/GeometryGenerator.h
   src/Core/Work.h
   src/Modules/Manta/AccelWork.h
   src/Modules/Manta/MScene.h
   src/Modules/Manta/DirtyInstance.h
   src/Core/CDTimer.h
   src/Core/OBJScene.h
+  src/Core/Scene.h
   )
 
 ###############################################################################
@@ -143,7 +147,9 @@ IF (USE_OPTIX)
   SET(GLURAY_LIBS ${GLURAY_LIBS} GLuRay_Optix)
 ENDIF()
 IF(USE_GVT)
+  SET(CMAKE_DEFINES "${CMAKE_DEFINES}#define USE_GVT 1\n")
   SUBDIRS(src/Modules/Gvt)
+  SET(GLURAY_LIBS ${GLURAY_LIBS} GLuRay_Gvt)
 ENDIF(USE_GVT)
 #SET(GLURAY_LIBS "")
  MESSAGE(STATUS "GLURAY_LIBS: " ${GLURAY_LIBS})

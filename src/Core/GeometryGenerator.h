@@ -21,6 +21,9 @@
 
 struct GeometryData
 {
+  GeometryData() {
+    mesh = new Manta::Mesh(); num_prims = 0;
+  }
   // OData();
   Manta::Mesh* mesh;
   size_t num_prims;
@@ -116,6 +119,14 @@ public:
   virtual void addTextureCoord(Manta::Real u, Manta::Real v, Manta::Real w, Manta::Real z) {}
   Manta::Real radius;
   Manta::Vector last_vertex;
+};
+
+class GeometryGeneratorPoints : public GeometryGenerator
+{
+public:
+  GeometryGeneratorPoints();
+  virtual  ~GeometryGeneratorPoints();
+  virtual void addVertex(Manta::Real x,Manta::Real y,Manta::Real z);
 };
 
 class GeometryGeneratorLineStrip : public GeometryGeneratorLines

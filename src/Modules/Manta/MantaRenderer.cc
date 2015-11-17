@@ -908,7 +908,7 @@ void MantaRenderer::buildAccelerationCallback(int proc, int numProcs, bool& chan
   accel_barrier.wait(num_threads);
   if (proc == 0)
   {
-    DEBUG("building accel structures\n");
+    glrDEBUG("building accel structures\n");
   }
 #endif
   //LOGSTARTC("buildAccelerationCallback", 0,0.1,0.6);
@@ -972,7 +972,7 @@ void MantaRenderer::buildAccelerationCallback(int proc, int numProcs, bool& chan
   accel_barrier.wait(num_threads);
   if (proc == 0)
   {
-    DEBUG("done building accel structures\n");
+    glrDEBUG("done building accel structures\n");
   }
 #endif
   //LOGSTOP("buildAccelerationCallback");
@@ -1096,7 +1096,7 @@ void MantaRenderer::render()
   MPI_Bcast(&res, 2, MPI_INT, 0, MPI_COMM_WORLD);
   setSize(res[0],res[1]);
 
-  DEBUG("MantaRenderer::render done syncing resolution rank:\n");
+  glrDEBUG("MantaRenderer::render done syncing resolution rank:\n");
 
 #endif
 
@@ -1175,7 +1175,7 @@ void MantaRenderer::render()
   timer3.stop();
   //printf("rank: %d sync time: %f\n", _rank, timer3.getDelta());
 
-  DEBUG("wait on frame ready\n");
+  glrDEBUG("wait on frame ready\n");
   static CDTimer timer2;
   timer2.start();
   //Manta::LogManager::GetSingleton()->SetEnabled(true);
@@ -1229,7 +1229,7 @@ void MantaRenderer::render()
   /*
    *ADD INSTANCES TO WORLD OBJECT
    */
-  DEBUG("ADDING INSTANCES TO WORLD\n");
+  glrDEBUG("ADDING INSTANCES TO WORLD\n");
   float totalMeshSize = 0;
   for( std::vector<GRInstance>::iterator itr = next_scene->instances.begin(); itr !=
       next_scene->instances.end(); itr++)
@@ -1252,7 +1252,7 @@ void MantaRenderer::render()
 
 
 #if DEBUG_MSGS
-    float meshsize = ((float)(sizeof(Vector)*mr->_data->mesh->vertices.size()+sizeof(unsigned int)*mr->_data->mesh->vertex_indices.size()))/(1024.0f*1024.0f);
+    float meshsize = ((float)(sizeof(Manta::Vector)*mr->_data->mesh->vertices.size()+sizeof(unsigned int)*mr->_data->mesh->vertex_indices.size()))/(1024.0f*1024.0f);
     totalMeshSize  += meshsize;
     printf("rank: %d id: %d meshsize: %fMB\n", _rank, mr->getNID(), meshsize);
 #endif
@@ -1374,7 +1374,7 @@ void MantaRenderer::render()
       sync_display->waitOnFrameReady();
   }
 
-  DEBUG("wait on frame ready done\n");
+  glrDEBUG("wait on frame ready done\n");
   LOGSTOP("MantaRenderer::render internal");
   //MPI_Barrier(MPI_COMM_WORLD);
   timer2.stop();
@@ -1416,7 +1416,7 @@ void MantaRenderer::render()
     cout << "init after killed\n";
     cout.flush();
   }
-  DEBUG("done rendering\n");
+  glrDEBUG("done rendering\n");
   //printf("rank: %d render time: %f\n", _rank, timer.getDelta());
   LOGSTOP("MantaRenderer::render");
 #if USE_MPI
@@ -1439,7 +1439,7 @@ void MantaRenderer::displayFrame()
   //DEBUG("render barrier passed\n");
 #endif //USE_MPI
 
-  DEBUG("copying image\n");
+  glrDEBUG("copying image\n");
   static CDTimer displayTimer;
   displayTimer.start();
 
@@ -1451,7 +1451,7 @@ void MantaRenderer::displayFrame()
   if (!data)
     return;
 
-  DEBUG("copy image done\n");
+  glrDEBUG("copy image done\n");
 
   bool stereo;
   int xres, yres;
@@ -1462,7 +1462,7 @@ void MantaRenderer::displayFrame()
   //glDisable(GL_BLEND);
 
   int rowLength = image->getRowLength();
-  DEBUG("draw pixels\n");
+  glrDEBUG("draw pixels\n");
   static GLint viewport[4];
   glGetIntegerv(GL_VIEWPORT, viewport);
   int rwidth = viewport[2];
@@ -1631,7 +1631,7 @@ void MantaRenderer::displayFrame()
 
   if (params.write_to_file != "")
   {
-    DEBUG("writing image\n");
+    glrDEBUG("writing image\n");
     string filename = params.write_to_file;
     if (params.write_to_file == "generated")
     {
@@ -1671,7 +1671,7 @@ void MantaRenderer::displayFrame()
     //delete []test;
   }
 
-  DEBUG("draw pixels done \n");
+  glrDEBUG("draw pixels done \n");
   displayTimer.stop();
   //printf("rank: %d display time: %f\n", _rank, displayTimer.getDelta());
   LOGSTOP("MantaRenderer::displayFrame");
@@ -1689,7 +1689,7 @@ void MantaRenderer::syncInstances()
   //
   //syncronize instances across all procs
   //
-  DEBUG("syncInstances\n");
+  glrDEBUG("syncInstances\n");
   //MPI_Barrier(MPI_COMM_WORLD);
 #if DEBUG_MSGS
   if (_rank == 0)

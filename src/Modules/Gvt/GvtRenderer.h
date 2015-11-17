@@ -162,6 +162,6 @@ class GvtRenderer : public Renderer
     static GvtRenderer* _singleton;
 };
 }
-glr::Renderer* createOSPRayRenderer();
+glr::Renderer* createGvtRenderer();
 
 #endif

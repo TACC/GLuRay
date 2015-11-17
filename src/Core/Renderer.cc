@@ -413,7 +413,7 @@ void Renderer::displayFrame()
   {
     char* data = (char*)_framebuffer.data;
     char* rgba_data = (char*)data;
-    DEBUG("writing image\n");
+    glrDEBUG("writing image\n");
     string filename = params.write_to_file;
     if (params.write_to_file == "generated")
     {

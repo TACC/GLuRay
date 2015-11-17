@@ -8,7 +8,7 @@
 class Renderable
 {
 public:
-  Renderable(GeometryGenerator* gen) { _generator = gen; _nid=0; _built = false; _data= new GeometryData(); _data->mesh = new Manta::Mesh(); _data->num_prims = 0;
+  Renderable(GeometryGenerator* gen) { _generator = gen; _nid=0; _built = false; 
     gen->setData(_data); }
   virtual ~Renderable() {}
   virtual void addVertex(Manta::Real x, Manta::Real y, Manta::Real z)
@@ -25,8 +25,10 @@ public:
   }
   virtual void setGenerator(GeometryGenerator* gen)
   {
+    _generator = gen;
     gen->setData(_data);
   }
+  
   virtual bool isEmpty() { return (getNumPrims() > 0); }  //NOTE: MESH could still be empty...
   virtual size_t getNumPrims() { return _data->num_prims; }  // NOTE: num prims of groups, MESH could still be empty
   void setNID(size_t& nid_) { _nid = nid_;}
@@ -34,8 +36,8 @@ public:
   bool isBuilt() {return _built; }
   void setBuilt(bool st) { _built = st; }
   GLMaterial glMaterial;
-protected:
   GeometryData* _data;
+protected:
   bool _built;
   GeometryGenerator* _generator;
   size_t _nid; //network id

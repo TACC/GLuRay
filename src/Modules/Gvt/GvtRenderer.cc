@@ -1,4 +1,6 @@
 
+
+
 #include "defines.h"
 #include "GvtRenderer.h"
 #include "CDTimer.h"
@@ -44,6 +46,42 @@
 #include <arpa/inet.h>
 #include <GL/gl.h>
 
+//gvt
+//
+// Simple gravit application.
+// Load some geometry and render it.
+//
+#include <gvt/render/RenderContext.h>
+#include <gvt/render/Types.h>
+#include <vector>
+#include <algorithm>
+#include <set>
+#include <gvt/core/mpi/Wrapper.h>
+#include <gvt/core/Math.h>
+#include <gvt/render/data/Dataset.h>
+#include <gvt/render/data/Domains.h>
+#include <gvt/render/Schedulers.h>
+#include <gvt/render/adapter/manta/Wrapper.h>
+//#include <gvt/render/adapter/optix/Wrapper.h>
+#include <gvt/render/algorithm/Tracers.h>
+#include <gvt/render/data/scene/gvtCamera.h>
+#include <gvt/render/data/scene/Image.h>
+#include <gvt/render/data/Primitives.h>
+
+#include <iostream>
+
+using namespace std;
+using namespace gvt::render;
+using namespace gvt::core::math;
+using namespace gvt::core::mpi;
+using namespace gvt::render::data::scene;
+using namespace gvt::render::schedule;
+using namespace gvt::render::data::primitives;
+using namespace gvt::render::adapter::manta::data::domain;
+//using namespace gvt::render::adapter::optix::data::domain;
+
+//gvt
+
 using namespace glr;
 
    GvtRenderer* GvtRenderer::_singleton = NULL;
@@ -59,6 +97,7 @@ using namespace glr;
   GvtRenderer::GvtRenderer()
   :Renderer()
   {
+    DEBUG("");
     initialized=false;
     printf("%s::%s\n",typeid(*this).name(),__FUNCTION__);
     _framebuffer.format = "RGBA8";
@@ -74,6 +113,10 @@ using namespace glr;
 
     _currentRenderer = "obj";
 //    renList.clear();
+    
+    
+    MPI_Init(NULL,NULL);
+
   }
 
   GvtRenderer::~GvtRenderer()
@@ -86,9 +129,9 @@ using namespace glr;
 
 Renderable* GvtRenderer::createRenderable(GeometryGenerator* gen)
 {
-  GeometryGeneratorVoid* mg = dynamic_cast<GeometryGeneratorVoid*>(gen);
-  assert(mg);
-  return new GvtRenderable(mg);
+//  GeometryGeneratorVoid* mg = dynamic_cast<GeometryGeneratorVoid*>(gen);
+//  assert(mg);
+  return new GvtRenderable(gen);
 }
 
 void GvtRenderer::updateMaterial()
@@ -151,7 +194,7 @@ void GvtRenderer::init()
   //lights = new LightSet();
   gl_lights[0].diffuse = Manta::Color(RGB(1,1,1));
   gl_lights[0].specular = Manta::Color(RGB(1,1,1));
-  gl_lights[0].pos = Vector(0,0,1);
+  gl_lights[0].pos = Manta::Vector(0,0,1);
   gl_lights[0].w = 0;
   updateLights();
   setColor(current_color.color[0], current_color.color[2], current_color.color[3], current_color.a);
@@ -159,7 +202,7 @@ void GvtRenderer::init()
   //  current_material= new Phong(Color(RGBColor(1,1,1)),
   //			      Color(RGBColor(.6,.6,.6)), 32, (ColorComponent)params.reflectivity);
   //current_material = new AmbientOcclusion(current_material, 100.0,20);
-  current_normal = Vector(0,1,0);
+  current_normal = Manta::Vector(0,1,0);
   current_transform.initWithIdentity();
   current_bgcolor = params.bgcolor;
   //  background = new ConstantBackground(current_bgcolor.color);
@@ -300,6 +343,139 @@ void GvtRenderer::addRenderable(Renderable* ren)
   size_t numTriangles = mesh->vertex_indices.size()/3;
   // assert(mesh->vertices.size() == numTriangles*3);
   oren->setBuilt(true);
+  
+  
+  //
+  //	our friend the cone.
+  //
+  Point4f points[7];
+  points[0] = Point4f(0.5,0.0,0.0,1.0);
+  points[1] = Point4f(-0.5,0.5,0.0,1.0);
+  points[2] = Point4f(-0.5,0.25,0.433013,1.0);
+  points[3] = Point4f(-0.5,-0.25,0.43013,1.0);
+  points[4] = Point4f(-0.5,-0.5,0.0,1.0);
+  points[5] = Point4f(-0.5,-0.25,-0.433013,1.0);
+  points[6] = Point4f(-0.5,0.25,-0.433013,1.0);
+  //
+  //	build a mesh object from cone geometry.
+  //
+  gvt::render::data::primitives::Mesh* objMesh = new gvt::render::data::primitives::Mesh(new Lambert(Vector4f(0.5,0.5,0.5,1.0)));
+  objMesh->addVertex(points[0]);
+  objMesh->addVertex(points[1]);
+  objMesh->addVertex(points[2]);
+  objMesh->addVertex(points[3]);
+  objMesh->addVertex(points[4]);
+  objMesh->addVertex(points[5]);
+  objMesh->addVertex(points[6]);
+  
+  objMesh->addFace(1,2,3);
+  objMesh->addFace(1,3,4);
+  objMesh->addFace(1,4,5);
+  objMesh->addFace(1,5,6);
+  objMesh->addFace(1,6,7);
+  objMesh->addFace(1,7,2);
+  
+  gvt::render::data::Dataset scene;
+  
+  objMesh->generateNormals();
+  int argc=1;
+   char* argv[] = {"gluray\0","\0"};
+  gvt::render::data::domain::GeometryDomain* domain = new gvt::render::data::domain::GeometryDomain(objMesh);
+  scene.domainSet.push_back(domain);
+  
+  Vector4f   pos(1.0,1.0,1.0,0.0);
+  Vector4f color(1.0,1.0,1.0,0.0);
+  vector<gvt::render::data::scene::Light*> lightset;
+  lightset.push_back(new gvt::render::data::scene::PointLight(pos,color));
+  domain->setLights(lightset);
+  //
+  //	need a camera... using gvtCamera instead of default camera.... because I know how it works.
+  //
+  gvtPerspectiveCamera mycamera;
+  Point4f cameraposition(1.0,1.0,1.0,1.0);
+  Point4f focus(0.0,0.0,0.0,1.0);
+  float fov = 45.0 * M_PI/180.0;
+  Vector4f up(0.0,1.0,0.0,0.0);
+  mycamera.lookAt(cameraposition,focus,up);
+  mycamera.setFOV(fov);
+  mycamera.setFilmsize(512,512);
+  //
+  //	Create an object to hold the image and a pointer to the raw image data.
+  //
+  gvt::render::data::scene::Image myimage(mycamera.getFilmSizeWidth(),mycamera.getFilmSizeHeight(),"cone");
+  unsigned char *imagebuffer = myimage.GetBuffer();
+  //
+  //	Attributes class contains information used by tracer to generate image.
+  //	This will be replaced by the Context in the future.
+  //
+  // RenderContext::CreateContext() ;
+  gvt::render::RenderContext *cntxt = gvt::render::RenderContext::instance();
+  
+  if(cntxt == NULL) {
+    std::cout << "Something went wrong" << std::endl;
+    exit(0);
+  }
+  
+  gvt::core::DBNodeH root = cntxt->getRootNode();
+  gvt::core::Variant V;
+  gvt::core::DBNodeH camnode,filmnode,datanode;
+  
+  // camera
+  camnode = cntxt->createNodeFromType("Camera","conecam",root.UUID());
+  V = mycamera.getEyePoint();
+  camnode["eyePoint"] = V;
+  V = mycamera.getFocalPoint();
+  camnode["focus"] = V;
+  V = mycamera.getUpVector();
+  camnode["upVector"] = V;
+  // film
+  filmnode = cntxt->createNodeFromType("Film","conefilm",root.UUID());
+  V = mycamera.getFilmSizeWidth();
+  filmnode["width"] = V;
+  V = mycamera.getFilmSizeHeight();
+  filmnode["height"] = V;
+  // dataset
+  datanode = cntxt->createNodeFromType("Dataset","coneset",root.UUID());
+  V = gvt::render::scheduler::Image;
+  datanode["schedule"] = V;
+  V = new gvt::render::data::Dataset();
+  datanode["Dataset_Pointer"] = V;
+  V = gvt::render::adapter::Manta;
+  datanode["render_type"] = V;
+  
+		std::cout << "this should print the tree " << std::endl;
+  cntxt->database()->printTree(root.UUID(),10,std::cout);
+  
+  if(gvt::core::variant_toInteger(V) == gvt::render::adapter::Manta) {
+    gvt::core::variant_toDatasetPointer(root["Dataset"]["Dataset_Pointer"].value())->addDomain(new MantaDomain(domain));
+  }
+  V = Vector3f(1.,1.,1.);
+  datanode["topology"] = V;
+  V = gvt::render::accelerator::BVH;
+  datanode["accel_type"] = V;
+  V = domain->getMesh();
+  datanode["Mesh_Pointer"] = V;
+  
+  int width = gvt::core::variant_toInteger(root["Film"]["width"].value());
+  std::cout << "this should print the tree " << width << std::endl;
+  cntxt->database()->printTree(root.UUID(),10,std::cout);
+  //
+  //	Render it....
+  //
+  mycamera.AllocateCameraRays();
+  mycamera.generateRays();
+  int stype = gvt::core::variant_toInteger(root["Dataset"]["schedule"].value());
+  if(stype ==gvt::render::scheduler::Image) {
+    gvt::render::algorithm::Tracer<ImageScheduler>(mycamera.rays,myimage)();
+  } else if(stype == gvt::render::scheduler::Domain) {
+    gvt::render::algorithm::Tracer<DomainScheduler>(mycamera.rays,myimage)();
+  }
+  
+  _framebuffer.byteAlign = 1;
+  _framebuffer.width = 512;
+  _framebuffer.height = 512;
+  _framebuffer.data = (void*)imagebuffer;
+  _framebuffer.format = "RGBA8";
 
   // vertices.resize(numPositions);
   for(size_t i = 0; i < numPositions; i++)

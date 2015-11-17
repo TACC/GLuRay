@@ -14,17 +14,15 @@ extern int GLURAY_RENDER_MODE;
     //| GLURAY_RENDER_GLREADPIXELS
     //)
 
-
 #if DEBUG_MSGS
 #if USE_MPI
-  #define DEBUG(x) { printf("rank: %d %s", MantaManager::singleton()->_rank, x); fflush(stdout); }
+  #define glrDEBUG(x) { printf("rank: %d %s", MantaManager::singleton()->_rank, x); fflush(stdout); }
 #else
-  #define DEBUG(x) { printf(x); }
+  #define glrDEBUG(x) { std::cout << __PRETTY_FUNCTION__ << " (" << #x << ") " << x << std::endl; }
 #endif
 #else
-  #define DEBUG(x) { ; }
+  #define glrDEBUG(x) { ; }
 #endif
-
 
 typedef float Real;
 

@@ -517,7 +517,7 @@ bool newCamFrame = true; // boolean added for taking maximum viewport size each 
 void gr_render()
 {
   GRCHECK();
-  DEBUG("gr_render called\n");
+  glrDEBUG("gr_render called\n");
   //if (rm->next_scene->instances.size() < 1)
   {
     //DEBUG("gr_render nothing, returning\n");  //TODO: removed for mpi tests
@@ -786,7 +786,7 @@ void gr_endList()
 void gr_callList(int list)
 {
   GRCHECK();
-  DEBUG("callList\n");
+  glrDEBUG("callList\n");
   //LOGSTARTC("gluray_callList", 0.2, 0.2, 0.2);
   //if (needFOVCalc)
   //{

@@ -43,6 +43,7 @@ using namespace Manta;
 
 struct GvtData : public GeometryData
 {
+  
 };
 
 //instead of sotring the entire display list, keep track of each
@@ -51,14 +52,10 @@ struct GvtData : public GeometryData
 class GvtRenderable : public Renderable
 {
 public:
-  GvtRenderable(GeometryGenerator* gen) :Renderable(gen) {}
+  GvtRenderable(GeometryGenerator* gen) :Renderable(gen) {
+    _data = new GvtData(); gen->setData(_data); }
   virtual ~GvtRenderable() {}
-  virtual void setGenerator(GeometryGenerator* gen)
-  {
-    _generator = gen;
-    gen->setData(_data);
-  }
-  GvtData* _data;
+//  GvtData* _data;
 };
 
 #endif
