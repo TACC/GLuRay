@@ -64,6 +64,10 @@
 
 using namespace glr;
 
+osp::vec3f make_vec3f(float x,float y, float z) { osp::vec3f v = {x,y,z}; return v;}
+osp::vec3fa make_vec3fa(float x,float y, float z) { osp::vec3fa v = {x,y,z}; return v;}
+osp::vec3i make_vec3i(float x,float y, float z) { osp::vec3i v = {x,y,z}; return v;}
+
 
 
 //
@@ -544,7 +548,9 @@ printf("setSize 1");
     // _resetAccumulation = true;
     // embreeMutex.unlock();
     updateCamera();
-    ospray::vec2i newSize(w,h);
+    osp::vec2i newSize;
+    newSize.x = w;
+    newSize.y = h;
 printf("setSize 2");
     // if (framebuffer) ospFreeFrameBuffer(framebuffer);
 printf("setSize 3");
@@ -623,7 +629,7 @@ void OSPRayRenderer::init()
 
   // initClient();
 
-  // ospray::glut3D::initGLUT(&ac,av);
+  // osp::glut3D::initGLUT(&ac,av);
 
   #if 0
   if (initialized)
@@ -981,8 +987,10 @@ void OSPRayRenderer::render()
       // AffineSpace3f et(LinearSpace3f(mt(0,0), mt(0,1), mt(0,2), mt(1,0), mt(1,1), mt(1,2), mt(2,0),mt(2,1),mt(2,2)), Vector3f(mt(0,3),mt(1,3),mt(2,3)));
       //AffineSpace3f et(LinearSpace3f(mt(0,0), mt(1,0), mt(2,0), mt(0,1), mt(1,1), mt(2,1), mt(0,2),mt(1,2),mt(2,2)), Vector3f(mt(3,0),mt(3,1),mt(3,2)));
       // prims.push_back(g_device->rtNewShapePrimitive(er->_data->d_mesh, er->_data->d_material, copyToArray(et)));
-      OSPGeometry inst = ospNewInstance(er->_data->ospModel,
-        ospray::affine3f(embree::LinearSpace3f(mt(0,0), mt(0,1), mt(0,2), mt(1,0), mt(1,1), mt(1,2), mt(2,0),mt(2,1),mt(2,2)), embree::Vec3fa(mt(0,3),mt(1,3),mt(2,3))));
+      osp::vec3f v3 = make_vec3f(mt(0,3), mt(1,3), mt(2,3));
+      osp::linear3f linear = {make_vec3f(mt(0,0), mt(0,1), mt(0,2)), make_vec3f(mt(1,0), mt(1,1), mt(1,2)), make_vec3f(mt(2,0),mt(2,1),mt(2,2))};
+      osp::affine3f transform = {linear, v3};
+      OSPGeometry inst = ospNewInstance(er->_data->ospModel, transform);
       ospCommit(inst);
       ospAddGeometry(model,inst);
       // std::cout << "adding instance with tris: " <<  er->_data->mesh->vertex_indices.size()/3 << std::endl;
@@ -997,8 +1005,8 @@ void OSPRayRenderer::render()
   // test scene
   //
   #if 0
-ospray::miniSG::Model* msgModel = new ospray::miniSG::Model;;
- ospray::miniSG::importOBJ(*msgModel,"/scratch/01336/carson/data/bunny.obj");
+osp::miniSG::Model* msgModel = new osp::miniSG::Model;;
+ osp::miniSG::importOBJ(*msgModel,"/scratch/01336/carson/data/bunny.obj");
  cout << "msgView: done parsing. found model with" << endl;
     cout << "  - num materials: " << msgModel->material.size() << endl;
     cout << "  - num meshes   : " << msgModel->mesh.size() << " ";
@@ -1026,12 +1034,12 @@ ospray::miniSG::Model* msgModel = new ospray::miniSG::Model;;
 
     if (msgModel->material.empty()) {
       cout << "msgView: adding default material" << endl;
-      msgModel->material.push_back(new ospray::miniSG::Material);
+      msgModel->material.push_back(new osp::miniSG::Material);
     }
 
         for (int i=0;i<msgModel->mesh.size();i++) {
       //      printf("Mesh %i/%li\n",i,msgModel->mesh.size());
-      ospray::Ref<ospray::miniSG::Mesh> msgMesh = msgModel->mesh[i];
+      osp::Ref<osp::miniSG::Mesh> msgMesh = msgModel->mesh[i];
 
       // create ospray mesh
       OSPGeometry ospMesh = ospNewTriangleMesh();
@@ -1051,16 +1059,16 @@ ospray::miniSG::Model* msgModel = new ospray::miniSG::Model;;
         ospAddGeometry(model,ospMesh);
       }
 
-ospray::glut3D::Glut3DWidget::ViewPort viewPort;
+osp::glut3D::Glut3DWidget::ViewPort viewPort;
     // void Glut3DWidget::setWorldBounds(const box3f &worldBounds)
     // {
-ospray::box3f worldBounds = msgModel->getBBox();
-      ospray::vec3f center = embree::center(worldBounds);
-      ospray::vec3f diag   = worldBounds.size();
-      diag         = max(diag,ospray::vec3f(0.3f*length(diag)));
-      ospray::vec3f from   = center - .75f*ospray::vec3f(-.6*diag.x,-1.2*diag.y,.8*diag.z);
-      ospray::vec3f dir    = center - from;
-      ospray::vec3f up     = viewPort.up;
+osp::box3f worldBounds = msgModel->getBBox();
+      osp::vec3f center = embree::center(worldBounds);
+      osp::vec3f diag   = worldBounds.size();
+      diag         = max(diag,osp::vec3f(0.3f*length(diag)));
+      osp::vec3f from   = center - .75f*osp::vec3f(-.6*diag.x,-1.2*diag.y,.8*diag.z);
+      osp::vec3f dir    = center - from;
+      osp::vec3f up     = viewPort.up;
 
       // if (!viewPortFromCmdLine) {
         viewPort.at    = center;
@@ -1068,7 +1076,7 @@ ospray::box3f worldBounds = msgModel->getBBox();
         viewPort.up    = up;
 
         if (length(up) < 1e-3f)
-          up = ospray::vec3f(0,0,1.f);
+          up = osp::vec3f(0,0,1.f);
 
         viewPort.frame.l.vy = normalize(dir);
         viewPort.frame.l.vx = normalize(cross(viewPort.frame.l.vy,up));
@@ -1311,23 +1319,23 @@ void OSPRayRenderer::addRenderable(Renderable* ren)
   // assert(mesh->vertices.size() == numTriangles*3);
   oren->setBuilt(true);
 
-  // std::vector<ospray::vec3fa> vertices;
-  // std::vector<ospray::vec3fa> normals;
-  // std::vector<ospray::vec3i> triangles;
-  ospray::vec3fa* vertices = (ospray::vec3fa*)embree::alignedMalloc(sizeof(ospray::vec3fa)*numPositions);
-  ospray::vec3i* triangles = (ospray::vec3i*)embree::alignedMalloc(sizeof(ospray::vec3i)*numTriangles);
+  // std::vector<osp::vec3fa> vertices;
+  // std::vector<osp::vec3fa> normals;
+  // std::vector<osp::vec3i> triangles;
+  osp::vec3fa* vertices = (osp::vec3fa*)embree::alignedMalloc(sizeof(osp::vec3fa)*numPositions);
+  osp::vec3i* triangles = (osp::vec3i*)embree::alignedMalloc(sizeof(osp::vec3i)*numTriangles);
 
   // vertices.resize(numPositions);
   for(size_t i = 0; i < numPositions; i++)
   {
-    vertices[i] = ospray::vec3fa(mesh->vertices[i].x(), mesh->vertices[i].y(),  mesh->vertices[i].z());
-    // vertices[i] = ospray::vec3fa(float(i)*.01,float(i)*.01,float(i)*.01);
+    vertices[i] = make_vec3fa(mesh->vertices[i].x(), mesh->vertices[i].y(),  mesh->vertices[i].z());
+    // vertices[i] = osp::vec3fa(float(i)*.01,float(i)*.01,float(i)*.01);
     // printf("vert: %f %f %f\n",mesh->vertices[i].x(), mesh->vertices[i].y(), mesh->vertices[i].z());
   }
 
   // normals.resize(numNormals);
   // for(size_t i = 0; i < numNormals; i++)
-    // normals[i] = ospray::vec3fa(mesh->vertexNormals[i].x(), mesh->vertexNormals[i].y(), mesh->vertexNormals[i].z());
+    // normals[i] = osp::vec3fa(mesh->vertexNormals[i].x(), mesh->vertexNormals[i].y(), mesh->vertexNormals[i].z());
 
   if(oren->_data->geomType == OR_TRIANGLES)
   {
@@ -1337,7 +1345,7 @@ void OSPRayRenderer::addRenderable(Renderable* ren)
   // triangles.resize(numTriangles);
   for(size_t i = 0, mi = 0; i < numTriangles; i++, mi+=3)
   {
-    triangles[i] = embree::Vec3i(mesh->vertex_indices[mi+0], mesh->vertex_indices[mi+1], mesh->vertex_indices[mi+2]);
+    triangles[i] = make_vec3i(mesh->vertex_indices[mi+0], mesh->vertex_indices[mi+1], mesh->vertex_indices[mi+2]);
     // triangles[i] = embree::Vec3i(0,1,2);
     // printf("indices: %d %d %d\n",mesh->vertex_indices[mi+0], mesh->vertex_indices[mi+1], mesh->vertex_indices[mi+2]);
   }
@@ -1398,7 +1406,7 @@ void OSPRayRenderer::addRenderable(Renderable* ren)
       OSPGeometry geom = ospNewGeometry("spheres");
       ospSet1f(geom,"radius",0.1); // TODO: remove hardcoded radius
       ospSet1i(geom,"materialID",0); // there is a shared material across all the points
-      ospSet1i(geom,"bytes_per_sphere",sizeof(ospray::vec3fa));
+      ospSet1i(geom,"bytes_per_sphere",sizeof(osp::vec3fa));
       ospSet1i(geom,"offset_center",0);
       ospSet1i(geom,"offset_radius",-1); // shared radius across all points
       ospSet1i(geom,"offset_materialID",-1);
@@ -1428,12 +1436,12 @@ void OSPRayRenderer::addRenderable(Renderable* ren)
       // the streamlineviewer example just sets a material like the triangle mesh does
       // so will use that logic for now
       // // for color, pull out the diffuse color that is in the glmat and copy it for all the vertices
-      // ospray::vec3fa color = ospray::vec3fa(
+      // osp::vec3fa color = osp::vec3fa(
       //         (float)gl_material.diffuse[0],
       //         (float)gl_material.diffuse[1],
       //         (float)gl_material.diffuse[2]);
       // cout << "\t\tcolor: " << color[0] << " " << color[1] << " " << color[2] << " " << color[3] << endl;
-      // ospray::vec3fa* colorv = (ospray::vec3fa*)embree::alignedMalloc(sizeof(ospray::vec3fa)*numPositions);
+      // osp::vec3fa* colorv = (osp::vec3fa*)embree::alignedMalloc(sizeof(osp::vec3fa)*numPositions);
       // for(size_t i=0; i<numPositions; i++) {
       //     colorv[i] = color;
       // }
