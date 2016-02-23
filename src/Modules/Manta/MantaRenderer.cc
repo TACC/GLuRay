@@ -251,9 +251,9 @@ void MantaRenderer::updateLights()
   else {
     lights->setAmbientLight(new Manta::ConstantAmbient(ambient));
   }
-    lights->add(new Manta::PointLight(Manta::Vector(10,10,-1), Manta::Color(Manta::RGBColor(1,1,1))*0.5));
-    lights->setAmbientLight(new Manta::ConstantAmbient(Manta::Color(Manta::RGB(.5,.5,.5))));
-    lights->setAmbientLight(new Manta::ConstantAmbient(ambient));
+    // lights->add(new Manta::PointLight(Manta::Vector(10,10,-1), Manta::Color(Manta::RGBColor(1,1,1))*0.5));
+    // lights->setAmbientLight(new Manta::ConstantAmbient(Manta::Color(Manta::RGB(.5,.5,.5))));
+    // lights->setAmbientLight(new Manta::ConstantAmbient(ambient));
   //cerr << "setuplights done\n";
 }
 
